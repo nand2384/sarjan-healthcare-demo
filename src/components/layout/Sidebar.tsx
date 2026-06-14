@@ -25,7 +25,7 @@ export const Sidebar = React.memo(function Sidebar({ activeTab, setActiveTab, is
     { icon: <LayoutGrid size={20} />, label: 'Dashboard' }
   ];
 
-  const navItemBaseClass = `flex items-center py-3 rounded-lg text-text-gray font-medium text-[0.95rem] transition-all duration-200 hover:bg-hover-bg hover:text-primary ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`;
+  const navItemBaseClass = `flex items-center w-full py-3 rounded-lg text-text-gray font-medium text-[0.95rem] transition-all duration-200 hover:bg-hover-bg hover:text-primary ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`;
   const navItemActiveClass = `bg-hover-bg text-primary relative before:content-[''] before:absolute ${isCollapsed ? 'before:-left-2' : 'before:-left-4'} before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-6 before:bg-primary before:rounded-r-md`;
 
   return (
@@ -65,7 +65,7 @@ export const Sidebar = React.memo(function Sidebar({ activeTab, setActiveTab, is
           </button>
         ))}
 
-        <div className="mt-6 mb-2">
+        <div className="mt-6 mb-2 flex flex-col gap-1">
           {!isCollapsed && <p className="text-xs font-bold text-text-light uppercase tracking-wider px-4 mb-2">Doctors in OPD</p>}
           {isCollapsed && <div className="border-t border-border-color mx-2 mb-2"></div>}
           
@@ -76,7 +76,7 @@ export const Sidebar = React.memo(function Sidebar({ activeTab, setActiveTab, is
               onClick={() => setActiveTab(doc.name)}
               title={isCollapsed ? doc.name : ""}
             >
-              <div className="relative">
+              <div className="relative inline-flex items-center justify-center">
                 <User size={20} className="min-w-[20px]" />
                 <span className={`absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-white ${doc.status === 'available' ? 'bg-green-500' : doc.status === 'busy' ? 'bg-amber-500' : 'bg-gray-400'}`}></span>
               </div>

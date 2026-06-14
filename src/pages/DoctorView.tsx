@@ -64,7 +64,10 @@ export const DoctorView = React.memo(function DoctorView({
           <div className="flex flex-col mt-4">
             <span className="text-sm font-bold text-text-light uppercase tracking-wider mb-2">Currently Consulting</span>
             {currentlyConsulting ? (
-              <div className="flex flex-col gap-2 bg-gray-50 border border-border-color rounded-lg p-4">
+              <button 
+                onClick={() => setCommandDrawerPatient(currentlyConsulting)}
+                className="flex flex-col gap-2 bg-gray-50 hover:bg-gray-100 border border-border-color rounded-lg p-4 text-left transition-colors w-full"
+              >
                 <div className="flex items-center gap-3">
                   <span className="text-lg font-bold text-text-dark">{currentlyConsulting.name}</span>
                   {currentlyConsulting.token && (
@@ -101,7 +104,7 @@ export const DoctorView = React.memo(function DoctorView({
                     )}
                   </div>
                 )}
-              </div>
+              </button>
             ) : (
               <span className="text-text-gray italic border border-dashed border-border-color p-4 rounded-lg bg-gray-50 max-w-sm">No patient in consultation right now.</span>
             )}
@@ -175,7 +178,7 @@ export const DoctorView = React.memo(function DoctorView({
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-gray-50/30">
             {pendingAppointments.length > 0 ? (
               pendingAppointments.map(appt => (
-                <div key={appt.id} className="bg-white border border-border-color rounded-lg shadow-sm overflow-hidden flex flex-col relative transition-all hover:border-amber-400">
+                <div key={appt.id} className="bg-white border border-border-color rounded-lg shadow-sm overflow-hidden flex flex-col relative transition-all hover:border-amber-400 shrink-0">
                   <div className="p-3 pb-2">
                     <h5 className="font-semibold text-text-dark text-sm flex items-center gap-1.5 mb-2">
                       <User size={14} className="text-text-gray" /> {appt.patientName}
@@ -212,6 +215,7 @@ export const DoctorView = React.memo(function DoctorView({
         onClose={() => setCommandDrawerPatient(null)}
         onUpdateStatus={handleUpdateStatus}
         onUpdatePatient={handleUpdatePatient}
+        isDoctorBusy={!!currentlyConsulting}
       />
 
       {/* Profile Complete Modal */}

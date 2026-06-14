@@ -26,7 +26,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActive
     { icon: <Settings size={20} />, label: 'Pricing Management' },
   ];
 
-  const navItemBaseClass = `flex items-center py-3 rounded-lg text-text-gray font-medium text-[0.95rem] transition-all duration-200 hover:bg-hover-bg hover:text-primary ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`;
+  const navItemBaseClass = `flex items-center w-full py-3 rounded-lg text-text-gray font-medium text-[0.95rem] transition-all duration-200 hover:bg-hover-bg hover:text-primary ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`;
   const navItemActiveClass = `bg-hover-bg text-primary relative before:content-[''] before:absolute ${isCollapsed ? 'before:-left-2' : 'before:-left-4'} before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-6 before:bg-primary before:rounded-r-md`;
 
   return (

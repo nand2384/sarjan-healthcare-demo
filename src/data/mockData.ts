@@ -57,6 +57,8 @@ export const TESTS_CATALOG = [
   { id: 't3', name: 'Lipid Profile', price: 500 },
   { id: 't4', name: 'Thyroid Panel', price: 750 },
   { id: 't5', name: 'Urine Routine', price: 150 },
+  { id: 't6', name: 'Echocardiogram (ECO)', price: 1200 },
+  { id: 't7', name: 'Treadmill Test (TPT)', price: 1500 },
 ];
 
 export const CONSULTATION_FEE = 500;

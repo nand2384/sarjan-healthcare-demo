@@ -111,6 +111,8 @@ export const ReceptionistApp = () => {
         {activeTab === 'Dashboard' && (
           <Dashboard 
             localDoctorsData={localDoctorsData}
+            handleUpdateStatus={handleUpdateStatus}
+            handleUpdatePatient={handleUpdatePatient}
           />
         )}
         {activeTab === 'Appointments' && <Appointments />}

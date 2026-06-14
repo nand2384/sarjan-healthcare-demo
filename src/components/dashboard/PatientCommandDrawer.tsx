@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { type Patient, type PatientStatus, type Vitals, TESTS_CATALOG, CONSULTATION_FEE } from '../../data/mockData';
-import { X, Play, HeartPulse, UserMinus, Clock, Receipt, Printer, Save } from 'lucide-react';
+import { X, Play, HeartPulse, UserMinus, Clock, Receipt, Printer, Save, ClipboardList, CheckSquare, AlertTriangle } from 'lucide-react';
 
 interface PatientCommandDrawerProps {
   patient: Patient | null;
@@ -8,18 +8,21 @@ interface PatientCommandDrawerProps {
   onClose: () => void;
   onUpdateStatus: (patientId: string, newStatus: PatientStatus) => void;
   onUpdatePatient: (patientId: string, updates: Partial<Patient>) => void;
+  isDoctorBusy?: boolean;
 }
 
-type DrawerView = 'actions' | 'vitals' | 'billing';
+type DrawerView = 'actions' | 'vitals' | 'billing' | 'tests';
 
 export const PatientCommandDrawer: React.FC<PatientCommandDrawerProps> = ({ 
   patient, 
   isOpen, 
   onClose, 
   onUpdateStatus,
-  onUpdatePatient
+  onUpdatePatient,
+  isDoctorBusy = false
 }) => {
   const [activeView, setActiveView] = useState<DrawerView>('actions');
+  const [showConfirmWalkout, setShowConfirmWalkout] = useState(false);
 
   // Vitals State
   const [vitalsData, setVitalsData] = useState<Vitals>({
@@ -40,6 +43,8 @@ export const PatientCommandDrawer: React.FC<PatientCommandDrawerProps> = ({
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveView('actions');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setShowConfirmWalkout(false);
     if (patient?.vitals) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setVitalsData(patient.vitals);
@@ -139,47 +144,80 @@ export const PatientCommandDrawer: React.FC<PatientCommandDrawerProps> = ({
             )}
           </button>
 
+          {patient.status === 'in-consultation' ? (
+            <button 
+              onClick={() => {
+                onUpdateStatus(patient.id, 'awaiting-payment');
+                onClose();
+              }}
+              className="w-full flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-800 rounded-xl font-semibold transition-all group"
+            >
+              <div className="bg-purple-200 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                <Receipt size={20} className="text-purple-700" />
+              </div>
+              <div className="text-left flex-1">
+                <p>Consultation Complete</p>
+                <p className="text-xs font-medium text-purple-700/80">Mark done & send to billing</p>
+              </div>
+            </button>
+          ) : (
+            <button 
+              onClick={() => {
+                onUpdateStatus(patient.id, 'in-consultation');
+                onClose();
+              }}
+              disabled={isDoctorBusy || patient.status === 'completed' || patient.status === 'walked-out'}
+              className="w-full flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 border border-green-200 text-green-800 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+            >
+              <div className="bg-green-200 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                <Play size={20} className="text-green-700" />
+              </div>
+              <div className="text-left flex-1">
+                <p>Send to Consultation</p>
+                <p className="text-xs font-medium text-green-700/80">
+                  {isDoctorBusy ? 'Doctor is currently busy' : 'Doctor is ready for patient'}
+                </p>
+              </div>
+              {!patient.vitals?.pulse && patient.status !== 'completed' && (
+                <div className="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded shrink-0">No Vitals</div>
+              )}
+            </button>
+          )}
+
           <button 
-            onClick={() => {
-              onUpdateStatus(patient.id, 'in-consultation');
-              onClose();
-            }}
-            disabled={patient.status === 'in-consultation' || patient.status === 'completed' || patient.status === 'walked-out'}
-            className="w-full flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 border border-green-200 text-green-800 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+            onClick={() => setActiveView('tests')}
+            disabled={patient.status === 'completed' || patient.status === 'walked-out'}
+            className="w-full flex items-center gap-3 p-4 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-800 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed group mt-2"
           >
-            <div className="bg-green-200 p-2 rounded-lg group-hover:scale-110 transition-transform">
-              <Play size={20} className="text-green-700" />
+            <div className="bg-indigo-200 p-2 rounded-lg group-hover:scale-110 transition-transform">
+              <ClipboardList size={20} className="text-indigo-700" />
             </div>
             <div className="text-left flex-1">
-              <p>Send to Consultation</p>
-              <p className="text-xs font-medium text-green-700/80">Doctor is ready for patient</p>
+              <p>Send for Tests</p>
+              <p className="text-xs font-medium text-indigo-700/80">Select lab tests for patient</p>
             </div>
-            {!patient.vitals?.pulse && patient.status !== 'in-consultation' && patient.status !== 'completed' && (
-              <div className="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded">No Vitals</div>
-            )}
           </button>
 
           <div className="my-2 border-t border-dashed border-border-color"></div>
 
-          <button 
-            onClick={() => setActiveView('billing')}
-            disabled={patient.status === 'completed' || patient.status === 'walked-out'}
-            className="w-full flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
-          >
-            <div className="bg-blue-200 p-2 rounded-lg group-hover:scale-110 transition-transform">
-              <Receipt size={20} className="text-blue-700" />
-            </div>
-            <div className="text-left">
-              <p>Checkout & Billing</p>
-              <p className="text-xs font-medium text-blue-700/80">Generate receipt & finish appointment</p>
-            </div>
-          </button>
+          {patient.status !== 'waiting' && (
+            <button 
+              onClick={() => setActiveView('billing')}
+              disabled={patient.status === 'completed' || patient.status === 'walked-out'}
+              className="w-full flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+            >
+              <div className="bg-blue-200 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                <Receipt size={20} className="text-blue-700" />
+              </div>
+              <div className="text-left">
+                <p>Checkout & Billing</p>
+                <p className="text-xs font-medium text-blue-700/80">Generate receipt & finish appointment</p>
+              </div>
+            </button>
+          )}
 
           <button 
-            onClick={() => {
-              onUpdateStatus(patient.id, 'walked-out');
-              onClose();
-            }}
+            onClick={() => setShowConfirmWalkout(true)}
             disabled={patient.status === 'completed' || patient.status === 'walked-out'}
             className="w-full flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed group mt-2"
           >
@@ -402,17 +440,124 @@ export const PatientCommandDrawer: React.FC<PatientCommandDrawerProps> = ({
     </div>
   );
 
+  const renderTestsModal = () => (
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 backdrop-blur-sm bg-black/40">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+        <div className="px-6 py-5 border-b border-border-color flex justify-between items-center bg-bg-base shrink-0">
+          <h3 className="text-xl font-bold text-text-dark flex items-center gap-3">
+            <ClipboardList size={24} className="text-indigo-600" /> Select Tests for {patient.name}
+          </h3>
+          <button onClick={() => setActiveView('actions')} className="p-2 hover:bg-gray-200 rounded-md text-text-gray transition-colors shrink-0">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="p-6 overflow-y-auto flex-1">
+          <p className="text-sm text-text-gray mb-4">Select the tests the patient needs to perform. They will be moved to the waiting-reports queue.</p>
+          
+          <div className="space-y-3">
+            {TESTS_CATALOG.map(test => {
+              const isSelected = selectedTests.includes(test.id);
+              return (
+                <div 
+                  key={test.id}
+                  onClick={() => {
+                    if (isSelected) {
+                      setSelectedTests(selectedTests.filter(id => id !== test.id));
+                    } else {
+                      setSelectedTests([...selectedTests, test.id]);
+                    }
+                  }}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    isSelected ? 'border-indigo-500 bg-indigo-50/50' : 'border-border-color hover:border-indigo-200'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded flex items-center justify-center border-2 transition-colors ${
+                    isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300'
+                  }`}>
+                    {isSelected && <CheckSquare size={16} />}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`font-semibold ${isSelected ? 'text-indigo-900' : 'text-text-dark'}`}>{test.name}</p>
+                    <p className="text-sm text-text-gray font-medium">₹{test.price}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="px-6 py-5 bg-bg-base border-t border-border-color flex justify-end gap-3 shrink-0">
+          <button 
+            onClick={() => setActiveView('actions')} 
+            className="px-5 py-2 text-sm font-bold text-text-dark border border-border-color rounded-lg hover:bg-hover-bg transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={() => {
+              onUpdateStatus(patient.id, 'waiting-reports');
+              onClose();
+            }}
+            disabled={selectedTests.length === 0}
+            className="flex items-center gap-2 px-5 py-2 text-sm font-bold text-white bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Play size={16} /> Send to Lab
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       {/* Global Backdrop with z-[100] to cover everything including z-50 Header */}
-      <div 
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] transition-opacity"
-        onClick={onClose}
-      />
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] transition-opacity duration-300"
+          onClick={onClose}
+        />
+      )}
       
       {/* Render Modals if Active */}
       {activeView === 'vitals' && renderVitalsModal()}
       {activeView === 'billing' && renderBillingModal()}
+      {activeView === 'tests' && renderTestsModal()}
+
+      {/* Custom Confirm Modal */}
+      {showConfirmWalkout && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 backdrop-blur-sm bg-black/40">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle size={32} />
+              </div>
+              <h3 className="text-xl font-bold text-text-dark mb-2">Mark Walked-Out?</h3>
+              <p className="text-sm text-text-gray mb-6">
+                Are you sure you want to mark <span className="font-bold text-text-dark">{patient.name}</span> as walked-out? This will remove them from the active queue and cannot be easily undone.
+              </p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setShowConfirmWalkout(false)}
+                  className="flex-1 py-2.5 px-4 font-bold text-text-dark bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => {
+                    onUpdateStatus(patient.id, 'walked-out');
+                    setShowConfirmWalkout(false);
+                    onClose();
+                  }}
+                  className="flex-1 py-2.5 px-4 font-bold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-colors"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Render Slide-over Panel only for Actions */}
       {activeView === 'actions' && (

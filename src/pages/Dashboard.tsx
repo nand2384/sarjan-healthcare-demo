@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatCards } from '../components/dashboard/StatCards';
-import { type Doctor } from '../data/mockData';
+import { type Doctor, type Patient, type PatientStatus } from '../data/mockData';
 import { User } from 'lucide-react';
+import { PatientCommandDrawer } from '../components/dashboard/PatientCommandDrawer';
 
 interface DashboardProps {
   localDoctorsData: Doctor[];
+  handleUpdateStatus?: (patientId: string, newStatus: PatientStatus) => void;
+  handleUpdatePatient?: (patientId: string, updatedPatient: Partial<Patient>) => void;
 }
 
-export const Dashboard = React.memo(function Dashboard({ localDoctorsData }: DashboardProps) {
+export const Dashboard = React.memo(function Dashboard({ localDoctorsData, handleUpdateStatus, handleUpdatePatient }: DashboardProps) {
+  const [drawerPatient, setDrawerPatient] = useState<Patient | null>(null);
+  const [drawerDoctorBusy, setDrawerDoctorBusy] = useState<boolean>(false);
   return (
     <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-bg-base">
       <StatCards />
@@ -57,13 +62,19 @@ export const Dashboard = React.memo(function Dashboard({ localDoctorsData }: Das
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-text-light uppercase tracking-wider mb-1">Currently Consulting</span>
                   {consulting ? (
-                    <div className="flex items-center gap-2 bg-primary/5 text-primary-dark p-2 rounded-lg border border-primary/10">
-                      <User size={16} />
-                      <span className="font-semibold text-sm">{consulting.name}</span>
-                      {consulting.token && <span className="ml-auto text-xs bg-white px-1.5 py-0.5 rounded shadow-sm font-bold border border-primary/10">{consulting.token}</span>}
-                    </div>
+                    <button 
+                      onClick={() => {
+                        setDrawerPatient(consulting);
+                        setDrawerDoctorBusy(true);
+                      }}
+                      className="flex items-center gap-2 bg-primary/5 hover:bg-primary/10 text-primary-dark p-2 rounded-lg border border-primary/10 transition-colors w-full text-left"
+                    >
+                      <User size={16} className="shrink-0" />
+                      <span className="font-semibold text-sm truncate flex-1">{consulting.name}</span>
+                      {consulting.token && <span className="text-xs bg-white px-1.5 py-0.5 rounded shadow-sm font-bold border border-primary/10 shrink-0">{consulting.token}</span>}
+                    </button>
                   ) : (
-                    <span className="text-sm text-text-gray italic">No patient</span>
+                    <span className="text-sm text-text-gray italic border border-dashed border-border-color p-2 rounded-lg bg-gray-50">No patient</span>
                   )}
                 </div>
 
@@ -71,13 +82,19 @@ export const Dashboard = React.memo(function Dashboard({ localDoctorsData }: Das
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-text-light uppercase tracking-wider mb-1">Next in Queue</span>
                   {nextPatient ? (
-                    <div className="flex items-center gap-2 bg-gray-50 text-text-dark p-2 rounded-lg border border-border-color">
-                      <User size={16} className="text-text-gray" />
-                      <span className="font-medium text-sm">{nextPatient.name}</span>
-                      {nextPatient.token && <span className="ml-auto text-xs bg-white px-1.5 py-0.5 rounded shadow-sm font-bold border border-border-color">{nextPatient.token}</span>}
-                    </div>
+                    <button 
+                      onClick={() => {
+                        setDrawerPatient(nextPatient);
+                        setDrawerDoctorBusy(!!consulting);
+                      }}
+                      className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 text-text-dark p-2 rounded-lg border border-border-color transition-colors w-full text-left"
+                    >
+                      <User size={16} className="text-text-gray shrink-0" />
+                      <span className="font-medium text-sm truncate flex-1">{nextPatient.name}</span>
+                      {nextPatient.token && <span className="text-xs bg-white px-1.5 py-0.5 rounded shadow-sm font-bold border border-border-color shrink-0">{nextPatient.token}</span>}
+                    </button>
                   ) : (
-                    <span className="text-sm text-text-gray italic">Queue empty</span>
+                    <span className="text-sm text-text-gray italic border border-dashed border-border-color p-2 rounded-lg bg-gray-50">Queue empty</span>
                   )}
                 </div>
               </div>
@@ -85,6 +102,17 @@ export const Dashboard = React.memo(function Dashboard({ localDoctorsData }: Das
           );
         })}
       </div>
+
+      {handleUpdateStatus && handleUpdatePatient && (
+        <PatientCommandDrawer 
+          patient={drawerPatient}
+          isOpen={!!drawerPatient}
+          onClose={() => setDrawerPatient(null)}
+          onUpdateStatus={handleUpdateStatus}
+          onUpdatePatient={handleUpdatePatient}
+          isDoctorBusy={drawerDoctorBusy}
+        />
+      )}
     </div>
   );
 });
