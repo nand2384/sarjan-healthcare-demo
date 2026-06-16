@@ -74,6 +74,9 @@ export const ReceptionistApp = () => {
       }
       return doc;
     }));
+
+    // Alert to show successful queuing
+    alert('Patient successfully added to the Dashboard Queue!');
   };
 
   const isMainTab = ['Dashboard', 'Appointments', 'Register Patient'].includes(activeTab);
@@ -115,7 +118,12 @@ export const ReceptionistApp = () => {
             handleUpdatePatient={handleUpdatePatient}
           />
         )}
-        {activeTab === 'Appointments' && <Appointments />}
+        {activeTab === 'Appointments' && (
+          <Appointments 
+            localAppointmentsData={localAppointmentsData}
+            handleMarkAsArrived={handleMarkAsArrived}
+          />
+        )}
         {activeTab === 'Register Patient' && <PatientRegistration />}
         
         {/* Doctor View */}

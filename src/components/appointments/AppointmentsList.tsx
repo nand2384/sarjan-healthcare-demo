@@ -1,21 +1,12 @@
-import { useState } from 'react';
-import { scheduledAppointments, type ScheduledAppointment } from '../../data/mockData';
+import { type ScheduledAppointment } from '../../data/mockData';
 import { Phone, CheckCircle2, UserCheck, Calendar } from 'lucide-react';
 
-export const AppointmentsList = () => {
-  const [appointments, setAppointments] = useState<ScheduledAppointment[]>(scheduledAppointments);
+interface AppointmentsListProps {
+  appointments: ScheduledAppointment[];
+  handleMarkArrived: (id: string) => void;
+}
 
-  const handleMarkArrived = (id: string) => {
-    // In a real app, this would trigger an API call to move the patient to the actual Queue.
-    // For now, we update the local state to show a success state.
-    setAppointments(prev => prev.map(appt => 
-      appt.id === id ? { ...appt, status: 'arrived' } : appt
-    ));
-
-    // Optional: Alert or toast to simulate the action
-    alert('Patient successfully added to the Dashboard Queue!');
-  };
-
+export const AppointmentsList = ({ appointments, handleMarkArrived }: AppointmentsListProps) => {
   return (
     <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden">
       <div className="p-4 border-b border-border-color bg-indigo-50/30 flex items-center gap-2">

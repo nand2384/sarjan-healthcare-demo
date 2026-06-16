@@ -2,8 +2,14 @@ import { useState } from 'react';
 import { AppointmentsFilterBar } from '../components/appointments/AppointmentsFilterBar';
 import { AppointmentsList } from '../components/appointments/AppointmentsList';
 import { AppointmentsCalendar } from '../components/appointments/AppointmentsCalendar';
+import { type ScheduledAppointment } from '../data/mockData';
 
-export const Appointments = () => {
+interface AppointmentsProps {
+  localAppointmentsData: ScheduledAppointment[];
+  handleMarkAsArrived: (appointmentId: string) => void;
+}
+
+export const Appointments = ({ localAppointmentsData, handleMarkAsArrived }: AppointmentsProps) => {
   const [view, setView] = useState<'list' | 'calendar'>('list');
 
   return (
@@ -15,7 +21,14 @@ export const Appointments = () => {
 
       <AppointmentsFilterBar view={view} setView={setView} />
       
-      {view === 'list' ? <AppointmentsList /> : <AppointmentsCalendar />}
+      {view === 'list' ? (
+        <AppointmentsList 
+          appointments={localAppointmentsData}
+          handleMarkArrived={handleMarkAsArrived}
+        />
+      ) : (
+        <AppointmentsCalendar appointments={localAppointmentsData} />
+      )}
     </div>
   );
 };

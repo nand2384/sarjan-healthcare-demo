@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { scheduledAppointments } from '../../data/mockData';
+import { type ScheduledAppointment } from '../../data/mockData';
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export const AppointmentsCalendar = () => {
+interface AppointmentsCalendarProps {
+  appointments: ScheduledAppointment[];
+}
+
+export const AppointmentsCalendar = ({ appointments }: AppointmentsCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -35,13 +39,13 @@ export const AppointmentsCalendar = () => {
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   // Group appointments by date
-  const appointmentsByDate = scheduledAppointments.reduce((acc, appt) => {
+  const appointmentsByDate = appointments.reduce((acc, appt) => {
     if (!acc[appt.date]) {
       acc[appt.date] = [];
     }
     acc[appt.date].push(appt);
     return acc;
-  }, {} as Record<string, typeof scheduledAppointments>);
+  }, {} as Record<string, typeof appointments>);
 
   const today = new Date();
   const isToday = (day: number) => {

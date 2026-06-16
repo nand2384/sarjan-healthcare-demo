@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ReceptionistApp } from './apps/ReceptionistApp';
 import { AdminApp } from './apps/AdminApp';
+import { DoctorApp } from './apps/DoctorApp';
 import { type UserRole } from './types/roles';
 import { Settings } from 'lucide-react';
 
@@ -13,7 +14,7 @@ function App() {
       {/* App Router */}
       {currentRole === 'receptionist' && <ReceptionistApp />}
       {currentRole === 'admin' && <AdminApp />}
-      {currentRole === 'doctor' && <div className="flex h-screen items-center justify-center text-xl text-gray-500 font-medium">Doctor Dashboard (Coming Soon)</div>}
+      {currentRole === 'doctor' && <DoctorApp />}
       {currentRole === 'pharmacist' && <div className="flex h-screen items-center justify-center text-xl text-gray-500 font-medium">Pharmacist Dashboard (Coming Soon)</div>}
       {currentRole === 'patient' && <div className="flex h-screen items-center justify-center text-xl text-gray-500 font-medium">Patient Dashboard (Coming Soon)</div>}
 
