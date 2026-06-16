@@ -99,7 +99,7 @@ export const PatientRegistration = () => {
   };
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-bg-base">
+    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent">
       <div className="mb-6 md:mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-0">
         <div>
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
@@ -329,7 +329,7 @@ export const PatientRegistration = () => {
                   </div>
 
                   {/* Section 2: Contact Details */}
-                  <div className="p-6 border-b border-border-color bg-bg-base/50">
+                  <div className="p-6 border-b border-border-color bg-transparent/50">
                     <h2 className="text-lg font-semibold text-text-dark mb-4">Contact Details</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>

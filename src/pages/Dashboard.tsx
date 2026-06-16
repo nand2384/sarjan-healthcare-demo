@@ -14,7 +14,7 @@ export const Dashboard = React.memo(function Dashboard({ localDoctorsData, handl
   const [drawerPatient, setDrawerPatient] = useState<Patient | null>(null);
   const [drawerDoctorBusy, setDrawerDoctorBusy] = useState<boolean>(false);
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-bg-base">
+    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent">
       <StatCards />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -45,8 +45,8 @@ export const Dashboard = React.memo(function Dashboard({ localDoctorsData, handl
             >
               <div className="flex justify-between items-start mb-4 border-b border-border-color pb-3">
                 <div>
-                  <h3 className="font-bold text-lg text-text-dark">{doctor.name}</h3>
-                  <p className="text-xs text-text-gray">{doctor.specialty} • Room {doctor.room}</p>
+                  <h3 className="text-lg font-bold text-text-dark">{doctor.name}</h3>
+                  <p className="text-xs text-text-gray">{doctor.specialty}</p>
                 </div>
                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                   doctor.status === 'available' ? 'bg-green-100 text-green-700' :

@@ -27,25 +27,25 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
   }, []);
 
   return (
-    <header className="h-[72px] bg-white border-b border-border-color flex justify-between items-center px-4 md:px-8 shrink-0 relative z-10">
+    <header className="h-[76px] bg-white border-b border-black/5 flex justify-between items-center px-4 md:px-8 shrink-0 relative z-10 sticky top-0">
       <div className="flex items-center gap-3 md:gap-6 flex-1 overflow-hidden">
         
         {/* Mobile Menu Toggle */}
         {onMenuClick && (
           <button 
-            className="md:hidden p-2 rounded-md text-text-gray hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2.5 bg-white/50 rounded-xl text-text-dark hover:bg-white transition-colors shadow-sm border border-border-color/50"
             onClick={onMenuClick}
           >
-            <Menu size={24} />
+            <Menu size={20} />
           </button>
         )}
 
-        <div className="hidden md:flex items-center bg-bg-base rounded-md border border-border-color px-4 py-2 w-[300px] lg:w-[400px] shrink-0">
+        <div className="hidden md:flex items-center bg-white/60 hover:bg-white focus-within:bg-white rounded-full border border-border-color px-5 py-2.5 w-[300px] lg:w-[450px] shrink-0 transition-all shadow-sm focus-within:shadow-soft focus-within:border-primary/30">
           <Search size={18} className="text-text-light" />
           <input 
             type="text" 
-            placeholder="Search for patient" 
-            className="border-none bg-transparent outline-none ml-2 flex-1 text-[0.9rem] text-text-dark placeholder:text-text-light"
+            placeholder="Search for patient, doctor, or staff..." 
+            className="border-none bg-transparent outline-none ml-3 flex-1 text-[0.9rem] text-text-dark placeholder:text-text-light"
           />
         </div>
 
@@ -84,7 +84,7 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
 
           {showNotifications && (
             <div className="absolute right-0 mt-2 w-80 bg-white border border-border-color rounded-xl shadow-lg overflow-hidden flex flex-col z-50">
-              <div className="px-4 py-3 border-b border-border-color bg-bg-base">
+              <div className="px-4 py-3 border-b border-border-color bg-transparent">
                 <h3 className="font-semibold text-text-dark text-sm">Notifications</h3>
               </div>
               <div className="max-h-80 overflow-y-auto">
@@ -120,12 +120,17 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
         </div>
 
         {/* User Profile / Name dropdown */}
-        <div className="flex items-center gap-1.5 border-l border-border-color pl-4 md:pl-6 text-[0.9rem] text-text-gray cursor-pointer">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold md:mr-2">
+        <div className="h-8 w-px bg-border-color hidden md:block"></div>
+
+        <div className="flex items-center gap-3 cursor-pointer group">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-primary-dark text-white flex justify-center items-center font-bold shadow-soft group-hover:shadow-md transition-all">
             {userName}
           </div>
-          <span className="hidden md:inline font-medium text-text-dark">{userRole}</span>
-          <ChevronDown size={14} className="hidden md:block" />
+          <div className="hidden md:flex flex-col">
+            <span className="text-[0.9rem] font-bold text-text-dark leading-tight group-hover:text-primary transition-colors">{userRole === "Receptionist" ? "Front Desk" : "System Admin"}</span>
+            <span className="text-[0.75rem] font-semibold text-text-light">{userRole}</span>
+          </div>
+          <ChevronDown size={16} className="text-text-light ml-1 group-hover:text-primary transition-colors hidden md:block" />
         </div>
       </div>
     </header>

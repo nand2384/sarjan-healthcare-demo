@@ -57,8 +57,8 @@ export const QueueManager = React.memo(function QueueManager({ localDoctorsData,
       {/* Active Doctor Info */}
       <div className="px-6 py-4 flex justify-between items-center border-b border-border-color shrink-0">
         <div>
-          <h3 className="text-lg font-bold text-text-dark">{activeDoctor.name}</h3>
-          <p className="text-sm text-text-gray">{activeDoctor.specialty} • {activeDoctor.room}</p>
+          <h2 className="text-xl font-bold text-text-dark">{activeDoctor.name}</h2>
+          <p className="text-sm text-text-gray">{activeDoctor.specialty}</p>
         </div>
         <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
           activeDoctor.status === 'available' ? 'bg-green-50 text-green-700 border-green-200' :

@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { AdminSidebar } from '../components/layout/AdminSidebar';
 import { Header } from '../components/layout/Header';
 import { FinancialReports } from '../pages/FinancialReports';
+import { StaffManagement } from '../pages/StaffManagement';
+import { PricingManagement } from '../pages/PricingManagement';
+import { WaitTimeAnalytics } from '../pages/WaitTimeAnalytics';
+import { GlobalAnnouncements } from '../pages/GlobalAnnouncements';
+import { ClinicProfile } from '../pages/ClinicProfile';
+import { PatientReviews } from '../pages/PatientReviews';
+import { AuditLogs } from '../pages/AuditLogs';
 
 export const AdminApp = () => {
   const [activeTab, setActiveTab] = useState('Financial Reports');
@@ -36,16 +43,13 @@ export const AdminApp = () => {
         
         {/* Render page based on activeTab */}
         {activeTab === 'Financial Reports' && <FinancialReports />}
-        {activeTab === 'Staff Management' && (
-          <div className="flex-1 flex items-center justify-center bg-bg-base">
-            <h2 className="text-xl font-medium text-text-gray">Staff Management (Coming Soon)</h2>
-          </div>
-        )}
-        {activeTab === 'Pricing Management' && (
-          <div className="flex-1 flex items-center justify-center bg-bg-base">
-            <h2 className="text-xl font-medium text-text-gray">Pricing Management (Coming Soon)</h2>
-          </div>
-        )}
+        {activeTab === 'Staff & Doctor Management' && <StaffManagement />}
+        {activeTab === 'Pricing & Lab Catalog' && <PricingManagement />}
+        {activeTab === 'Wait Time Analytics' && <WaitTimeAnalytics />}
+        {activeTab === 'Global Announcements' && <GlobalAnnouncements />}
+        {activeTab === 'Clinic Profile' && <ClinicProfile />}
+        {activeTab === 'Patient Reviews' && <PatientReviews />}
+        {activeTab === 'Audit Logs' && <AuditLogs />}
       </main>
     </div>
   );

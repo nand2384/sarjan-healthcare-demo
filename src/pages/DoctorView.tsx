@@ -55,7 +55,7 @@ export const DoctorView = React.memo(function DoctorView({
   );
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto md:overflow-hidden bg-bg-base p-4 md:p-6">
+    <div className="flex-1 flex flex-col overflow-y-auto md:overflow-hidden bg-transparent p-4 md:p-6">
       
       {/* Top Header Section */}
       <div className="bg-white rounded-xl shadow-sm border border-border-color p-4 md:p-6 mb-4 md:mb-6 shrink-0 flex flex-col md:flex-row justify-between items-start gap-4 md:gap-0">
@@ -224,7 +224,7 @@ export const DoctorView = React.memo(function DoctorView({
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
-            <div className="px-8 py-5 border-b border-border-color flex justify-between items-center bg-bg-base shrink-0">
+            <div className="px-8 py-5 border-b border-border-color flex justify-between items-center bg-transparent shrink-0">
               <div>
                 <h3 className="text-xl font-bold text-text-dark">Complete Profile</h3>
                 <p className="text-sm text-text-gray mt-1">Fill in the missing details for <span className="font-semibold text-text-dark">{updatingPatient.name}</span></p>
@@ -292,7 +292,7 @@ export const DoctorView = React.memo(function DoctorView({
             </div>
 
             {/* Modal Footer */}
-            <div className="px-8 py-5 bg-bg-base border-t border-border-color flex justify-end gap-4 shrink-0">
+            <div className="px-8 py-5 bg-transparent border-t border-border-color flex justify-end gap-4 shrink-0">
               <button 
                 onClick={() => setUpdatingPatient(null)} 
                 className="px-6 py-2.5 text-sm font-bold text-text-dark border border-border-color rounded-lg hover:bg-hover-bg transition-colors"

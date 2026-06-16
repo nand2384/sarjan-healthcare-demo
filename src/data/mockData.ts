@@ -67,8 +67,17 @@ export interface Doctor {
   id: string;
   name: string;
   specialty: string;
-  room: string;
+  newCaseFee: number;
+  oldCaseFee: number;
   status: 'available' | 'busy' | 'away';
+  email: string;
+  password?: string; // Optional since it's just for mock setup, actual password wouldn't be sent to client
+  phone: string;
+  joiningDate: string;
+  licenseNumber: string;
+  education: string;
+  experience: number;
+  consultationDays: string;
   advanceQueue: Patient[];
   walkInQueue: Patient[];
 }
@@ -78,8 +87,16 @@ export const doctorsData: Doctor[] = [
     id: "d1",
     name: "Dr. Sarah Jenkins",
     specialty: "General Physician",
-    room: "Room 101",
+    newCaseFee: 500,
+    oldCaseFee: 300,
     status: "busy",
+    email: "sarah.jenkins@sarjan.com",
+    phone: "+91 98765 00001",
+    joiningDate: "2021-04-15",
+    licenseNumber: "MCI-45892",
+    education: "MBBS, MD",
+    experience: 8,
+    consultationDays: "Mon-Sat",
     advanceQueue: [
       { id: "p1", name: "Alice Smith", time: "10:00 AM", type: "advance", status: "in-consultation", profileStatus: "complete" },
       { id: "p2", name: "Bob Johnson", time: "10:15 AM", type: "advance", status: "waiting", waitTime: 35, paymentPending: true, profileStatus: "incomplete" },
@@ -94,8 +111,16 @@ export const doctorsData: Doctor[] = [
     id: "d2",
     name: "Dr. Michael Chen",
     specialty: "Cardiologist",
-    room: "Room 204",
+    newCaseFee: 800,
+    oldCaseFee: 600,
     status: "available",
+    email: "michael.chen@sarjan.com",
+    phone: "+91 98765 00002",
+    joiningDate: "2020-11-01",
+    licenseNumber: "MCI-73210",
+    education: "MBBS, DM (Cardiology)",
+    experience: 12,
+    consultationDays: "Mon, Wed, Fri",
     advanceQueue: [
       { id: "p4", name: "Frank Miller", time: "10:30 AM", type: "advance", status: "waiting", waitTime: 5, missingForms: true, profileStatus: "incomplete" },
       { id: "p5", name: "James Anderson", time: "11:00 AM", type: "advance", status: "waiting", profileStatus: "complete" },
@@ -108,8 +133,16 @@ export const doctorsData: Doctor[] = [
     id: "d3",
     name: "Dr. Emily Taylor",
     specialty: "Pediatrician",
-    room: "Room 105",
+    newCaseFee: 600,
+    oldCaseFee: 400,
     status: "away",
+    email: "emily.taylor@sarjan.com",
+    phone: "+91 98765 00003",
+    joiningDate: "2023-01-10",
+    licenseNumber: "MCI-99341",
+    education: "MBBS, MD (Pediatrics)",
+    experience: 5,
+    consultationDays: "Tue-Sun",
     advanceQueue: [
       { id: "p6", name: "Sophia Martinez", time: "11:15 AM", type: "advance", status: "waiting", profileStatus: "complete" },
     ],
@@ -279,5 +312,78 @@ export const mockAnalyticsData: DoctorAnalytics[] = [
     pharmacyRevenue: 2500,
     cashRevenue: 6000,
     onlineRevenue: 10500
+  }
+];
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;
+  user: string;
+  role: 'Admin' | 'Receptionist' | 'Doctor' | 'System';
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'SYSTEM';
+  module: 'Pricing' | 'Staff' | 'Patients' | 'Authentication' | 'Settings';
+  description: string;
+  ipAddress?: string;
+}
+
+export const auditLogsData: AuditLog[] = [
+  {
+    id: 'AL-1001',
+    timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 mins ago
+    user: 'System Admin',
+    role: 'Admin',
+    action: 'UPDATE',
+    module: 'Pricing',
+    description: 'Updated Dr. Sarah Smith New Case Consultation Fee from ₹500 to ₹600.',
+    ipAddress: '192.168.1.104'
+  },
+  {
+    id: 'AL-1002',
+    timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+    user: 'Priya Sharma',
+    role: 'Receptionist',
+    action: 'CREATE',
+    module: 'Patients',
+    description: 'Registered new patient: John Doe (PID-8921).',
+    ipAddress: '192.168.1.112'
+  },
+  {
+    id: 'AL-1003',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+    user: 'System Admin',
+    role: 'Admin',
+    action: 'LOGIN',
+    module: 'Authentication',
+    description: 'Successful login from recognized device.',
+    ipAddress: '192.168.1.104'
+  },
+  {
+    id: 'AL-1004',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
+    user: 'System',
+    role: 'System',
+    action: 'SYSTEM',
+    module: 'Settings',
+    description: 'Automated daily database backup completed successfully.',
+  },
+  {
+    id: 'AL-1005',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    user: 'System Admin',
+    role: 'Admin',
+    action: 'DELETE',
+    module: 'Staff',
+    description: 'Removed access for former receptionist: Amit Patel.',
+    ipAddress: '192.168.1.104'
+  },
+  {
+    id: 'AL-1006',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+    user: 'Dr. Michael Chen',
+    role: 'Doctor',
+    action: 'UPDATE',
+    module: 'Patients',
+    description: 'Modified prescription for patient Jane Roe (PID-1022).',
+    ipAddress: '192.168.1.108'
   }
 ];
