@@ -2,6 +2,25 @@ import { useState, useMemo } from 'react';
 import { BarChart3, Users, UserPlus, Receipt, Printer, CalendarDays, TrendingUp, IndianRupee } from 'lucide-react';
 import { mockAnalyticsData } from '../data/mockData';
 import { CustomDateRangePicker } from '../components/common/CustomDateRangePicker';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title as ChartTitle,
+  Tooltip,
+  Legend
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ChartTitle,
+  Tooltip,
+  Legend
+);
 
 export const FinancialReports = () => {
   // Date State
@@ -85,8 +104,66 @@ export const FinancialReports = () => {
     ? `Report for ${formattedFrom}`
     : `Report from ${formattedFrom} to ${formattedTo}`;
 
+  // Chart Data Preparation
+  const revenueChartData = {
+    labels: scaledData.map(d => d.doctorName),
+    datasets: [
+      {
+        label: 'Consultation Revenue',
+        data: scaledData.map(d => d.consultationRevenue),
+        backgroundColor: 'rgba(59, 130, 246, 0.8)', // blue-500
+      },
+      {
+        label: 'Tests Revenue',
+        data: scaledData.map(d => d.testsRevenue),
+        backgroundColor: 'rgba(139, 92, 246, 0.8)', // purple-500
+      },
+      {
+        label: 'Pharmacy Revenue',
+        data: scaledData.map(d => d.pharmacyRevenue),
+        backgroundColor: 'rgba(16, 185, 129, 0.8)', // emerald-500
+      }
+    ],
+  };
+
+  const revenueChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+        labels: { font: { family: "'Inter', sans-serif" } }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        titleColor: '#111827',
+        bodyColor: '#4B5563',
+        borderColor: 'rgba(0,0,0,0.05)',
+        borderWidth: 1,
+        padding: 12,
+        usePointStyle: true,
+        callbacks: {
+          label: (context: any) => `₹${context.raw.toLocaleString('en-IN')}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        grid: { display: false, drawBorder: false },
+        ticks: { font: { family: "'Inter', sans-serif", size: 11 } }
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        grid: { color: 'rgba(0, 0, 0, 0.03)', drawBorder: false },
+        ticks: { font: { family: "'Inter', sans-serif", size: 11 }, padding: 10 }
+      }
+    }
+  };
+
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-bg-base">
+    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent">
       <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
@@ -139,55 +216,63 @@ export const FinancialReports = () => {
 
       {/* Top Section: Clinic-Wide KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm relative overflow-hidden">
+        <div className="bg-white p-6 rounded-2xl shadow-soft interactive-card border-none relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-full -mr-4 -mt-4 opacity-50 pointer-events-none"></div>
-          <p className="text-sm font-bold text-text-gray uppercase tracking-wider mb-2">Total Revenue</p>
-          <h2 className="text-3xl font-bold text-text-dark flex items-center gap-1">
+          <p className="text-[11px] font-bold text-text-light uppercase tracking-wider mb-2">Total Revenue</p>
+          <h2 className="text-3xl font-extrabold text-text-dark flex items-center gap-1 tracking-tight">
             <IndianRupee size={28} /> {totalRevenue.toLocaleString('en-IN')}
           </h2>
-          <div className="mt-4 flex items-center gap-2 text-sm font-medium text-green-600 bg-green-50 w-fit px-2 py-1 rounded">
-            <TrendingUp size={16} /> Selected Range
+          <div className="mt-4 flex items-center gap-2 text-[11px] font-bold text-green-700 bg-green-50 w-fit px-2.5 py-1 rounded uppercase tracking-wider border border-green-100">
+            <TrendingUp size={14} /> Selected Range
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm relative overflow-hidden">
+        <div className="bg-white p-6 rounded-2xl shadow-soft interactive-card border-none relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 opacity-50 pointer-events-none"></div>
-          <p className="text-sm font-bold text-text-gray uppercase tracking-wider mb-2">Total Consulted</p>
-          <h2 className="text-3xl font-bold text-text-dark">{totalConsulted}</h2>
-          <div className="mt-4 flex items-center gap-2 text-sm font-medium text-text-gray bg-gray-50 w-fit px-2 py-1 rounded">
-            <Users size={16} className="text-blue-500" /> Patients Seen
+          <p className="text-[11px] font-bold text-text-light uppercase tracking-wider mb-2">Total Consulted</p>
+          <h2 className="text-3xl font-extrabold text-text-dark tracking-tight">{totalConsulted}</h2>
+          <div className="mt-4 flex items-center gap-2 text-[11px] font-bold text-text-gray bg-gray-50 w-fit px-2.5 py-1 rounded uppercase tracking-wider border border-gray-200/50">
+            <Users size={14} className="text-blue-500" /> Patients Seen
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm relative overflow-hidden">
+        <div className="bg-white p-6 rounded-2xl shadow-soft interactive-card border-none relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-bl-full -mr-4 -mt-4 opacity-50 pointer-events-none"></div>
-          <p className="text-sm font-bold text-text-gray uppercase tracking-wider mb-2">Total Walk-ins</p>
-          <h2 className="text-3xl font-bold text-text-dark">{totalWalkIns}</h2>
-          <div className="mt-4 flex items-center gap-2 text-sm font-medium text-text-gray bg-gray-50 w-fit px-2 py-1 rounded">
-            <Receipt size={16} className="text-amber-500" /> Direct Arrivals
+          <p className="text-[11px] font-bold text-text-light uppercase tracking-wider mb-2">Total Walk-ins</p>
+          <h2 className="text-3xl font-extrabold text-text-dark tracking-tight">{totalWalkIns}</h2>
+          <div className="mt-4 flex items-center gap-2 text-[11px] font-bold text-text-gray bg-gray-50 w-fit px-2.5 py-1 rounded uppercase tracking-wider border border-gray-200/50">
+            <Receipt size={14} className="text-amber-500" /> Direct Arrivals
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm relative overflow-hidden">
+        <div className="bg-white p-6 rounded-2xl shadow-soft interactive-card border-none relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 opacity-50 pointer-events-none"></div>
-          <p className="text-sm font-bold text-text-gray uppercase tracking-wider mb-2">New Registrations</p>
-          <h2 className="text-3xl font-bold text-text-dark">{totalNewPatients}</h2>
-          <div className="mt-4 flex items-center gap-2 text-sm font-medium text-text-gray bg-gray-50 w-fit px-2 py-1 rounded">
-            <UserPlus size={16} className="text-purple-500" /> First-time visits
+          <p className="text-[11px] font-bold text-text-light uppercase tracking-wider mb-2">New Registrations</p>
+          <h2 className="text-3xl font-extrabold text-text-dark tracking-tight">{totalNewPatients}</h2>
+          <div className="mt-4 flex items-center gap-2 text-[11px] font-bold text-text-gray bg-gray-50 w-fit px-2.5 py-1 rounded uppercase tracking-wider border border-gray-200/50">
+            <UserPlus size={14} className="text-purple-500" /> First-time visits
           </div>
         </div>
       </div>
 
+      {/* Chart Section */}
+      <div className="bg-white p-8 rounded-2xl shadow-soft interactive-card border-none mb-8">
+        <h3 className="text-lg font-extrabold text-text-dark mb-6 tracking-tight">Revenue Breakdown per Doctor</h3>
+        <div className="h-[300px]">
+          <Bar data={revenueChartData} options={revenueChartOptions} />
+        </div>
+      </div>
+
       {/* Middle Section: Doctor Breakdown */}
-      <h3 className="text-lg font-bold text-text-dark mb-4">Doctor Performance Breakdown</h3>
+      <h3 className="text-lg font-bold text-text-dark mb-4">Doctor Performance Details</h3>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {scaledData.map(doc => (
-          <div key={doc.doctorId} className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden flex flex-col">
+          <div key={doc.doctorId} className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden flex flex-col border-none">
             
             {/* Header */}
-            <div className="p-5 border-b border-border-color bg-gray-50/50 flex justify-between items-center">
-              <h4 className="font-bold text-text-dark text-lg">{doc.doctorName}</h4>
-              <span className="bg-primary/10 text-primary text-xs font-bold px-2.5 py-1 rounded-full">
+            <div className="p-6 border-b border-border-color bg-gray-50/30 flex justify-between items-center">
+              <h4 className="font-extrabold text-text-dark text-lg tracking-tight">{doc.doctorName}</h4>
+              <span className="bg-primary/10 text-primary text-[11px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full border border-primary/20">
                 {doc.totalConsulted} Consults
               </span>
             </div>
