@@ -82,6 +82,12 @@ interface SymptomItem {
   severity: 'Mild' | 'Moderate' | 'Severe';
 }
 
+interface HistoryItem {
+  name: string;
+  type: 'Self' | 'Family';
+  notes?: string;
+}
+
 interface OngoingMedication {
   id: string;
   name: string;
@@ -134,27 +140,39 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
   const [symptomsNotes, setSymptomsNotes] = useState('');
 
   // Step 2: Past / Family History
-  const [pastHistory, setPastHistory] = useState<string[]>([]);
-  const [familyHistory, setFamilyHistory] = useState<string[]>([]);
+  const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
   const [customHistory, setCustomHistory] = useState('');
 
   // Step 3: Personal History
   const [diet, setDiet] = useState('Veg');
   const [sleep, setSleep] = useState('Good');
   const [lifestyle, setLifestyle] = useState('Active');
+  const [bowel, setBowel] = useState('Normal');
+  const [appetite, setAppetite] = useState('Normal');
   const [allergies, setAllergies] = useState<string[]>([]);
   const [customAllergy, setCustomAllergy] = useState('');
 
   // Step 4: Ongoing Medication History (with default "No Record")
-  const [hasOngoingMedication, setHasOngoingMedication] = useState<boolean>(false);
   const [ongoingMedications, setOngoingMedications] = useState<OngoingMedication[]>([]);
   const [newOngoingName, setNewOngoingName] = useState('');
   const [newOngoingDosage, setNewOngoingDosage] = useState('');
   const [newOngoingFreq, setNewOngoingFreq] = useState('1-0-1');
+  const [newOngoingType, setNewOngoingType] = useState('TAB');
 
-  // Step 5: Examination (CVS and RS only)
-  const [cvsExam, setCvsExam] = useState('');
-  const [rsExam, setRsExam] = useState('');
+  // Step 5: Physical Examination Redesign
+  // * Side-by-Side Vertical Blocks: Recreated the Physical Examination interface as two structured vertical columns side-by-side on desktop displays (Cardiovascular System on the left, Respiratory System on the right).
+  // * Selectable Pill Options: Replaced the freeform notes textareas with interactive pill buttons (capsules) representing clinical findings parameters (Heart Sounds, Murmurs, Rhythm/Rate, Air Entry, Added Sounds, Chest Expansion), ensuring quick one-click charting.
+  // * Default Normal Selection: Set all parameters to default to standard normal clinical findings (e.g. S1 S2 normal heard, no murmurs, regular rhythm, clear air entry, symmetrical chest expansion) by default.
+  // * Removed Set Normal & Not Examined: Removed the redundant "Set Normal" button helpers (since normal findings are already selected by default) and removed the "Not Examined" options from all parameter map choices.
+  // * Dynamic State Synchronization: Implemented useEffect synchronization hooks that automatically compile the selected pill properties into standard text findings, populating the underlying cvsExam and rsExam string states.
+  const [cvsExam, setCvsExam] = useState('Heart Sounds: Normal (S1 S2), Murmurs: No Murmurs, Rhythm: Regular Rhythm');
+  const [rsExam, setRsExam] = useState('Air Entry: Bilateral Normal, Added Sounds: None (Clear), Chest Expansion: Symmetrical');
+  const [cvsHeartSounds, setCvsHeartSounds] = useState('Normal (S1 S2)');
+  const [cvsMurmurs, setCvsMurmurs] = useState('No Murmurs');
+  const [cvsRhythm, setCvsRhythm] = useState('Regular Rhythm');
+  const [rsAirEntry, setRsAirEntry] = useState('Bilateral Normal');
+  const [rsAddedSounds, setRsAddedSounds] = useState('None (Clear)');
+  const [rsExpansion, setRsExpansion] = useState('Symmetrical');
 
   // Step 6: Diagnosis
   const [diagnosisList, setDiagnosisList] = useState<string[]>([]);
@@ -193,21 +211,28 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
       setSymptomsList([]);
       setCustomSymptom('');
       setSymptomsNotes('');
-      setPastHistory([]);
-      setFamilyHistory([]);
+      setHistoryList([]);
       setCustomHistory('');
       setDiet('Veg');
       setSleep('Good');
       setLifestyle('Active');
+      setBowel('Normal');
+      setAppetite('Normal');
       setAllergies([]);
       setCustomAllergy('');
-      setHasOngoingMedication(false);
       setOngoingMedications([]);
       setNewOngoingName('');
       setNewOngoingDosage('');
       setNewOngoingFreq('1-0-1');
-      setCvsExam('');
-      setRsExam('');
+      setNewOngoingType('TAB');
+      setCvsExam('Heart Sounds: Normal (S1 S2), Murmurs: No Murmurs, Rhythm: Regular Rhythm');
+      setRsExam('Air Entry: Bilateral Normal, Added Sounds: None (Clear), Chest Expansion: Symmetrical');
+      setCvsHeartSounds('Normal (S1 S2)');
+      setCvsMurmurs('No Murmurs');
+      setCvsRhythm('Regular Rhythm');
+      setRsAirEntry('Bilateral Normal');
+      setRsAddedSounds('None (Clear)');
+      setRsExpansion('Symmetrical');
       setDiagnosisList([]);
       setCustomDiagnosis('');
       setDiagnosisNotes('');
@@ -225,6 +250,16 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
       setReferral('');
     }
   }, [consultingPatient]);
+
+  // Synchronize CVS selectable options to cvsExam string
+  useEffect(() => {
+    setCvsExam(`Heart Sounds: ${cvsHeartSounds}, Murmurs: ${cvsMurmurs}, Rhythm: ${cvsRhythm}`);
+  }, [cvsHeartSounds, cvsMurmurs, cvsRhythm]);
+
+  // Synchronize RS selectable options to rsExam string
+  useEffect(() => {
+    setRsExam(`Air Entry: ${rsAirEntry}, Added Sounds: ${rsAddedSounds}, Chest Expansion: ${rsExpansion}`);
+  }, [rsAirEntry, rsAddedSounds, rsExpansion]);
 
 
 
@@ -273,15 +308,15 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
   };
 
   const stepsConfig: StepConfig[] = [
-    { id: 1, label: 'Symptoms', icon: <AlertCircle size={16} /> },
-    { id: 2, label: 'Personal History', icon: <User size={16} /> },
-    { id: 3, label: 'Past/Family History', icon: <HistoryIcon size={16} /> },
-    { id: 4, label: 'Medication History', icon: <FileText size={16} /> },
-    { id: 5, label: 'Examination', icon: <Stethoscope size={16} /> },
-    { id: 6, label: 'Diagnosis', icon: <CheckCircle size={16} /> },
-    { id: 7, label: 'Investigation', icon: <ClipboardList size={16} /> },
-    { id: 8, label: 'Prescription', icon: <FileText size={16} /> },
-    { id: 9, label: 'Follow Up', icon: <CalendarDays size={16} /> },
+    { id: 1, label: 'Symptoms', icon: <AlertCircle size={18} /> },
+    { id: 2, label: 'Personal History', icon: <User size={18} /> },
+    { id: 3, label: 'Past/Family History', icon: <HistoryIcon size={18} /> },
+    { id: 4, label: 'Medication History', icon: <FileText size={18} /> },
+    { id: 5, label: 'Examination', icon: <Stethoscope size={18} /> },
+    { id: 6, label: 'Diagnosis', icon: <CheckCircle size={18} /> },
+    { id: 7, label: 'Investigation', icon: <ClipboardList size={18} /> },
+    { id: 8, label: 'Prescription', icon: <FileText size={18} /> },
+    { id: 9, label: 'Follow Up', icon: <CalendarDays size={18} /> },
   ];
 
   // Helper date calculator for follow up
@@ -466,7 +501,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm space-y-6">
-              {/* Custom history tag bar */}
+              {/* Search or Add Custom History Conditions */}
               <div>
                 <label className="block text-sm font-semibold text-text-dark mb-2">Search or Add Custom History Conditions</label>
                 <div className="flex gap-2">
@@ -474,13 +509,13 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-gray" size={16} />
                     <input 
                       type="text" 
-                      placeholder="Type a medical condition (e.g. Asthma, Tuberculosis)..."
+                      placeholder="Type a medical condition (e.g. Asthma, Tuberculosis) and press Add..."
                       value={customHistory}
                       onChange={e => setCustomHistory(e.target.value)}
                       onKeyDown={e => {
                         if (e.key === 'Enter' && customHistory.trim()) {
-                          if (!pastHistory.includes(customHistory.trim())) {
-                            setPastHistory(prev => [...prev, customHistory.trim()]);
+                          if (!historyList.some(h => h.name === customHistory.trim())) {
+                            setHistoryList(prev => [...prev, { name: customHistory.trim(), type: 'Self', notes: '' }]);
                           }
                           setCustomHistory('');
                         }
@@ -490,87 +525,126 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                   </div>
                   <button 
                     onClick={() => {
-                      if (customHistory.trim() && !pastHistory.includes(customHistory.trim())) {
-                        setPastHistory(prev => [...prev, customHistory.trim()]);
+                      if (customHistory.trim() && !historyList.some(h => h.name === customHistory.trim())) {
+                        setHistoryList(prev => [...prev, { name: customHistory.trim(), type: 'Self', notes: '' }]);
                         setCustomHistory('');
                       }
                     }}
-                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-1 cursor-pointer"
+                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-1 cursor-pointer transition-colors"
                   >
                     <Plus size={16} /> Add
                   </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Past Medical History */}
-                <div className="border border-border-color rounded-lg p-4 bg-gray-50/20">
-                  <h4 className="font-bold text-text-dark text-sm mb-3">Past Medical History (Patient)</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {["Diabetes", "Hypertension", "Thyroid", "Asthma", "Cardiac Issues", "Tuberculosis"].map(cond => {
-                      const active = pastHistory.includes(cond);
-                      return (
-                        <label key={cond} className="flex items-center gap-2 text-sm text-text-dark cursor-pointer font-medium">
-                          <input 
-                            type="checkbox"
-                            checked={active}
-                            onChange={() => {
-                              if (active) {
-                                setPastHistory(pastHistory.filter(h => h !== cond));
-                              } else {
-                                setPastHistory(prev => [...prev, cond]);
-                              }
-                            }}
-                            className="rounded border-gray-300 text-primary focus:ring-primary"
-                          />
-                          {cond}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
+              {/* Selected History Conditions list */}
+              <div>
+                <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-3">Selected History Conditions</p>
+                <div className="flex flex-col gap-3">
+                  {historyList.map(hist => (
+                    <div 
+                      key={hist.name} 
+                      className="border border-border-color rounded-xl p-4 bg-gray-50/50 hover:bg-white transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary/70 animate-pulse"></span>
+                        <span className="font-bold text-text-dark text-sm md:text-base">{hist.name}</span>
+                      </div>
+                      
+                      <div className="flex flex-wrap items-center gap-4">
+                        {/* Classification Selector */}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-text-gray font-semibold">Classification:</span>
+                          <div className="flex rounded-lg overflow-hidden border border-border-color">
+                            {(['Self', 'Family'] as const).map(t => {
+                              const isSelected = hist.type === t;
+                              const btnClass = isSelected 
+                                ? 'bg-primary text-white font-bold' 
+                                : 'hover:bg-primary/5 text-primary bg-white';
+                              return (
+                                <button
+                                  key={t}
+                                  type="button"
+                                  onClick={() => {
+                                    setHistoryList(prev => prev.map(h => h.name === hist.name ? { ...h, type: t } : h));
+                                  }}
+                                  className={`px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${btnClass}`}
+                                >
+                                  {t === 'Self' ? 'Patient (Self)' : 'Family Member'}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
 
-                {/* Family History */}
-                <div className="border border-border-color rounded-lg p-4 bg-gray-50/20">
-                  <h4 className="font-bold text-text-dark text-sm mb-3">Family Medical History</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {["Diabetes", "Hypertension", "Ischemic Heart Disease", "Asthma", "Cancer", "Stroke"].map(cond => {
-                      const active = familyHistory.includes(cond);
-                      return (
-                        <label key={cond} className="flex items-center gap-2 text-sm text-text-dark cursor-pointer font-medium">
+                        {/* Relation Input */}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-text-gray font-semibold">Relation:</span>
                           <input 
-                            type="checkbox"
-                            checked={active}
-                            onChange={() => {
-                              if (active) {
-                                setFamilyHistory(familyHistory.filter(h => h !== cond));
-                              } else {
-                                setFamilyHistory(prev => [...prev, cond]);
-                              }
+                            type="text" 
+                            disabled={hist.type === 'Self'}
+                            value={hist.type === 'Self' ? '' : (hist.notes || '')}
+                            onChange={e => {
+                              const val = e.target.value;
+                              setHistoryList(prev => prev.map(h => h.name === hist.name ? { ...h, notes: val } : h));
                             }}
-                            className="rounded border-gray-300 text-primary focus:ring-primary"
+                            placeholder={hist.type === 'Self' ? 'N/A (Patient)' : 'e.g. Father, Mother'}
+                            className={`border border-border-color rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-xs w-36 transition-all ${
+                              hist.type === 'Self' 
+                                ? 'bg-gray-50/70 text-text-gray/40 cursor-not-allowed border-dashed' 
+                                : 'bg-white text-text-dark'
+                            }`}
                           />
-                          {cond}
-                        </label>
-                      );
-                    })}
-                  </div>
+                        </div>
+
+                        {/* Delete Button */}
+                        <button 
+                          type="button"
+                          onClick={() => setHistoryList(historyList.filter(h => h.name !== hist.name))}
+                          className="text-text-gray hover:text-danger p-1.5 hover:bg-red-50 rounded-lg transition-all"
+                          title="Remove Condition"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {historyList.length === 0 && (
+                    <p className="text-sm text-text-gray italic p-2 bg-gray-50 border border-dashed border-border-color rounded-lg text-center">
+                      No past or family history conditions added yet. Use the search bar or quick recommendations to add.
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {/* Summarized selected history list */}
-              {pastHistory.length > 0 && (
-                <div>
-                  <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Recorded History Conditions</p>
-                  <div className="flex flex-wrap gap-2">
-                    {pastHistory.map(cond => (
-                      <span key={cond} className="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-md text-xs font-semibold">
-                        {cond}
-                      </span>
-                    ))}
-                  </div>
+              {/* Quick Recommendations Section */}
+              <div>
+                <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Quick Recommendations</p>
+                <div className="flex flex-wrap gap-2">
+                  {["Diabetes", "Hypertension", "Cardiac Issues", "Thyroid", "Asthma", "Tuberculosis", "Cancer", "Stroke"].map(rec => {
+                    const active = historyList.some(h => h.name === rec);
+                    return (
+                      <button
+                        key={rec}
+                        onClick={() => {
+                          if (active) {
+                            setHistoryList(historyList.filter(h => h.name !== rec));
+                          } else {
+                            setHistoryList(prev => [...prev, { name: rec, type: 'Self', notes: '' }]);
+                          }
+                        }}
+                        className={`text-xs px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                          active 
+                            ? 'bg-primary border-primary text-white font-bold' 
+                            : 'bg-white border-border-color text-text-dark hover:border-primary/50'
+                        }`}
+                      >
+                        {rec}
+                      </button>
+                    );
+                  })}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         );
@@ -580,12 +654,12 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
               <h3 className="text-lg font-bold text-text-dark">Personal History & Habits</h3>
-              <p className="text-sm text-text-gray mt-0.5">Lifestyle choices, dietary habits, and allergies.</p>
+              <p className="text-sm text-text-gray mt-0.5">Lifestyle choices, habits, dietary history, and allergies.</p>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm space-y-6">
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-text-dark mb-1.5">Diet Type</label>
                   <select 
@@ -622,6 +696,34 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     <option value="Active">Active (Regular exercise)</option>
                     <option value="Sedentary">Sedentary (Sit desk job)</option>
                     <option value="Moderate">Moderate physical labor</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-text-dark mb-1.5">Bowel Habits</label>
+                  <select 
+                    value={bowel} 
+                    onChange={e => setBowel(e.target.value)}
+                    className="w-full border border-border-color rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark bg-white text-sm font-semibold"
+                  >
+                    <option value="Normal">Normal</option>
+                    <option value="Constipated">Constipated</option>
+                    <option value="Irregular">Irregular</option>
+                    <option value="Diarrheal">Diarrheal</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-text-dark mb-1.5">Appetite</label>
+                  <select 
+                    value={appetite} 
+                    onChange={e => setAppetite(e.target.value)}
+                    className="w-full border border-border-color rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark bg-white text-sm font-semibold"
+                  >
+                    <option value="Normal">Normal</option>
+                    <option value="Increased">Increased</option>
+                    <option value="Decreased">Decreased / Poor</option>
+                    <option value="Variable">Variable</option>
                   </select>
                 </div>
               </div>
@@ -692,129 +794,143 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
 
             <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm space-y-6">
               
-              {/* Default State: "No Record" toggle */}
-              <div className="flex items-center gap-3 p-4 bg-gray-50 border border-border-color rounded-xl">
-                <input 
-                  type="checkbox"
-                  id="hasMed"
-                  checked={hasOngoingMedication}
-                  onChange={e => {
-                    setHasOngoingMedication(e.target.checked);
-                    if (!e.target.checked) setOngoingMedications([]);
-                  }}
-                  className="w-5 h-5 rounded text-primary focus:ring-primary border-gray-300"
-                />
-                <label htmlFor="hasMed" className="text-sm font-bold text-text-dark cursor-pointer">
-                  Patient is currently on active daily medications / drug prescriptions
-                </label>
-              </div>
-
-              {!hasOngoingMedication ? (
-                <div className="border-2 border-dashed border-border-color rounded-xl p-8 text-center bg-gray-50/50">
-                  <span className="inline-flex items-center justify-center p-3 bg-gray-100 rounded-full text-text-light mb-3">
-                    <CheckCircle size={28} />
-                  </span>
-                  <h4 className="font-bold text-text-dark text-base">No Medication Record</h4>
-                  <p className="text-sm text-text-gray mt-1 max-w-sm mx-auto">
-                    Patient has stated they are not consuming any regular medications currently.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Form to add ongoing medications */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-border-color rounded-xl bg-gray-50/20">
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-bold text-text-dark mb-1 uppercase">Drug Name</label>
-                      <input 
-                        type="text"
-                        placeholder="e.g. Metformin 500mg"
-                        value={newOngoingName}
-                        onChange={e => setNewOngoingName(e.target.value)}
-                        className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-text-dark mb-1 uppercase">Dosage</label>
-                      <input 
-                        type="text"
-                        placeholder="e.g. 1 Tablet"
-                        value={newOngoingDosage}
-                        onChange={e => setNewOngoingDosage(e.target.value)}
-                        className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white"
-                      />
-                    </div>
-                    <div className="flex gap-2 items-end">
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-text-dark mb-1 uppercase">Frequency</label>
-                        <select
-                          value={newOngoingFreq}
-                          onChange={e => setNewOngoingFreq(e.target.value)}
-                          className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-medium"
-                        >
-                          <option value="1-0-1">1-0-1 (Twice daily)</option>
-                          <option value="1-0-0">1-0-0 (Morning)</option>
-                          <option value="0-0-1">0-0-1 (Night)</option>
-                          <option value="1-1-1">1-1-1 (Thrice daily)</option>
-                        </select>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (newOngoingName.trim()) {
-                            const newMed: OngoingMedication = {
-                              id: `ongoing_${Date.now()}`,
-                              name: newOngoingName.trim(),
-                              dosage: newOngoingDosage.trim() || '1 Tab',
-                              frequency: newOngoingFreq
-                            };
-                            setOngoingMedications(prev => [...prev, newMed]);
-                            setNewOngoingName('');
-                            setNewOngoingDosage('');
-                          }
-                        }}
-                        className="bg-primary hover:bg-primary-dark text-white p-2.5 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <Plus size={18} />
-                      </button>
-                    </div>
+              {/* Form to add ongoing medications (Always Visible) */}
+              <div>
+                <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-3">Add Ongoing Medication</p>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 p-4 border border-border-color rounded-xl bg-gray-50/20">
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Type</label>
+                    <select
+                      value={newOngoingType}
+                      onChange={e => setNewOngoingType(e.target.value)}
+                      className="w-full border border-border-color rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-bold"
+                    >
+                      <option value="TAB">TAB</option>
+                      <option value="SYP">SYP</option>
+                      <option value="CAP">CAP</option>
+                      <option value="INJ">INJ</option>
+                      <option value="OINT">OINT</option>
+                      <option value="DROPS">DROPS</option>
+                      <option value="POWDER">POWDER</option>
+                      <option value="CREAM">CREAM</option>
+                      <option value="LOTION">LOTION</option>
+                    </select>
                   </div>
 
-                  {/* List of active ongoing medications */}
-                  {ongoingMedications.length > 0 ? (
-                    <div className="border border-border-color rounded-xl overflow-hidden">
-                      <table className="w-full text-left text-sm">
-                        <thead className="bg-bg-base border-b border-border-color text-text-gray font-bold text-xs uppercase tracking-wider">
-                          <tr>
-                            <th className="px-4 py-2.5">Drug Name</th>
-                            <th className="px-4 py-2.5">Dosage</th>
-                            <th className="px-4 py-2.5">Frequency</th>
-                            <th className="px-4 py-2.5 text-right">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border-color text-text-dark">
-                          {ongoingMedications.map(med => (
-                            <tr key={med.id} className="hover:bg-hover-bg/30">
-                              <td className="px-4 py-3 font-bold">{med.name}</td>
-                              <td className="px-4 py-3 text-text-gray">{med.dosage}</td>
-                              <td className="px-4 py-3 font-semibold text-primary">{med.frequency}</td>
-                              <td className="px-4 py-3 text-right">
-                                <button 
-                                  onClick={() => setOngoingMedications(ongoingMedications.filter(m => m.id !== med.id))}
-                                  className="text-text-light hover:text-danger p-1"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                  <div className="md:col-span-2">
+                    <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Drug Name</label>
+                    <input 
+                      type="text"
+                      list="ongoing-medicine-list"
+                      placeholder="e.g. Metformin 500mg"
+                      value={newOngoingName}
+                      onChange={e => setNewOngoingName(e.target.value)}
+                      className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-bold"
+                    />
+                    <datalist id="ongoing-medicine-list">
+                      {MEDICINE_CATALOG.map(m => <option key={m} value={m} />)}
+                    </datalist>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Dosage</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g. 1 Tablet"
+                      value={newOngoingDosage}
+                      onChange={e => setNewOngoingDosage(e.target.value)}
+                      className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2 flex gap-2 items-end">
+                    <div className="flex-1">
+                      <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Frequency</label>
+                      <select
+                        value={newOngoingFreq}
+                        onChange={e => setNewOngoingFreq(e.target.value)}
+                        className="w-full border border-border-color rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-medium"
+                      >
+                        <option value="1-0-1">1-0-1 (Twice daily)</option>
+                        <option value="1-1-1">1-1-1 (Thrice daily)</option>
+                        <option value="1-0-0">1-0-0 (Morning)</option>
+                        <option value="0-0-1">0-0-1 (Night)</option>
+                        <option value="1-1-0">1-1-0 (Morning/Noon)</option>
+                        <option value="0-1-1">0-1-1 (Noon/Night)</option>
+                        <option value="1-0-1-1">1-0-1-1 (Four times)</option>
+                        <option value="SOS">SOS (As needed)</option>
+                      </select>
                     </div>
-                  ) : (
-                    <p className="text-xs text-text-gray italic text-center py-2">Add medications using the form above.</p>
-                  )}
+                    
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (newOngoingName.trim()) {
+                          const newMed: OngoingMedication = {
+                            id: `ongoing_${Date.now()}`,
+                            name: `${newOngoingType} ${newOngoingName.trim()}`,
+                            dosage: newOngoingDosage.trim() || '1 Tab',
+                            frequency: newOngoingFreq
+                          };
+                          setOngoingMedications(prev => [...prev, newMed]);
+                          setNewOngoingName('');
+                          setNewOngoingDosage('');
+                          setNewOngoingType('TAB');
+                        }
+                      }}
+                      className="bg-primary hover:bg-primary-dark text-white px-5 rounded-lg font-bold shadow-sm transition-colors mb-px shrink-0 text-sm h-[38px] flex items-center justify-center cursor-pointer"
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
-              )}
+              </div>
+
+              {/* Recorded Ongoing Medications List */}
+              <div className="space-y-3">
+                <p className="text-xs font-bold text-text-gray uppercase tracking-wider">Recorded Medication List</p>
+                {ongoingMedications.length > 0 ? (
+                  <div className="border border-border-color rounded-xl overflow-hidden shadow-sm animate-in fade-in duration-200">
+                    <table className="w-full text-left text-sm">
+                      <thead className="bg-bg-base border-b border-border-color text-text-gray font-bold text-xs uppercase tracking-wider">
+                        <tr>
+                          <th className="px-4 py-2.5">Drug Name</th>
+                          <th className="px-4 py-2.5">Dosage</th>
+                          <th className="px-4 py-2.5">Frequency</th>
+                          <th className="px-4 py-2.5 text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border-color text-text-dark">
+                        {ongoingMedications.map(med => (
+                          <tr key={med.id} className="hover:bg-hover-bg/30 animate-in fade-in duration-150">
+                            <td className="px-4 py-3 font-bold">{med.name}</td>
+                            <td className="px-4 py-3 text-text-gray">{med.dosage}</td>
+                            <td className="px-4 py-3 font-semibold text-primary">{med.frequency}</td>
+                            <td className="px-4 py-3 text-right">
+                              <button 
+                                onClick={() => setOngoingMedications(ongoingMedications.filter(m => m.id !== med.id))}
+                                className="text-text-light hover:text-danger p-1"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-border-color rounded-xl p-8 text-center bg-gray-50/50 animate-in fade-in duration-200">
+                    <span className="inline-flex items-center justify-center p-3 bg-gray-100 rounded-full text-text-light mb-3">
+                      <CheckCircle size={28} />
+                    </span>
+                    <h4 className="font-bold text-text-dark text-base">No Medication Record</h4>
+                    <p className="text-sm text-text-gray mt-1 max-w-sm mx-auto">
+                      Patient has stated they are not consuming any regular medications currently.
+                    </p>
+                  </div>
+                )}
+              </div>
 
             </div>
           </div>
@@ -825,53 +941,197 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
               <h3 className="text-lg font-bold text-text-dark">Physical Examination</h3>
-              <p className="text-sm text-text-gray mt-0.5">Record findings for cardiovascular and respiratory systems.</p>
+              <p className="text-sm text-text-gray mt-0.5">Select clinical findings for cardiovascular and respiratory systems.</p>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm space-y-6">
               
-              {/* CVS Examination */}
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-bold text-text-dark uppercase tracking-wider flex items-center gap-1.5">
-                    <Stethoscope size={16} className="text-primary" /> Cardiovascular System (CVS)
-                  </label>
-                  <button 
-                    onClick={() => setCvsExam('S1 S2 heard, no murmurs.')}
-                    className="text-xs font-bold text-primary hover:underline"
-                  >
-                    Set Normal Values
-                  </button>
-                </div>
-                <textarea 
-                  rows={4}
-                  value={cvsExam}
-                  onChange={e => setCvsExam(e.target.value)}
-                  placeholder="Record heart sounds, rate, presence of murmurs..."
-                  className="w-full border border-border-color rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark bg-gray-50/20 text-sm resize-none"
-                />
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {/* CVS Examination Block */}
+                <div className="border border-border-color rounded-xl p-5 bg-gray-50/10 space-y-5 flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-center border-b border-border-color pb-3 mb-4">
+                      <label className="text-sm font-bold text-text-dark uppercase tracking-wider flex items-center gap-1.5">
+                        <Stethoscope size={18} className="text-primary" /> Cardiovascular (CVS)
+                      </label>
+                    </div>
 
-              {/* RS Examination */}
-              <div className="flex flex-col gap-2 border-t border-border-color pt-6">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-bold text-text-dark uppercase tracking-wider flex items-center gap-1.5">
-                    <HeartPulse size={16} className="text-purple-600" /> Respiratory System (RS)
-                  </label>
-                  <button 
-                    onClick={() => setRsExam('Bilateral clear air entry, no crepitations or rhonchi.')}
-                    className="text-xs font-bold text-primary hover:underline"
-                  >
-                    Set Normal Values
-                  </button>
+                    <div className="space-y-5">
+                      {/* Heart Sounds */}
+                      <div>
+                        <span className="block text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Heart Sounds</span>
+                        <div className="flex flex-wrap gap-2">
+                          {['Normal (S1 S2)', 'Muffled', 'Abnormal'].map(opt => {
+                            const active = cvsHeartSounds === opt;
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setCvsHeartSounds(opt)}
+                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                                  active 
+                                    ? 'bg-primary border-primary text-white font-bold shadow-sm' 
+                                    : 'bg-white border-border-color text-text-dark hover:border-primary/50'
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Murmurs */}
+                      <div>
+                        <span className="block text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Murmurs</span>
+                        <div className="flex flex-wrap gap-2">
+                          {['No Murmurs', 'Systolic Murmur', 'Diastolic Murmur'].map(opt => {
+                            const active = cvsMurmurs === opt;
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setCvsMurmurs(opt)}
+                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                                  active 
+                                    ? 'bg-primary border-primary text-white font-bold shadow-sm' 
+                                    : 'bg-white border-border-color text-text-dark hover:border-primary/50'
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Rhythm / Rate */}
+                      <div>
+                        <span className="block text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Rhythm / Rate</span>
+                        <div className="flex flex-wrap gap-2">
+                          {['Regular Rhythm', 'Irregular Rhythm', 'Tachycardia', 'Bradycardia'].map(opt => {
+                            const active = cvsRhythm === opt;
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setCvsRhythm(opt)}
+                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                                  active 
+                                    ? 'bg-primary border-primary text-white font-bold shadow-sm' 
+                                    : 'bg-white border-border-color text-text-dark hover:border-primary/50'
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Summary string footer */}
+                  {cvsExam && (
+                    <div className="mt-6 pt-4 border-t border-border-color text-xs text-text-gray italic">
+                      <strong>CVS Record:</strong> {cvsExam}
+                    </div>
+                  )}
                 </div>
-                <textarea 
-                  rows={4}
-                  value={rsExam}
-                  onChange={e => setRsExam(e.target.value)}
-                  placeholder="Record breath sounds, chest expansion, added sounds (creps, wheeze)..."
-                  className="w-full border border-border-color rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark bg-gray-50/20 text-sm resize-none"
-                />
+
+                {/* RS Examination Block */}
+                <div className="border border-border-color rounded-xl p-5 bg-gray-50/10 space-y-5 flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-center border-b border-border-color pb-3 mb-4">
+                      <label className="text-sm font-bold text-text-dark uppercase tracking-wider flex items-center gap-1.5">
+                        <HeartPulse size={18} className="text-purple-600" /> Respiratory (RS)
+                      </label>
+                    </div>
+
+                    <div className="space-y-5">
+                      {/* Air Entry */}
+                      <div>
+                        <span className="block text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Air Entry</span>
+                        <div className="flex flex-wrap gap-2">
+                          {['Bilateral Normal', 'Reduced Air Entry', 'Asymmetrical Air Entry'].map(opt => {
+                            const active = rsAirEntry === opt;
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setRsAirEntry(opt)}
+                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                                  active 
+                                    ? 'bg-primary border-primary text-white font-bold shadow-sm' 
+                                    : 'bg-white border-border-color text-text-dark hover:border-primary/50'
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Added Sounds */}
+                      <div>
+                        <span className="block text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Added Sounds</span>
+                        <div className="flex flex-wrap gap-2">
+                          {['None (Clear)', 'Crepitations present', 'Rhonchi / Wheeze present'].map(opt => {
+                            const active = rsAddedSounds === opt;
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setRsAddedSounds(opt)}
+                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                                  active 
+                                    ? 'bg-primary border-primary text-white font-bold shadow-sm' 
+                                    : 'bg-white border-border-color text-text-dark hover:border-primary/50'
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Chest Expansion */}
+                      <div>
+                        <span className="block text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Chest Expansion</span>
+                        <div className="flex flex-wrap gap-2">
+                          {['Symmetrical', 'Asymmetrical'].map(opt => {
+                            const active = rsExpansion === opt;
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setRsExpansion(opt)}
+                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                                  active 
+                                    ? 'bg-primary border-primary text-white font-bold shadow-sm' 
+                                    : 'bg-white border-border-color text-text-dark hover:border-primary/50'
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Summary string footer */}
+                  {rsExam && (
+                    <div className="mt-6 pt-4 border-t border-border-color text-xs text-text-gray italic">
+                      <strong>RS Record:</strong> {rsExam}
+                    </div>
+                  )}
+                </div>
+
               </div>
 
             </div>
@@ -1007,17 +1267,16 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm space-y-6">
-              
-              {/* Custom Search/Add test bar */}
+              {/* Search custom test bar */}
               <div>
-                <label className="block text-sm font-semibold text-text-dark mb-2">Search or Add Other Lab Investigation</label>
+                <label className="block text-sm font-semibold text-text-dark mb-2">Search or Add Custom Lab Tests</label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-gray" size={16} />
                     <input 
                       type="text" 
                       list="investigation-list"
-                      placeholder="Search or enter any specific test (e.g. Chest X-Ray, Urine Routine)..."
+                      placeholder="Type a test (e.g. CBC, Chest X-Ray) and press Add..."
                       value={customTest}
                       onChange={e => setCustomTest(e.target.value)}
                       onKeyDown={e => {
@@ -1042,61 +1301,74 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                         setCustomTest('');
                       }
                     }}
-                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-1 cursor-pointer"
+                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-1 cursor-pointer font-bold"
                   >
                     <Plus size={16} /> Add
                   </button>
                 </div>
               </div>
 
-              {/* Exact Catalog Checklist */}
+              {/* Tag selectors (Redesigned with card lists matching symptoms) */}
               <div>
-                <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-3">Clinic Test Directory</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {INVESTIGATION_CATALOG.map(test => {
-                    const active = selectedTests.includes(test);
+                <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-3">Selected Tests (Ordered)</p>
+                <div className="flex flex-col gap-3">
+                  {selectedTests.map(test => (
+                    <div 
+                      key={test} 
+                      className="border border-border-color rounded-xl p-4 bg-gray-50/50 hover:bg-white transition-all flex items-center justify-between gap-4"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary/70 animate-pulse"></span>
+                        <span className="font-bold text-text-dark text-sm md:text-base">{test}</span>
+                      </div>
+                      
+                      <button 
+                        type="button"
+                        onClick={() => setSelectedTests(selectedTests.filter(t => t !== test))}
+                        className="text-text-gray hover:text-danger p-1.5 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
+                        title="Remove Test"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                  {selectedTests.length === 0 && (
+                    <p className="text-sm text-text-gray italic p-2 bg-gray-50 border border-dashed border-border-color rounded-lg text-center">
+                      No tests selected yet. Use the search bar or quick recommendations to add.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Quick Recommendations Tags */}
+              <div>
+                <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Quick Recommendations</p>
+                <div className="flex flex-wrap gap-2">
+                  {INVESTIGATION_CATALOG.map(rec => {
+                    const active = selectedTests.includes(rec);
                     return (
-                      <label 
-                        key={test} 
-                        className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-all ${
+                      <button
+                        key={rec}
+                        type="button"
+                        onClick={() => {
+                          if (active) {
+                            setSelectedTests(selectedTests.filter(t => t !== rec));
+                          } else {
+                            setSelectedTests(prev => [...prev, rec]);
+                          }
+                        }}
+                        className={`text-xs px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
                           active 
-                            ? 'border-primary bg-primary/5 text-primary-dark font-bold' 
-                            : 'border-border-color hover:border-gray-300 text-text-dark'
+                            ? 'bg-primary border-primary text-white font-bold' 
+                            : 'bg-white border-border-color text-text-dark hover:border-primary/50'
                         }`}
                       >
-                        <span className="text-xs md:text-sm">{test}</span>
-                        <input 
-                          type="checkbox"
-                          checked={active}
-                          onChange={() => {
-                            if (active) {
-                              setSelectedTests(selectedTests.filter(t => t !== test));
-                            } else {
-                              setSelectedTests(prev => [...prev, test]);
-                            }
-                          }}
-                          className="rounded border-gray-300 text-primary focus:ring-primary"
-                        />
-                      </label>
+                        {rec}
+                      </button>
                     );
                   })}
                 </div>
               </div>
-
-              {/* Selected test list */}
-              {selectedTests.length > 0 && (
-                <div className="border-t border-border-color pt-4">
-                  <p className="text-xs font-bold text-text-gray uppercase tracking-wider mb-2">Selected Tests (Ordered)</p>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedTests.map(test => (
-                      <span key={test} className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
-                        🧪 {test}
-                        <button onClick={() => setSelectedTests(selectedTests.filter(t => t !== test))} className="text-indigo-500 font-bold ml-1">×</button>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         );
@@ -1223,7 +1495,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                         alert('Please fill out all prescription fields before adding.');
                       }
                     }}
-                    className="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-lg font-bold shadow-sm transition-colors mb-px shrink-0"
+                    className="bg-primary hover:bg-primary-dark text-white px-5 rounded-lg font-bold shadow-sm transition-colors mb-px shrink-0 text-sm h-[38px] flex items-center justify-center cursor-pointer"
                   >
                     Add
                   </button>
@@ -1643,9 +1915,9 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
               {/* Workspace Split: Sidebar Stepper vs Panel Content */}
               <div className="flex-1 flex overflow-hidden">
                 {/* Stepper Navigation Column */}
-                <div className="w-[200px] md:w-[240px] border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 overflow-y-auto">
+                <div className="w-[220px] md:w-[260px] border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 overflow-hidden">
                   <div className="p-3">
-                    <p className="text-[10px] font-bold text-text-gray uppercase tracking-wider px-3 mb-2">OPD Flow steps</p>
+                    <p className="text-xs font-bold text-text-gray uppercase tracking-wider px-3 mb-3">OPD Flow steps</p>
                     <div className="flex flex-col gap-1">
                       {stepsConfig.map(step => {
                         const isActive = activeStep === step.id;
@@ -1654,13 +1926,13 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                           <button
                             key={step.id}
                             onClick={() => setActiveStep(step.id)}
-                            className={`flex items-center px-3 py-2.5 rounded-lg text-xs font-semibold text-left transition-colors cursor-pointer w-full ${
+                            className={`flex items-center px-3 py-3 rounded-lg text-sm font-semibold text-left transition-colors cursor-pointer w-full ${
                               isActive 
-                                ? 'bg-primary text-white shadow-sm' 
+                                ? 'bg-primary text-white shadow-sm font-bold' 
                                 : 'text-text-dark hover:bg-hover-bg hover:text-primary'
                             }`}
                           >
-                            <div className="flex items-center gap-2 truncate">
+                            <div className="flex items-center gap-2.5 truncate">
                               {step.icon}
                               <span className="truncate">{step.id}. {step.label}</span>
                             </div>
