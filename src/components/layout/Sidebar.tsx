@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Stethoscope, 
   LayoutGrid, 
@@ -16,10 +16,18 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   isMobileMenuOpen?: boolean;
   setIsMobileMenuOpen?: (isOpen: boolean) => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
-export const Sidebar = React.memo(function Sidebar({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+export const Sidebar = React.memo(function Sidebar({ 
+  activeTab, 
+  setActiveTab, 
+  isMobileMenuOpen, 
+  setIsMobileMenuOpen,
+  isCollapsed = false,
+  onToggleCollapse 
+}: SidebarProps) {
 
   const navItems = [
     { icon: <LayoutGrid size={20} />, label: 'Dashboard' }
@@ -31,7 +39,7 @@ export const Sidebar = React.memo(function Sidebar({ activeTab, setActiveTab, is
   return (
     <aside className={`
       fixed inset-y-0 left-0 z-40 md:relative 
-      ${isCollapsed ? 'w-[80px]' : 'w-[260px]'} 
+      ${isCollapsed ? 'w-[80px]' : 'w-[260px] md:w-full'} h-full
       bg-white border-r border-border-color flex flex-col py-6 transition-all duration-300 shrink-0
       ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}
     `}>
@@ -93,7 +101,7 @@ export const Sidebar = React.memo(function Sidebar({ activeTab, setActiveTab, is
         </button>
         <button 
           className={navItemBaseClass} 
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={onToggleCollapse}
           title={isCollapsed ? "Expand" : "Collapse"}
         >
           {isCollapsed ? <PanelLeftOpen size={20} className="min-w-[20px]" /> : <PanelLeftClose size={20} className="min-w-[20px]" />}

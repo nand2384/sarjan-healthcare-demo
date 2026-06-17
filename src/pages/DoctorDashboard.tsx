@@ -19,6 +19,8 @@ import {
   Activity
 } from 'lucide-react';
 import { doctorsData, scheduledAppointments, type Patient, type ScheduledAppointment } from '../data/mockData';
+import { Panel, Group } from 'react-resizable-panels';
+import { ResizeHandle } from '../components/common/ResizeHandle';
 
 interface DoctorDashboardProps {
   activeTab: string;
@@ -1914,9 +1916,9 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
               )}
 
               {/* Workspace Split: Sidebar Stepper vs Panel Content */}
-              <div className="flex-1 flex overflow-hidden">
+              <Group orientation="horizontal" className="flex-1 flex overflow-hidden">
                 {/* Stepper Navigation Column */}
-                <div className="w-[220px] md:w-[260px] border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 overflow-y-auto">
+                <Panel defaultSize="20%" minSize="15%" maxSize="30%" className="border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 overflow-y-auto">
                   <div className="p-3">
                     <p className="text-xs font-bold text-text-gray uppercase tracking-wider px-3 mb-3">OPD Flow steps</p>
                     <div className="flex flex-col gap-1 mb-8">
@@ -1942,10 +1944,12 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                       })}
                     </div>
                   </div>
-                </div>
+                </Panel>
+
+                <ResizeHandle />
 
                 {/* Stepper active panel area */}
-                <div className="flex-1 flex flex-col justify-between bg-white overflow-hidden">
+                <Panel defaultSize="60%" minSize="30%" className="flex flex-col justify-between bg-white overflow-hidden">
                   <div className="flex-1 overflow-y-auto p-6">
                     {renderStepContent()}
                   </div>
@@ -1979,12 +1983,11 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                       </button>
                     )}
                   </div>
-                </div>
+                </Panel>
 
                 {/* Right Sidebar: Live EMR Summary */}
-                {/* Right Sidebar: Live EMR Summary */}
-                {/* Right Sidebar: Live EMR Summary */}
-                <div className="w-[240px] md:w-[280px] border-l border-border-color bg-gray-50 flex flex-col shrink-0 overflow-y-auto">
+                <ResizeHandle />
+                <Panel defaultSize="20%" minSize="15%" maxSize="40%" className="border-l border-border-color bg-gray-50 flex flex-col shrink-0 overflow-y-auto">
                   <div className="p-4 space-y-4">
                     <p className="text-sm font-extrabold text-text-dark uppercase tracking-wider border-b border-border-color pb-3 flex items-center gap-2 sticky top-0 bg-gray-50 pt-2 z-10">
                       <Activity size={18} className="text-primary" /> Live Context
@@ -2124,8 +2127,8 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     )}
                     
                   </div>
-                </div>
-              </div>
+                </Panel>
+              </Group>
 
             </div>
           ) : (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Stethoscope, 
   LayoutGrid, 
@@ -17,16 +17,18 @@ interface DoctorSidebarProps {
   setActiveTab: (tab: string) => void;
   isMobileMenuOpen?: boolean;
   setIsMobileMenuOpen?: (isOpen: boolean) => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export const DoctorSidebar: React.FC<DoctorSidebarProps> = ({ 
   activeTab, 
   setActiveTab, 
   isMobileMenuOpen, 
-  setIsMobileMenuOpen 
+  setIsMobileMenuOpen,
+  isCollapsed = false,
+  onToggleCollapse
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
   const navItems = [
     { icon: <LayoutGrid size={20} />, label: 'Dashboard' },
     { icon: <ClipboardList size={20} />, label: 'Consultation' },
@@ -42,8 +44,8 @@ export const DoctorSidebar: React.FC<DoctorSidebarProps> = ({
       fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out
       md:relative md:transform-none
       ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      ${isCollapsed ? 'w-[80px]' : 'w-[260px]'} 
-      bg-white border-r border-border-color flex flex-col py-6 shrink-0
+      ${isCollapsed ? 'w-[80px]' : 'w-[260px] md:w-full'} 
+      bg-white border-r border-border-color flex flex-col py-6 shrink-0 h-full
     `}>
       <div className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-6'} mb-10 overflow-hidden relative`}>
         <Stethoscope className="text-primary min-w-[28px]" size={28} />
@@ -81,7 +83,7 @@ export const DoctorSidebar: React.FC<DoctorSidebarProps> = ({
         </button>
         <button 
           className={navItemBaseClass} 
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={onToggleCollapse}
           title={isCollapsed ? "Expand" : "Collapse"}
         >
           {isCollapsed ? <PanelLeftOpen size={20} className="min-w-[20px]" /> : <PanelLeftClose size={20} className="min-w-[20px]" />}

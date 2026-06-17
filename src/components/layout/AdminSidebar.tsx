@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Stethoscope, 
   BarChart3, 
@@ -20,10 +20,18 @@ interface AdminSidebarProps {
   setActiveTab: (tab: string) => void;
   isMobileMenuOpen?: boolean;
   setIsMobileMenuOpen?: (isOpen: boolean) => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
-export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpen }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({ 
+  activeTab, 
+  setActiveTab, 
+  isMobileMenuOpen, 
+  setIsMobileMenuOpen,
+  isCollapsed = false,
+  onToggleCollapse
+}) => {
 
   const navGroups = [
     {
@@ -64,8 +72,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActive
       fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out
       md:relative md:transform-none
       ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      ${isCollapsed ? 'w-[80px]' : 'w-[260px]'} 
-      bg-white border-r border-black/5 flex flex-col py-6 shrink-0 h-full overflow-y-auto shadow-[4px_0_24px_-4px_rgba(0,0,0,0.02)]
+      ${isCollapsed ? 'w-[80px]' : 'w-[260px] md:w-full'} 
+      bg-white border-r border-border-color flex flex-col py-6 shrink-0 h-full overflow-y-auto shadow-[4px_0_24px_-4px_rgba(0,0,0,0.02)]
     `}>
       <div className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-6'} mb-8 overflow-hidden relative shrink-0`}>
         <div className="bg-primary/10 p-2 rounded-xl text-primary shrink-0">
@@ -125,7 +133,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActive
         </button>
         <button 
           className={navItemBaseClass} 
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={onToggleCollapse}
           title={isCollapsed ? "Expand" : "Collapse"}
         >
           {isCollapsed ? <PanelLeftOpen size={20} className="min-w-[20px]" /> : <PanelLeftClose size={20} className="min-w-[20px]" />}

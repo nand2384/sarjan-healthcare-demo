@@ -1,12 +1,29 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { DoctorSidebar } from '../components/layout/DoctorSidebar';
 import { Header } from '../components/layout/Header';
 import { DoctorDashboard } from '../pages/DoctorDashboard';
 import { MyPatients } from '../pages/MyPatients';
+import { Panel, Group, type PanelImperativeHandle } from 'react-resizable-panels';
+import { ResizeHandle } from '../components/common/ResizeHandle';
 
 export const DoctorApp = () => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const sidebarPanelRef = useRef<PanelImperativeHandle>(null);
+
+  const toggleCollapse = () => {
+    const panel = sidebarPanelRef.current;
+    if (panel) {
+      if (isCollapsed) {
+        panel.expand();
+        setIsCollapsed(false);
+      } else {
+        panel.collapse();
+        setIsCollapsed(true);
+      }
+    }
+  };
 
   return (
     <div className="flex h-screen w-screen overflow-hidden relative">
@@ -18,30 +35,84 @@ export const DoctorApp = () => {
         />
       )}
       
-      <DoctorSidebar 
-        activeTab={activeTab} 
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          setIsMobileMenuOpen(false);
-        }} 
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-      />
+      {/* Mobile Sidebar - Rendered outside of Panels so it can be fixed/absolute correctly */}
+      <div className="md:hidden">
+        <DoctorSidebar 
+          activeTab={activeTab} 
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            setIsMobileMenuOpen(false);
+          }} 
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          isCollapsed={false}
+        />
+      </div>
 
-      <main className="flex-1 flex flex-col overflow-hidden w-full">
+      <Group orientation="horizontal" className="hidden md:flex w-full h-full">
+        <Panel 
+          panelRef={sidebarPanelRef}
+          defaultSize={260} 
+          minSize={260} 
+          maxSize={400}
+          collapsible={true}
+          collapsedSize={80}
+          onResize={(size) => {
+            if (size.inPixels <= 100 && !isCollapsed) {
+              setIsCollapsed(true);
+            } else if (size.inPixels > 100 && isCollapsed) {
+              setIsCollapsed(false);
+            }
+          }}
+          className="transition-all duration-300 ease-in-out"
+        >
+          <DoctorSidebar 
+            activeTab={activeTab} 
+            setActiveTab={(tab) => {
+              setActiveTab(tab);
+              setIsMobileMenuOpen(false);
+            }} 
+            isCollapsed={isCollapsed}
+            onToggleCollapse={toggleCollapse}
+          />
+        </Panel>
+        
+        <ResizeHandle className="hidden md:flex" />
+
+        <Panel minSize={50} className="flex flex-col h-full overflow-hidden w-full bg-gray-50/30">
+          <Header 
+            userName="SJ" 
+            userRole="Dr. Sarah Jenkins" 
+            onMenuClick={() => setIsMobileMenuOpen(true)}
+          />
+          
+          <main className="flex-1 overflow-hidden relative">
+            {activeTab === 'My Patients' ? (
+              <MyPatients />
+            ) : (
+              <DoctorDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
+            )}
+          </main>
+        </Panel>
+      </Group>
+
+      {/* Main content for mobile */}
+      <main className="md:hidden flex-1 flex flex-col overflow-hidden w-full h-full bg-gray-50/30">
         <Header 
           userName="SJ" 
           userRole="Dr. Sarah Jenkins" 
           onMenuClick={() => setIsMobileMenuOpen(true)}
         />
         
-        {/* Render page based on activeTab */}
-        {activeTab === 'My Patients' ? (
-          <MyPatients />
-        ) : (
-          <DoctorDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
-        )}
+        <div className="flex-1 overflow-hidden relative">
+          {activeTab === 'My Patients' ? (
+            <MyPatients />
+          ) : (
+            <DoctorDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
+          )}
+        </div>
       </main>
+
     </div>
   );
 };
