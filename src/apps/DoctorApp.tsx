@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DoctorSidebar } from '../components/layout/DoctorSidebar';
 import { Header } from '../components/layout/Header';
 import { DoctorDashboard } from '../pages/DoctorDashboard';
+import { MyPatients } from '../pages/MyPatients';
 
 export const DoctorApp = () => {
   const [activeTab, setActiveTab] = useState('Dashboard');
@@ -35,7 +36,11 @@ export const DoctorApp = () => {
         />
         
         {/* Render page based on activeTab */}
-        <DoctorDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
+        {activeTab === 'My Patients' ? (
+          <MyPatients />
+        ) : (
+          <DoctorDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
+        )}
       </main>
     </div>
   );

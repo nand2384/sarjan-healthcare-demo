@@ -49,6 +49,33 @@ const INVESTIGATION_CATALOG = [
   "PPBS"
 ];
 
+const DIAGNOSIS_CATALOG = [
+  "Acute Viral Fever",
+  "Essential Hypertension",
+  "Type 2 Diabetes Mellitus",
+  "Gastroesophageal Reflux Disease (GERD)",
+  "Upper Respiratory Tract Infection (URTI)",
+  "Acute Bronchitis",
+  "Migraine",
+  "Osteoarthritis",
+  "Allergic Rhinitis"
+];
+
+const MEDICINE_CATALOG = [
+  "Paracetamol 500mg",
+  "Paracetamol 650mg",
+  "Amoxicillin 500mg",
+  "Azithromycin 500mg",
+  "Metformin 500mg",
+  "Pantoprazole 40mg",
+  "Cetirizine 10mg",
+  "Aspirin 75mg",
+  "Atorvastatin 20mg",
+  "Amlodipine 5mg",
+  "Losartan 50mg",
+  "Ibuprofen 400mg"
+];
+
 interface SymptomItem {
   name: string;
   duration: string;
@@ -83,7 +110,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
     null
   );
 
-  const [waitingQueue, setWaitingQueue] = useState<Patient[]>([
+  const [waitingQueue] = useState<Patient[]>([
     ...doctor.advanceQueue.filter(p => p.status === 'waiting'),
     ...doctor.walkInQueue.filter(p => p.status === 'waiting')
   ]);
@@ -92,6 +119,9 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
     ...doctor.advanceQueue.filter(p => p.status === 'completed'),
     ...doctor.walkInQueue.filter(p => p.status === 'completed')
   ]);
+
+  // Receptionist Integration State
+  const [isAvailable, setIsAvailable] = useState(false);
 
   // Consultation Wizard Active Step
   const [activeStep, setActiveStep] = useState<StepId>(1);
@@ -190,14 +220,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
     }
   }, [consultingPatient]);
 
-  const handleStartConsultation = (patient: Patient) => {
-    if (consultingPatient) {
-      setWaitingQueue(prev => [...prev, { ...consultingPatient, status: 'waiting' }]);
-    }
-    setConsultingPatient({ ...patient, status: 'in-consultation' });
-    setWaitingQueue(prev => prev.filter(p => p.id !== patient.id));
-    setActiveTab('Consultation');
-  };
+
 
   const handleCompleteConsultation = () => {
     if (!consultingPatient) return;
@@ -235,15 +258,12 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
     setCompletedPatients(prev => [...prev, updatedPatient]);
     alert(`Consultation complete for ${consultingPatient.name}! Prescribed ${prescribedMeds.length} medications. Refer to Checkout billing.`);
     
-    // Load next patient automatically if any are waiting
-    if (waitingQueue.length > 0) {
-      const next = waitingQueue[0];
-      setConsultingPatient({ ...next, status: 'in-consultation' });
-      setWaitingQueue(prev => prev.slice(1));
-    } else {
-      setConsultingPatient(null);
-      setActiveTab('Dashboard');
-    }
+    // Do not load next patient automatically. 
+    // Go to Dashboard so the doctor can manually click "I'm ready" when they are prepared.
+    setConsultingPatient(null);
+    setIsAvailable(false);
+    setActiveTab('Dashboard');
+    setActiveStep(1);
   };
 
   const stepsConfig: StepConfig[] = [
@@ -623,6 +643,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     />
                   </div>
                   <button 
+                    type="button"
                     onClick={() => {
                       if (customAllergy.trim() && !allergies.includes(customAllergy.trim())) {
                         setAllergies(prev => [...prev, customAllergy.trim()]);
@@ -731,6 +752,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                         </select>
                       </div>
                       <button
+                        type="button"
                         onClick={() => {
                           if (newOngoingName.trim()) {
                             const newMed: OngoingMedication = {
@@ -868,6 +890,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-gray" size={16} />
                     <input 
                       type="text" 
+                      list="diagnosis-list"
                       placeholder="Type a diagnosis (e.g. Hypertension, Gastritis) and click Add..."
                       value={customDiagnosis}
                       onChange={e => setCustomDiagnosis(e.target.value)}
@@ -881,8 +904,12 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                       }}
                       className="w-full border border-border-color rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm"
                     />
+                    <datalist id="diagnosis-list">
+                      {DIAGNOSIS_CATALOG.map(d => <option key={d} value={d} />)}
+                    </datalist>
                   </div>
                   <button 
+                    type="button"
                     onClick={() => {
                       if (customDiagnosis.trim() && !diagnosisList.includes(customDiagnosis.trim())) {
                         setDiagnosisList(prev => [...prev, customDiagnosis.trim()]);
@@ -983,6 +1010,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-gray" size={16} />
                     <input 
                       type="text" 
+                      list="investigation-list"
                       placeholder="Search or enter any specific test (e.g. Chest X-Ray, Urine Routine)..."
                       value={customTest}
                       onChange={e => setCustomTest(e.target.value)}
@@ -996,8 +1024,12 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                       }}
                       className="w-full border border-border-color rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm"
                     />
+                    <datalist id="investigation-list">
+                      {INVESTIGATION_CATALOG.map(t => <option key={t} value={t} />)}
+                    </datalist>
                   </div>
                   <button 
+                    type="button"
                     onClick={() => {
                       if (customTest.trim() && !selectedTests.includes(customTest.trim())) {
                         setSelectedTests(prev => [...prev, customTest.trim()]);
@@ -1078,11 +1110,15 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                   <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Drug Name</label>
                   <input 
                     type="text"
+                    list="medicine-list"
                     placeholder="e.g. Paracetamol 650mg"
                     value={newMedName}
                     onChange={e => setNewMedName(e.target.value)}
                     className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-bold"
                   />
+                  <datalist id="medicine-list">
+                    {MEDICINE_CATALOG.map(m => <option key={m} value={m} />)}
+                  </datalist>
                 </div>
                 
                 <div>
@@ -1141,6 +1177,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                   </div>
                   
                   <button
+                    type="button"
                     onClick={() => {
                       if (newMedName.trim()) {
                         const newRx: PrescribedMedication = {
@@ -1402,8 +1439,35 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     </button>
                   </div>
                 ) : (
-                  <div className="border border-dashed border-border-color rounded-xl p-5 text-center bg-gray-50/50">
-                    <p className="text-sm text-text-gray italic font-medium">No patient currently in EMR session.</p>
+                  <div className="border border-dashed border-border-color rounded-xl p-6 text-center bg-gray-50/50 flex flex-col items-center justify-center gap-3">
+                    {isAvailable ? (
+                      <>
+                        <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-2 animate-bounce">
+                          <CheckCircle size={24} />
+                        </div>
+                        <div>
+                          <p className="font-bold text-green-700 text-lg tracking-tight">You are Available</p>
+                          <p className="text-xs text-text-gray mt-1">Waiting for the Receptionist to assign the next patient...</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center mb-2">
+                          <User size={24} />
+                        </div>
+                        <p className="text-sm text-text-gray font-medium mb-2">No patient currently in EMR session.</p>
+                        <button 
+                          onClick={() => {
+                            setIsAvailable(true);
+                            // Simulating a toast notification for now
+                            alert("Receptionist Notified: You are now available for the next patient.");
+                          }}
+                          className="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                        >
+                          <CheckCircle size={16} /> I'm Ready for Next Patient
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -1417,7 +1481,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                   {waitingQueue.slice(0, 3).map((patient, index) => (
                     <div 
                       key={patient.id} 
-                      className="border border-border-color rounded-lg p-3 bg-gray-50/50 hover:bg-white hover:border-primary transition-all flex items-center justify-between"
+                      className="border border-border-color rounded-lg p-3 bg-gray-50/50 flex items-center justify-between"
                     >
                       <div>
                         <h5 className="font-bold text-text-dark text-sm">{index + 1}. {patient.name}</h5>
@@ -1425,12 +1489,9 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                           <span className="capitalize">{patient.token ? `Token: ${patient.token}` : patient.type}</span> • {patient.waitTime}m wait
                         </p>
                       </div>
-                      <button 
-                        onClick={() => handleStartConsultation(patient)}
-                        className="bg-primary/10 text-primary hover:bg-primary hover:text-white px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-0.5 cursor-pointer"
-                      >
-                        Call <ChevronRight size={12} />
-                      </button>
+                      <span className="text-xs text-text-light font-medium bg-white border border-border-color px-2 py-1 rounded">
+                        Waiting
+                      </span>
                     </div>
                   ))}
                   {waitingQueue.length === 0 && (
@@ -1586,10 +1647,11 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                   </div>
                   
                   {/* Stepper Footer Controls */}
-                  <div className="border-t border-border-color px-6 py-4 bg-white flex justify-between shrink-0">
+                  <div className="border-t border-border-color pl-6 pr-20 py-4 bg-white flex justify-between shrink-0">
                     <button
+                      type="button"
                       disabled={activeStep === 1}
-                      onClick={() => setActiveStep(prev => (prev - 1) as StepId)}
+                      onClick={() => setActiveStep(prev => (Number(prev) - 1) as StepId)}
                       className="flex items-center gap-1.5 px-4 py-2 border border-border-color rounded-lg text-xs font-bold text-text-dark hover:bg-hover-bg disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronLeft size={16} /> Back
@@ -1597,15 +1659,17 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                     
                     {activeStep === 9 ? (
                       <button
+                        type="button"
                         onClick={handleCompleteConsultation}
-                        className="flex items-center gap-1.5 px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-bold shadow-md transition-colors cursor-pointer"
+                        className="flex items-center gap-1.5 px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-bold shadow-md transition-colors cursor-pointer relative z-40"
                       >
                         <CheckCircle size={16} /> Complete & Generate Rx
                       </button>
                     ) : (
                       <button
-                        onClick={() => setActiveStep(prev => (prev + 1) as StepId)}
-                        className="flex items-center gap-1.5 px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-bold shadow-sm transition-colors cursor-pointer"
+                        type="button"
+                        onClick={() => setActiveStep(prev => (Number(prev) + 1) as StepId)}
+                        className="flex items-center gap-1.5 px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-bold shadow-sm transition-colors cursor-pointer relative z-40"
                       >
                         Next Step <ChevronRight size={16} />
                       </button>

@@ -19,7 +19,7 @@ function App() {
       {currentRole === 'patient' && <div className="flex h-screen items-center justify-center text-xl text-gray-500 font-medium">Patient Dashboard (Coming Soon)</div>}
 
       {/* Developer Role Switcher (Floating Widget) */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end pointer-events-none">
         
         {/* Menu Popover */}
         <div className={`mb-3 bg-white border border-border-color shadow-2xl rounded-2xl p-3 flex flex-col gap-2 min-w-[200px] origin-bottom-right transition-all duration-300 ease-out ${
@@ -50,7 +50,7 @@ function App() {
         {/* Floating Action Button */}
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-12 h-12 bg-white border border-border-color rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 ${
+          className={`pointer-events-auto w-12 h-12 bg-white border border-border-color rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 ${
             isOpen ? 'rotate-90 text-primary shadow-xl bg-gray-50' : 'text-text-gray hover:text-primary hover:-translate-y-1 hover:shadow-xl'
           }`}
         >

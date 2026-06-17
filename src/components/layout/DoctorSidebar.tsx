@@ -8,7 +8,8 @@ import {
   PanelLeftOpen, 
   LogOut, 
   X,
-  ClipboardList
+  ClipboardList,
+  Users
 } from 'lucide-react';
 
 interface DoctorSidebarProps {
@@ -29,6 +30,7 @@ export const DoctorSidebar: React.FC<DoctorSidebarProps> = ({
   const navItems = [
     { icon: <LayoutGrid size={20} />, label: 'Dashboard' },
     { icon: <ClipboardList size={20} />, label: 'Consultation' },
+    { icon: <Users size={20} />, label: 'My Patients' },
     { icon: <BarChart3 size={20} />, label: 'Insights' },
   ];
 
