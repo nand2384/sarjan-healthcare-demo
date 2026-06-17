@@ -167,10 +167,11 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
 
   // Step 8: Prescription
   const [prescribedMeds, setPrescribedMeds] = useState<PrescribedMedication[]>([]);
+  const [newMedType, setNewMedType] = useState('TAB');
   const [newMedName, setNewMedName] = useState('');
-  const [newMedDosage, setNewMedDosage] = useState('1 Tablet');
-  const [newMedFreq, setNewMedFreq] = useState('1-0-1');
-  const [newMedDuration, setNewMedDuration] = useState('5');
+  const [newMedDosage, setNewMedDosage] = useState('');
+  const [newMedFreq, setNewMedFreq] = useState('');
+  const [newMedDuration, setNewMedDuration] = useState('');
   const [newMedInstructions, setNewMedInstructions] = useState('After Food');
   const [prescriptionAdvice, setPrescriptionAdvice] = useState('');
 
@@ -213,7 +214,12 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
       setSelectedTests([]);
       setCustomTest('');
       setPrescribedMeds([]);
+      setNewMedType('TAB');
       setNewMedName('');
+      setNewMedDosage('');
+      setNewMedFreq('');
+      setNewMedDuration('');
+      setNewMedInstructions('After Food');
       setPrescriptionAdvice('');
       setFollowUpDays(5);
       setReferral('');
@@ -1099,13 +1105,32 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
         return (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <h3 className="text-lg font-bold text-text-dark">Structured Prescription</h3>
+<h3 className="text-lg font-bold text-text-dark">Structured Prescription</h3>
               <p className="text-sm text-text-gray mt-0.5">Build the pharmacy drug list and add clinical instructions.</p>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-border-color shadow-sm space-y-6">
               {/* Add Drug Form */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 p-4 border border-border-color rounded-xl bg-gray-50/20">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-4 p-4 border border-border-color rounded-xl bg-gray-50/20">
+                <div>
+                  <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Type</label>
+                  <select
+                    value={newMedType}
+                    onChange={e => setNewMedType(e.target.value)}
+                    className="w-full border border-border-color rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-bold"
+                  >
+                    <option value="TAB">TAB</option>
+                    <option value="SYP">SYP</option>
+                    <option value="CAP">CAP</option>
+                    <option value="INJ">INJ</option>
+                    <option value="OINT">OINT</option>
+                    <option value="DROPS">DROPS</option>
+                    <option value="POWDER">POWDER</option>
+                    <option value="CREAM">CREAM</option>
+                    <option value="LOTION">LOTION</option>
+                  </select>
+                </div>
+
                 <div className="md:col-span-2">
                   <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Drug Name</label>
                   <input 
@@ -1137,8 +1162,9 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                   <select
                     value={newMedFreq}
                     onChange={e => setNewMedFreq(e.target.value)}
-                    className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-medium"
+                    className="w-full border border-border-color rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white font-medium"
                   >
+                    <option value="">Select</option>
                     <option value="1-0-1">1-0-1 (Twice daily)</option>
                     <option value="1-1-1">1-1-1 (Thrice daily)</option>
                     <option value="1-0-0">1-0-0 (Morning)</option>
@@ -1151,17 +1177,17 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Duration (Days)</label>
+                  <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Duration</label>
                   <input 
-                    type="number"
+                    type="text"
                     value={newMedDuration}
                     onChange={e => setNewMedDuration(e.target.value)}
-                    placeholder="5"
+                    placeholder="e.g. 5 Days"
                     className="w-full border border-border-color rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-dark text-sm bg-white"
                   />
                 </div>
 
-                <div className="flex gap-2 items-end">
+                <div className="md:col-span-2 flex gap-2 items-end">
                   <div className="flex-1">
                     <label className="block text-[10px] font-bold text-text-dark mb-1 uppercase">Instructions</label>
                     <select
@@ -1179,22 +1205,27 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                   <button
                     type="button"
                     onClick={() => {
-                      if (newMedName.trim()) {
+                      if (newMedName.trim() && newMedDosage.trim() && newMedFreq.trim() && newMedDuration.trim()) {
                         const newRx: PrescribedMedication = {
                           id: `rx_${Date.now()}`,
-                          name: newMedName.trim(),
-                          dosage: newMedDosage.trim() || '1 Tablet',
+                          name: `${newMedType} ${newMedName.trim()}`,
+                          dosage: newMedDosage.trim(),
                           frequency: newMedFreq,
-                          duration: newMedDuration.trim() || '5',
+                          duration: newMedDuration.trim(),
                           instructions: newMedInstructions
                         };
-                        setPrescribedMeds(prev => [...prev, newRx]);
+                        setPrescribedMeds([...prescribedMeds, newRx]);
                         setNewMedName('');
+                        setNewMedDosage('');
+                        setNewMedFreq('');
+                        setNewMedDuration('');
+                      } else {
+                        alert('Please fill out all prescription fields before adding.');
                       }
                     }}
-                    className="bg-primary hover:bg-primary-dark text-white p-2.5 rounded-lg transition-colors cursor-pointer"
+                    className="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-lg font-bold shadow-sm transition-colors mb-px shrink-0"
                   >
-                    <Plus size={18} />
+                    Add
                   </button>
                 </div>
               </div>
