@@ -15,7 +15,8 @@ import {
   Trash2,
   Search,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  Activity
 } from 'lucide-react';
 import { doctorsData, scheduledAppointments, type Patient, type ScheduledAppointment } from '../data/mockData';
 
@@ -1915,10 +1916,10 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
               {/* Workspace Split: Sidebar Stepper vs Panel Content */}
               <div className="flex-1 flex overflow-hidden">
                 {/* Stepper Navigation Column */}
-                <div className="w-[220px] md:w-[260px] border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 overflow-hidden">
+                <div className="w-[220px] md:w-[260px] border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 overflow-y-auto">
                   <div className="p-3">
                     <p className="text-xs font-bold text-text-gray uppercase tracking-wider px-3 mb-3">OPD Flow steps</p>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 mb-8">
                       {stepsConfig.map(step => {
                         const isActive = activeStep === step.id;
                         
@@ -1977,6 +1978,151 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                         Next Step <ChevronRight size={16} />
                       </button>
                     )}
+                  </div>
+                </div>
+
+                {/* Right Sidebar: Live EMR Summary */}
+                {/* Right Sidebar: Live EMR Summary */}
+                {/* Right Sidebar: Live EMR Summary */}
+                <div className="w-[240px] md:w-[280px] border-l border-border-color bg-gray-50 flex flex-col shrink-0 overflow-y-auto">
+                  <div className="p-4 space-y-4">
+                    <p className="text-sm font-extrabold text-text-dark uppercase tracking-wider border-b border-border-color pb-3 flex items-center gap-2 sticky top-0 bg-gray-50 pt-2 z-10">
+                      <Activity size={18} className="text-primary" /> Live Context
+                    </p>
+                    
+                    {(symptomsList.length > 0 || symptomsNotes) && (
+                      <div className="bg-red-50 border border-red-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-red-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <AlertCircle size={14} /> Symptoms
+                        </p>
+                        {symptomsList.length > 0 && (
+                          <ul className="text-sm font-medium text-red-900 space-y-1.5">
+                            {symptomsList.map((s, i) => <li key={i} className="flex gap-1.5"><span className="text-red-500 mt-0.5">•</span> <span className="leading-tight">{s.name} {s.duration && <span className="text-red-700/70">({s.duration})</span>}</span></li>)}
+                          </ul>
+                        )}
+                        {symptomsNotes && <p className="text-xs text-red-800 italic mt-2 leading-tight">"{symptomsNotes}"</p>}
+                      </div>
+                    )}
+
+                    {(historyList.length > 0 || customHistory) && (
+                      <div className="bg-purple-50 border border-purple-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-purple-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <HistoryIcon size={14} /> Medical History
+                        </p>
+                        <ul className="text-sm font-medium text-purple-900 space-y-1.5">
+                          {historyList.map((h, i) => <li key={i} className="flex gap-1.5"><span className="text-purple-500 mt-0.5">•</span> <span className="leading-tight">{h.type}: {h.name} {h.notes && <span className="text-purple-700/70">({h.notes})</span>}</span></li>)}
+                        </ul>
+                        {customHistory && <p className="text-xs text-purple-800 italic mt-2 leading-tight">"{customHistory}"</p>}
+                      </div>
+                    )}
+
+                    {/* Personal History */}
+                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-blue-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <User size={14} /> Personal History
+                        </p>
+                        <div className="text-sm font-medium text-blue-900 space-y-1.5">
+                          <p>Diet: <span className="text-blue-700">{diet}</span></p>
+                          <p>Sleep: <span className="text-blue-700">{sleep}</span></p>
+                          <p>Lifestyle: <span className="text-blue-700">{lifestyle}</span></p>
+                        </div>
+                        {(allergies.length > 0 || customAllergy) && (
+                          <div className="mt-3 pt-2 border-t border-blue-200">
+                            <p className="text-xs text-red-600 font-bold uppercase mb-1.5">Allergies</p>
+                            <ul className="text-sm font-medium text-red-700 space-y-1">
+                              {allergies.map((a, i) => <li key={i}>• {a}</li>)}
+                              {customAllergy && <li>• {customAllergy}</li>}
+                            </ul>
+                          </div>
+                        )}
+                    </div>
+
+                    {/* Ongoing Meds */}
+                    {ongoingMedications.length > 0 && (
+                      <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-amber-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <TrendingUp size={14} /> Ongoing Meds
+                        </p>
+                        <ul className="text-sm font-medium text-amber-900 space-y-1.5">
+                          {ongoingMedications.map((m, i) => <li key={i} className="flex gap-1.5"><span className="text-amber-500 mt-0.5">•</span> <span className="leading-tight">{m.name} <span className="text-amber-700">({m.dosage})</span></span></li>)}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Examination */}
+                    {(cvsExam || rsExam) && (
+                      <div className="bg-teal-50 border border-teal-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-teal-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <Stethoscope size={14} /> Examination
+                        </p>
+                        <div className="text-sm font-medium text-teal-900 space-y-1.5">
+                          {cvsExam && <p><span className="font-bold text-teal-700">CVS:</span> {cvsExam}</p>}
+                          {rsExam && <p><span className="font-bold text-teal-700">RS:</span> {rsExam}</p>}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {(diagnosisList.length > 0 || diagnosisNotes) && (
+                      <div className="bg-green-50 border border-green-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-green-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <CheckCircle size={14} /> Diagnosis
+                        </p>
+                        {diagnosisList.length > 0 && (
+                          <ul className="text-sm font-medium text-green-900 space-y-1.5">
+                            {diagnosisList.map((d, i) => <li key={i} className="flex gap-1.5"><span className="text-green-500 mt-0.5">•</span> <span className="leading-tight">{d}</span></li>)}
+                          </ul>
+                        )}
+                        {diagnosisNotes && <p className="text-xs text-green-800 italic mt-2 leading-tight">"{diagnosisNotes}"</p>}
+                      </div>
+                    )}
+                    
+                    {(selectedTests.length > 0 || customTest) && (
+                      <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-indigo-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <ClipboardList size={14} /> Investigations
+                        </p>
+                        {selectedTests.length > 0 && (
+                          <ul className="text-sm font-medium text-indigo-900 space-y-1.5">
+                            {selectedTests.map((t, i) => <li key={i} className="flex gap-1.5"><span className="text-indigo-500 mt-0.5">•</span> <span className="leading-tight">{t}</span></li>)}
+                          </ul>
+                        )}
+                        {customTest && <p className="text-xs text-indigo-800 italic mt-2 leading-tight">"{customTest}"</p>}
+                      </div>
+                    )}
+
+                    {/* Prescribed Meds */}
+                    {(prescribedMeds.length > 0 || prescriptionAdvice) && (
+                      <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-emerald-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <FileText size={14} /> Rx Details
+                        </p>
+                        {prescribedMeds.length > 0 && (
+                          <ul className="text-sm font-medium text-emerald-900 space-y-2.5">
+                            {prescribedMeds.map((m, i) => (
+                              <li key={i} className="leading-tight bg-white/60 p-2.5 rounded border border-emerald-100/50">
+                                <span className="font-bold block mb-1">{m.name}</span>
+                                <span className="text-[11px] text-emerald-700 font-semibold">{m.dosage} | {m.frequency} | {m.duration}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {prescriptionAdvice && <p className="text-xs text-emerald-800 italic mt-2 leading-tight">"{prescriptionAdvice}"</p>}
+                      </div>
+                    )}
+
+                    {/* Follow up & Referral */}
+                    {(followUpDays !== 5 || referral) && (
+                      <div className="bg-fuchsia-50 border border-fuchsia-100 rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-fuchsia-700 font-bold uppercase mb-2 flex items-center gap-1.5">
+                          <CalendarDays size={14} /> Planning
+                        </p>
+                        <div className="text-sm font-medium text-fuchsia-900 space-y-1.5">
+                          {followUpDays !== 5 && <p>Follow-up in <span className="font-bold">{followUpDays} days</span></p>}
+                          {referral && <p className="text-orange-800 font-bold bg-orange-100/80 p-2 rounded mt-2 border border-orange-200 text-xs">Refer: {referral}</p>}
+                        </div>
+                      </div>
+                    )}
+                    
                   </div>
                 </div>
               </div>
