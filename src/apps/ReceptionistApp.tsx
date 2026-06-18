@@ -148,7 +148,6 @@ export const ReceptionistApp = () => {
               setIsMobileMenuOpen(false);
             }} 
             isCollapsed={isCollapsed}
-            onToggleCollapse={toggleCollapse}
           />
         </Panel>
 
@@ -160,6 +159,8 @@ export const ReceptionistApp = () => {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             onMenuClick={() => setIsMobileMenuOpen(true)}
+            isCollapsed={isCollapsed}
+            onToggleCollapse={toggleCollapse}
           />
           
           <main className="flex-1 flex flex-col overflow-y-auto w-full relative">

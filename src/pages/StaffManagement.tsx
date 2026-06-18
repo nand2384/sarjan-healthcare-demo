@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Users, Plus, Edit2, Trash2, X, AlertTriangle, Check, XCircle, Settings, CheckCircle } from 'lucide-react';
+import { Users, Plus, Edit2, Trash2, X, AlertTriangle, Check, XCircle, Settings, CheckCircle, LayoutGrid, List } from 'lucide-react';
 import { doctorsData } from '../data/mockData';
 import type { Doctor, Patient } from '../data/mockData';
 
@@ -25,6 +25,7 @@ const mockReceptionists: Receptionist[] = [
 
 export const StaffManagement = () => {
   const [activeTab, setActiveTab] = useState<'doctors' | 'receptionists'>('doctors');
+  const [layoutMode, setLayoutMode] = useState<'table' | 'cards'>('table');
 
   // Doctors State
   const [doctors, setDoctors] = useState<Doctor[]>(doctorsData);
@@ -207,7 +208,7 @@ export const StaffManagement = () => {
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Users className="text-primary" /> Staff & Doctor Management
           </h1>
-          <p className="text-text-gray mt-1">Manage doctor profiles, schedules, and clinic staff accounts.</p>
+          <p className="text-text-gray mt-1 text-base">Manage doctor profiles, schedules, and clinic staff accounts.</p>
         </div>
         <button 
           onClick={() => activeTab === 'doctors' ? openAddDoctor() : openAddReceptionist()}
@@ -217,235 +218,517 @@ export const StaffManagement = () => {
         </button>
       </div>
 
-      <div className="flex bg-white rounded-lg p-1 border border-border-color shadow-sm w-max mb-6">
-        <button
-          onClick={() => setActiveTab('doctors')}
-          className={`px-6 py-2 rounded-md text-sm font-bold transition-colors ${
-            activeTab === 'doctors' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
-          }`}
-        >
-          Doctors
-        </button>
-        <button
-          onClick={() => setActiveTab('receptionists')}
-          className={`px-6 py-2 rounded-md text-sm font-bold transition-colors ${
-            activeTab === 'receptionists' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
-          }`}
-        >
-          Receptionists
-        </button>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        {/* Left Side: Tabs */}
+        <div className="flex bg-white rounded-lg p-1 border border-border-color shadow-sm w-max">
+          <button
+            onClick={() => setActiveTab('doctors')}
+            className={`px-6 py-2 rounded-md text-sm font-bold transition-colors cursor-pointer ${
+              activeTab === 'doctors' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+            }`}
+          >
+            Doctors
+          </button>
+          <button
+            onClick={() => setActiveTab('receptionists')}
+            className={`px-6 py-2 rounded-md text-sm font-bold transition-colors cursor-pointer ${
+              activeTab === 'receptionists' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+            }`}
+          >
+            Receptionists
+          </button>
+        </div>
+
+        {/* Right Side: Layout toggle */}
+        <div className="flex bg-white rounded-lg p-1 border border-border-color shadow-sm w-max items-center">
+          <button
+            onClick={() => setLayoutMode('table')}
+            className={`p-2 rounded-md transition-colors cursor-pointer flex items-center justify-center ${
+              layoutMode === 'table' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+            }`}
+            title="Table View"
+          >
+            <List size={16} />
+          </button>
+          <button
+            onClick={() => setLayoutMode('cards')}
+            className={`p-2 rounded-md transition-colors cursor-pointer flex items-center justify-center ${
+              layoutMode === 'cards' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+            }`}
+            title="Cards View"
+          >
+            <LayoutGrid size={16} />
+          </button>
+        </div>
       </div>
 
       {activeTab === 'doctors' ? (
-        <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden overflow-x-auto border-none">
-          <table className="w-full text-left border-collapse min-w-[900px]">
-            <thead>
-              <tr>
-                <th className="table-header-cell w-1/4">Doctor Name</th>
-                <th className="table-header-cell w-1/4">Specialty</th>
-                <th className="table-header-cell">Contact</th>
-                <th className="table-header-cell w-32">Live Status</th>
-                <th className="table-header-cell text-right w-40">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border-color text-sm text-text-dark">
-              {doctors.map(doc => {
-                const isEditing = editingDocId === doc.id;
-                const currentStatus = getDoctorStatus(doc);
-                
-                return (
-                  <tr key={doc.id} className={`${isEditing ? 'bg-blue-50/30' : 'hover:bg-hover-bg transition-colors group'}`}>
-                    <td className="table-row-cell font-bold">
-                      {isEditing ? (
-                        <input 
-                          type="text" 
-                          value={docEditForm.name} 
-                          onChange={(e) => setDocEditForm({...docEditForm, name: e.target.value})}
-                          className="w-full border border-border-color rounded px-2 py-1 text-sm font-bold"
-                          autoFocus
-                        />
-                      ) : (
-                        <span className="text-text-dark">{doc.name}</span>
-                      )}
-                    </td>
-                    <td className="table-row-cell">
-                      {isEditing ? (
-                        <input 
-                          type="text" 
-                          value={docEditForm.specialty} 
-                          onChange={(e) => setDocEditForm({...docEditForm, specialty: e.target.value})}
-                          className="w-full border border-border-color rounded px-2 py-1 text-sm"
-                        />
-                      ) : (
-                        <span className="text-[11px] font-bold text-text-light uppercase tracking-wider">{doc.specialty}</span>
-                      )}
-                    </td>
-                    <td className="table-row-cell text-xs">
-                      <div className="font-medium text-text-dark">{doc.email || 'No email set'}</div>
-                      <div className="text-text-light">{doc.phone || 'No phone set'}</div>
-                    </td>
-                    <td className="p-4">
-                      {/* Status is fully automated and not editable inline */}
-                      <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
-                        currentStatus === 'available' ? 'bg-green-100 text-green-700' :
-                        currentStatus === 'busy' ? 'bg-red-100 text-red-700' :
-                        'bg-gray-100 text-gray-700'
+        layoutMode === 'table' ? (
+          <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden overflow-x-auto border-none">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead>
+                <tr>
+                  <th className="table-header-cell w-1/4">Doctor Name</th>
+                  <th className="table-header-cell w-1/4">Specialty</th>
+                  <th className="table-header-cell">Contact</th>
+                  <th className="table-header-cell w-32">Live Status</th>
+                  <th className="table-header-cell text-right w-40">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-color text-sm text-text-dark">
+                {doctors.map(doc => {
+                  const isEditing = editingDocId === doc.id;
+                  const currentStatus = getDoctorStatus(doc);
+                  
+                  return (
+                    <tr key={doc.id} className={`${isEditing ? 'bg-blue-50/30' : 'hover:bg-hover-bg transition-colors group'}`}>
+                      <td className="table-row-cell font-bold">
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={docEditForm.name} 
+                            onChange={(e) => setDocEditForm({...docEditForm, name: e.target.value})}
+                            className="w-full border border-border-color rounded px-2 py-1 text-sm font-bold"
+                            autoFocus
+                          />
+                        ) : (
+                          <span className="text-text-dark">{doc.name}</span>
+                        )}
+                      </td>
+                      <td className="table-row-cell">
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={docEditForm.specialty} 
+                            onChange={(e) => setDocEditForm({...docEditForm, specialty: e.target.value})}
+                            className="w-full border border-border-color rounded px-2 py-1 text-sm"
+                          />
+                        ) : (
+                          <span className="text-[11px] font-bold text-text-light uppercase tracking-wider">{doc.specialty}</span>
+                        )}
+                      </td>
+                      <td className="table-row-cell text-xs">
+                        <div className="font-medium text-text-dark">{doc.email || 'No email set'}</div>
+                        <div className="text-text-light">{doc.phone || 'No phone set'}</div>
+                      </td>
+                      <td className="p-4">
+                        {/* Status is fully automated and not editable inline */}
+                        <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
+                          currentStatus === 'available' ? 'bg-green-100 text-green-700' :
+                          currentStatus === 'busy' ? 'bg-red-100 text-red-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`} title="Automatically derived from patient queue">
+                          {currentStatus}
+                        </span>
+                      </td>
+                      <td className="table-row-cell text-right">
+                        {isEditing ? (
+                          <div className="flex justify-end items-center">
+                            <button onClick={saveEditDoctor} disabled={!docEditForm.name} className="p-1.5 text-green-600 hover:bg-green-100 rounded-md transition-colors mr-1">
+                              <Check size={18} />
+                            </button>
+                            <button onClick={() => setEditingDocId(null)} className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-md transition-colors">
+                              <XCircle size={18} />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex justify-end items-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                            <button onClick={() => startEditDoctor(doc)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors mr-1" title="Inline Edit (Core)">
+                              <Edit2 size={16} />
+                            </button>
+                            <button onClick={() => openManageDoc(doc)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors mr-1" title="Manage Full Account Details">
+                              <Settings size={16} />
+                            </button>
+                            <button onClick={() => setDeletingDocId(doc.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Remove Doctor">
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+                {doctors.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="p-8 text-center text-text-gray italic">No doctors found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {doctors.map(doc => {
+              const isEditing = editingDocId === doc.id;
+              const currentStatus = getDoctorStatus(doc);
+              const initials = doc.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
+              return (
+                <div 
+                  key={doc.id}
+                  className={`bg-white rounded-2xl border p-5 shadow-soft interactive-card flex flex-col justify-between transition-all ${
+                    isEditing ? 'border-primary/50 ring-2 ring-primary/5' : 'border-border-color'
+                  }`}
+                >
+                  <div>
+                    {/* Top Row: Avatar & Status */}
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg shadow-sm border border-primary/5">
+                          {initials}
+                        </div>
+                        <div>
+                          {isEditing ? (
+                            <div className="space-y-2">
+                              <input 
+                                type="text" 
+                                value={docEditForm.name} 
+                                onChange={(e) => setDocEditForm({...docEditForm, name: e.target.value})}
+                                className="border border-border-color rounded px-2 py-1 text-sm font-bold w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                placeholder="Name"
+                              />
+                              <input 
+                                type="text" 
+                                value={docEditForm.specialty} 
+                                onChange={(e) => setDocEditForm({...docEditForm, specialty: e.target.value})}
+                                className="border border-border-color rounded px-2 py-1 text-xs w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                placeholder="Specialty"
+                              />
+                            </div>
+                          ) : (
+                            <>
+                              <h4 className="font-bold text-text-dark text-base">{doc.name}</h4>
+                              <p className="text-xs text-text-gray mt-0.5 font-medium">{doc.education || 'MBBS, MD'}</p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                        currentStatus === 'available' ? 'bg-green-100 text-green-700 border-green-200/50' : 
+                        currentStatus === 'busy' ? 'bg-red-100 text-red-700 border-red-200/50' : 
+                        'bg-gray-100 text-gray-500 border-gray-200/50'
                       }`} title="Automatically derived from patient queue">
                         {currentStatus}
                       </span>
-                    </td>
-                    <td className="table-row-cell text-right">
-                      {isEditing ? (
-                        <div className="flex justify-end items-center">
-                          <button onClick={saveEditDoctor} disabled={!docEditForm.name} className="p-1.5 text-green-600 hover:bg-green-100 rounded-md transition-colors mr-1">
-                            <Check size={18} />
-                          </button>
-                          <button onClick={() => setEditingDocId(null)} className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-md transition-colors">
-                            <XCircle size={18} />
-                          </button>
+                    </div>
+
+                    {/* Middle Details */}
+                    {!isEditing && (
+                      <div className="space-y-2.5 my-4 pt-3 border-t border-border-color/60 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Specialty</span>
+                          <span className="bg-primary/5 text-primary-dark font-bold px-2 py-0.5 rounded border border-primary/10 text-[10px] uppercase">{doc.specialty}</span>
                         </div>
-                      ) : (
-                        <div className="flex justify-end items-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                          <button onClick={() => startEditDoctor(doc)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors mr-1" title="Inline Edit (Core)">
-                            <Edit2 size={16} />
-                          </button>
-                          <button onClick={() => openManageDoc(doc)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors mr-1" title="Manage Full Account Details">
-                            <Settings size={16} />
-                          </button>
-                          <button onClick={() => setDeletingDocId(doc.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Remove Doctor">
-                            <Trash2 size={16} />
-                          </button>
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Contact</span>
+                          <span className="text-text-dark font-medium truncate max-w-[180px]" title={doc.email}>{doc.email || 'N/A'}</span>
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-              {doctors.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="p-8 text-center text-text-gray italic">No doctors found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Phone</span>
+                          <span className="text-text-dark font-medium">{doc.phone || 'N/A'}</span>
+                        </div>
+                        {doc.licenseNumber && (
+                          <div className="flex justify-between">
+                            <span className="text-text-gray font-semibold">License</span>
+                            <span className="text-text-dark font-mono font-medium">{doc.licenseNumber}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Experience</span>
+                          <span className="text-text-dark font-medium">{doc.experience ? `${doc.experience} Years` : 'N/A'}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer Actions */}
+                  <div className="mt-4 pt-3 border-t border-border-color/60 flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-text-light uppercase tracking-wider">
+                      Joined: {doc.joiningDate || 'N/A'}
+                    </span>
+                    
+                    {isEditing ? (
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={saveEditDoctor} disabled={!docEditForm.name || !docEditForm.specialty} className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors cursor-pointer" title="Save">
+                          <Check size={16} />
+                        </button>
+                        <button onClick={() => setEditingDocId(null)} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="Cancel">
+                          <XCircle size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => startEditDoctor(doc)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer" title="Inline Edit">
+                          <Edit2 size={15} />
+                        </button>
+                        <button onClick={() => openManageDoc(doc)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer" title="Manage Account Details">
+                          <Settings size={15} />
+                        </button>
+                        <button onClick={() => setDeletingDocId(doc.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Remove Doctor">
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            {doctors.length === 0 && (
+              <div className="col-span-full bg-white rounded-2xl p-8 border border-border-color shadow-soft text-center text-text-gray italic">
+                No doctors found.
+              </div>
+            )}
+          </div>
+        )
       ) : (
-        <div className="bg-white border border-border-color rounded-xl shadow-sm overflow-hidden overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[900px]">
-            <thead>
-              <tr className="bg-gray-50/50 border-b border-border-color text-text-gray text-xs uppercase tracking-wider">
-                <th className="p-4 font-semibold w-1/4">Staff Name</th>
-                <th className="p-4 font-semibold w-1/4">Assigned Shift</th>
-                <th className="p-4 font-semibold w-1/5">Contact</th>
-                <th className="p-4 font-semibold w-1/6">Account Status</th>
-                <th className="p-4 font-semibold text-right w-40">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border-color text-sm text-text-dark">
-              {receptionists.map(recp => {
-                const isEditing = editingRecpId === recp.id;
-                
-                return (
-                  <tr key={recp.id} className={`${isEditing ? 'bg-blue-50/30' : 'hover:bg-hover-bg transition-colors group'}`}>
-                    <td className="table-row-cell font-bold">
-                      {isEditing ? (
-                        <input 
-                          type="text" 
-                          value={recpEditForm.name} 
-                          onChange={(e) => setRecpEditForm({...recpEditForm, name: e.target.value})}
-                          className="w-full border border-border-color rounded px-2 py-1 text-sm font-bold"
-                          autoFocus
-                        />
-                      ) : (
-                        <div>
-                          {recp.name}
-                          <div className="text-xs text-text-gray font-normal">{recp.employeeId} - {recp.roleLevel}</div>
+        layoutMode === 'table' ? (
+          <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden overflow-x-auto border-none">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-border-color text-text-gray text-xs uppercase tracking-wider">
+                  <th className="p-4 font-semibold w-1/4">Staff Name</th>
+                  <th className="p-4 font-semibold w-1/4">Assigned Shift</th>
+                  <th className="p-4 font-semibold w-1/5">Contact</th>
+                  <th className="p-4 font-semibold w-1/6">Account Status</th>
+                  <th className="p-4 font-semibold text-right w-40">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-color text-sm text-text-dark">
+                {receptionists.map(recp => {
+                  const isEditing = editingRecpId === recp.id;
+                  
+                  return (
+                    <tr key={recp.id} className={`${isEditing ? 'bg-blue-50/30' : 'hover:bg-hover-bg transition-colors group'}`}>
+                      <td className="table-row-cell font-bold">
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={recpEditForm.name} 
+                            onChange={(e) => setRecpEditForm({...recpEditForm, name: e.target.value})}
+                            className="w-full border border-border-color rounded px-2 py-1 text-sm font-bold"
+                            autoFocus
+                          />
+                        ) : (
+                          <div>
+                            {recp.name}
+                            <div className="text-xs text-text-gray font-normal">{recp.employeeId} - {recp.roleLevel}</div>
+                          </div>
+                        )}
+                      </td>
+                      <td className="p-4 text-text-gray font-medium">
+                        {isEditing ? (
+                          <select 
+                            value={recpEditForm.shift} 
+                            onChange={(e) => setRecpEditForm({...recpEditForm, shift: e.target.value})}
+                            className="w-full border border-border-color rounded px-1 py-1 text-sm bg-white"
+                          >
+                            <option value="Morning (8 AM - 4 PM)">Morning</option>
+                            <option value="Evening (4 PM - 12 AM)">Evening</option>
+                            <option value="Night (12 AM - 8 AM)">Night</option>
+                          </select>
+                        ) : (
+                          recp.shift
+                        )}
+                      </td>
+                      <td className="p-4 font-medium text-xs">
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={recpEditForm.phone} 
+                            onChange={(e) => setRecpEditForm({...recpEditForm, phone: e.target.value})}
+                            className="w-full border border-border-color rounded px-2 py-1 text-sm"
+                          />
+                        ) : (
+                          <>
+                            <div>{recp.phone}</div>
+                            <div className="text-text-gray">{recp.email}</div>
+                          </>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        {isEditing ? (
+                          <select 
+                            value={recpEditForm.status} 
+                            onChange={(e) => setRecpEditForm({...recpEditForm, status: e.target.value})}
+                            className="w-full border border-border-color rounded px-1 py-1 text-sm bg-white"
+                          >
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                          </select>
+                        ) : (
+                          <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
+                            recp.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                          }`}>
+                            {recp.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="table-row-cell text-right">
+                        {isEditing ? (
+                          <div className="flex justify-end items-center">
+                            <button onClick={saveEditReceptionist} disabled={!recpEditForm.name} className="p-1.5 text-green-600 hover:bg-green-100 rounded-md transition-colors mr-1">
+                              <Check size={18} />
+                            </button>
+                            <button onClick={() => setEditingRecpId(null)} className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-md transition-colors">
+                              <XCircle size={18} />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex justify-end items-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                            <button onClick={() => startEditReceptionist(recp)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors mr-1" title="Inline Edit (Core)">
+                              <Edit2 size={16} />
+                            </button>
+                            <button onClick={() => openManageRecp(recp)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors mr-1" title="Manage Full Account Details">
+                              <Settings size={16} />
+                            </button>
+                            <button onClick={() => setDeletingRecpId(recp.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Remove Staff">
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+                {receptionists.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-text-gray italic">No staff found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {receptionists.map(recp => {
+              const isEditing = editingRecpId === recp.id;
+              const initials = recp.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
+              return (
+                <div 
+                  key={recp.id}
+                  className={`bg-white rounded-2xl border p-5 shadow-soft interactive-card flex flex-col justify-between transition-all ${
+                    isEditing ? 'border-primary/50 ring-2 ring-primary/5' : 'border-border-color'
+                  }`}
+                >
+                  <div>
+                    {/* Top Row: Avatar & Status */}
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-lg shadow-sm border border-purple-100/50">
+                          {initials}
                         </div>
-                      )}
-                    </td>
-                    <td className="p-4 text-text-gray font-medium">
-                      {isEditing ? (
-                        <select 
-                          value={recpEditForm.shift} 
-                          onChange={(e) => setRecpEditForm({...recpEditForm, shift: e.target.value})}
-                          className="w-full border border-border-color rounded px-1 py-1 text-sm bg-white"
-                        >
-                          <option value="Morning (8 AM - 4 PM)">Morning</option>
-                          <option value="Evening (4 PM - 12 AM)">Evening</option>
-                          <option value="Night (12 AM - 8 AM)">Night</option>
-                        </select>
-                      ) : (
-                        recp.shift
-                      )}
-                    </td>
-                    <td className="p-4 font-medium text-xs">
-                      {isEditing ? (
-                        <input 
-                          type="text" 
-                          value={recpEditForm.phone} 
-                          onChange={(e) => setRecpEditForm({...recpEditForm, phone: e.target.value})}
-                          className="w-full border border-border-color rounded px-2 py-1 text-sm"
-                        />
-                      ) : (
-                        <>
-                          <div>{recp.phone}</div>
-                          <div className="text-text-gray">{recp.email}</div>
-                        </>
-                      )}
-                    </td>
-                    <td className="p-4">
+                        <div>
+                          {isEditing ? (
+                            <div className="space-y-2">
+                              <input 
+                                type="text" 
+                                value={recpEditForm.name} 
+                                onChange={(e) => setRecpEditForm({...recpEditForm, name: e.target.value})}
+                                className="border border-border-color rounded px-2 py-1 text-sm font-bold w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                placeholder="Name"
+                              />
+                              <select 
+                                value={recpEditForm.shift} 
+                                onChange={(e) => setRecpEditForm({...recpEditForm, shift: e.target.value})}
+                                className="border border-border-color rounded px-2 py-1 text-xs w-full focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                              >
+                                <option value="Morning (8 AM - 4 PM)">Morning (8 AM - 4 PM)</option>
+                                <option value="Evening (4 PM - 12 AM)">Evening (4 PM - 12 AM)</option>
+                                <option value="Night (12 AM - 8 AM)">Night (12 AM - 8 AM)</option>
+                              </select>
+                            </div>
+                          ) : (
+                            <>
+                              <h4 className="font-bold text-text-dark text-base">{recp.name}</h4>
+                              <p className="text-xs text-text-gray mt-0.5 font-medium">{recp.roleLevel || 'Receptionist'}</p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      
                       {isEditing ? (
                         <select 
                           value={recpEditForm.status} 
                           onChange={(e) => setRecpEditForm({...recpEditForm, status: e.target.value})}
-                          className="w-full border border-border-color rounded px-1 py-1 text-sm bg-white"
+                          className="border border-border-color rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
                         >
                           <option value="active">Active</option>
                           <option value="inactive">Inactive</option>
                         </select>
                       ) : (
-                        <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
-                          recp.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                        <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                          recp.status === 'active' 
+                            ? 'bg-green-100 text-green-700 border-green-200/50' 
+                            : 'bg-gray-100 text-gray-500 border-gray-200/50'
                         }`}>
                           {recp.status}
                         </span>
                       )}
-                    </td>
-                    <td className="table-row-cell text-right">
-                      {isEditing ? (
-                        <div className="flex justify-end items-center">
-                          <button onClick={saveEditReceptionist} disabled={!recpEditForm.name} className="p-1.5 text-green-600 hover:bg-green-100 rounded-md transition-colors mr-1">
-                            <Check size={18} />
-                          </button>
-                          <button onClick={() => setEditingRecpId(null)} className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-md transition-colors">
-                            <XCircle size={18} />
-                          </button>
+                    </div>
+
+                    {/* Middle Details */}
+                    {!isEditing && (
+                      <div className="space-y-2.5 my-4 pt-3 border-t border-border-color/60 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Employee ID</span>
+                          <span className="text-text-dark font-mono font-medium">{recp.employeeId}</span>
                         </div>
-                      ) : (
-                        <div className="flex justify-end items-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                          <button onClick={() => startEditReceptionist(recp)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors mr-1" title="Inline Edit (Core)">
-                            <Edit2 size={16} />
-                          </button>
-                          <button onClick={() => openManageRecp(recp)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors mr-1" title="Manage Full Account Details">
-                            <Settings size={16} />
-                          </button>
-                          <button onClick={() => setDeletingRecpId(recp.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Remove Staff">
-                            <Trash2 size={16} />
-                          </button>
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Assigned Shift</span>
+                          <span className="text-text-dark font-medium">{recp.shift}</span>
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-              {receptionists.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-8 text-center text-text-gray italic">No staff found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Contact Email</span>
+                          <span className="text-text-dark font-medium truncate max-w-[180px]" title={recp.email}>{recp.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-text-gray font-semibold">Phone</span>
+                          <span className="text-text-dark font-medium">{recp.phone || 'N/A'}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer Actions */}
+                  <div className="mt-4 pt-3 border-t border-border-color/60 flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-text-light uppercase tracking-wider">
+                      Joined: {recp.joiningDate || 'N/A'}
+                    </span>
+                    
+                    {isEditing ? (
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={saveEditReceptionist} disabled={!recpEditForm.name} className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors cursor-pointer" title="Save">
+                          <Check size={16} />
+                        </button>
+                        <button onClick={() => setEditingRecpId(null)} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="Cancel">
+                          <XCircle size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => startEditReceptionist(recp)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer" title="Inline Edit">
+                          <Edit2 size={15} />
+                        </button>
+                        <button onClick={() => openManageRecp(recp)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer" title="Manage Account Details">
+                          <Settings size={15} />
+                        </button>
+                        <button onClick={() => setDeletingRecpId(recp.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Remove Staff">
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            {receptionists.length === 0 && (
+              <div className="col-span-full bg-white rounded-2xl p-8 border border-border-color shadow-soft text-center text-text-gray italic">
+                No staff found.
+              </div>
+            )}
+          </div>
+        )
       )}
 
       {/* ================= ADD NEW MODALS (Full Grid Layout) ================= */}

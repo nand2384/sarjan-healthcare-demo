@@ -1,11 +1,8 @@
 import React from 'react';
 import { 
   Stethoscope, 
-  BarChart3, 
   Users,
   Settings, 
-  PanelLeftClose, 
-  PanelLeftOpen,
   LogOut,
   X,
   Globe,
@@ -21,7 +18,6 @@ interface AdminSidebarProps {
   isMobileMenuOpen?: boolean;
   setIsMobileMenuOpen?: (isOpen: boolean) => void;
   isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ 
@@ -29,17 +25,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   setActiveTab, 
   isMobileMenuOpen, 
   setIsMobileMenuOpen,
-  isCollapsed = false,
-  onToggleCollapse
+  isCollapsed = false
 }) => {
 
   const navGroups = [
-    {
-      group: 'Operations',
-      items: [
-        { icon: <BarChart3 size={20} />, label: 'Wait Time Analytics' }
-      ]
-    },
     {
       group: 'Administration',
       items: [
@@ -130,14 +119,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         <button className={navItemBaseClass} title={isCollapsed ? "Settings" : ""}>
           <Settings size={20} className="min-w-[20px]" />
           {!isCollapsed && <span>Settings</span>}
-        </button>
-        <button 
-          className={navItemBaseClass} 
-          onClick={onToggleCollapse}
-          title={isCollapsed ? "Expand" : "Collapse"}
-        >
-          {isCollapsed ? <PanelLeftOpen size={20} className="min-w-[20px]" /> : <PanelLeftClose size={20} className="min-w-[20px]" />}
-          {!isCollapsed && <span>Collapse</span>}
         </button>
         <button className={`${navItemBaseClass} text-danger hover:bg-red-50 hover:text-danger mt-2`} title={isCollapsed ? "Log out" : ""}>
           <LogOut size={20} className="min-w-[20px]" />

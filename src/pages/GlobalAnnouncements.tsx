@@ -31,13 +31,13 @@ export const GlobalAnnouncements = () => {
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Megaphone className="text-primary" /> Global Announcements
           </h1>
-          <p className="text-text-gray mt-1">Broadcast urgent messages and alerts directly to the receptionist dashboard.</p>
+          <p className="text-text-gray mt-1 text-base">Broadcast urgent messages and alerts directly to the receptionist dashboard.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column: Create New Announcement */}
-        <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden flex flex-col h-max">
+        <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden flex flex-col h-max border-none">
           <div className="p-6 border-b border-border-color bg-gray-50/50">
             <h3 className="text-lg font-bold text-text-dark flex items-center gap-2">
               <Bell size={20} className="text-primary" /> Create New Broadcast
@@ -104,10 +104,10 @@ export const GlobalAnnouncements = () => {
           
           <div className="flex flex-col gap-3">
             {announcements.map(alert => (
-              <div key={alert.id} className={`p-4 rounded-xl border flex justify-between items-start gap-4 transition-all ${
-                alert.type === 'danger' ? 'bg-red-50/50 border-red-200' :
-                alert.type === 'warning' ? 'bg-amber-50/50 border-amber-200' :
-                'bg-blue-50/50 border-blue-200'
+              <div key={alert.id} className={`p-4 rounded-xl border flex justify-between items-start gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-soft ${
+                alert.type === 'danger' ? 'bg-red-50/50 border-red-200 hover:border-red-300' :
+                alert.type === 'warning' ? 'bg-amber-50/50 border-amber-200 hover:border-amber-300' :
+                'bg-blue-50/50 border-blue-200 hover:border-blue-300'
               }`}>
                 <div className="flex gap-3">
                   <div className={`mt-0.5 p-1.5 rounded-full ${

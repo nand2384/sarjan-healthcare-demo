@@ -169,7 +169,7 @@ export const FinancialReports = () => {
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <BarChart3 className="text-primary" /> Financial Reports
           </h1>
-          <p className="text-text-gray mt-1 flex items-center gap-2">
+          <p className="text-text-gray mt-1 text-base flex items-center gap-2">
             <CalendarDays size={16} /> {subtitle}
           </p>
         </div>
@@ -257,21 +257,21 @@ export const FinancialReports = () => {
 
       {/* Chart Section */}
       <div className="bg-white p-8 rounded-2xl shadow-soft interactive-card border-none mb-8">
-        <h3 className="text-lg font-extrabold text-text-dark mb-6 tracking-tight">Revenue Breakdown per Doctor</h3>
+        <h3 className="text-lg font-bold text-text-dark mb-6">Revenue Breakdown per Doctor</h3>
         <div className="h-[300px]">
           <Bar data={revenueChartData} options={revenueChartOptions} />
         </div>
       </div>
 
       {/* Middle Section: Doctor Breakdown */}
-      <h3 className="text-lg font-bold text-text-dark mb-4">Doctor Performance Details</h3>
+      <h3 className="text-xl font-bold text-text-dark mb-4">Doctor Performance Details</h3>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {scaledData.map(doc => (
           <div key={doc.doctorId} className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden flex flex-col border-none">
             
             {/* Header */}
             <div className="p-6 border-b border-border-color bg-gray-50/30 flex justify-between items-center">
-              <h4 className="font-extrabold text-text-dark text-lg tracking-tight">{doc.doctorName}</h4>
+              <h4 className="font-bold text-text-dark text-lg">{doc.doctorName}</h4>
               <span className="bg-primary/10 text-primary text-[11px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full border border-primary/20">
                 {doc.totalConsulted} Consults
               </span>

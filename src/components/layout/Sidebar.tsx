@@ -3,8 +3,6 @@ import {
   Stethoscope, 
   LayoutGrid, 
   Settings, 
-  PanelLeftClose,
-  PanelLeftOpen,
   LogOut,
   User,
   X
@@ -17,7 +15,6 @@ interface SidebarProps {
   isMobileMenuOpen?: boolean;
   setIsMobileMenuOpen?: (isOpen: boolean) => void;
   isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export const Sidebar = React.memo(function Sidebar({ 
@@ -25,8 +22,7 @@ export const Sidebar = React.memo(function Sidebar({
   setActiveTab, 
   isMobileMenuOpen, 
   setIsMobileMenuOpen,
-  isCollapsed = false,
-  onToggleCollapse 
+  isCollapsed = false
 }: SidebarProps) {
 
   const navItems = [
@@ -98,14 +94,6 @@ export const Sidebar = React.memo(function Sidebar({
         <button className={navItemBaseClass} title={isCollapsed ? "Settings" : ""}>
           <Settings size={20} className="min-w-[20px]" />
           {!isCollapsed && <span>Settings</span>}
-        </button>
-        <button 
-          className={navItemBaseClass} 
-          onClick={onToggleCollapse}
-          title={isCollapsed ? "Expand" : "Collapse"}
-        >
-          {isCollapsed ? <PanelLeftOpen size={20} className="min-w-[20px]" /> : <PanelLeftClose size={20} className="min-w-[20px]" />}
-          {!isCollapsed && <span>Collapse</span>}
         </button>
         <button className={`${navItemBaseClass} text-danger hover:bg-red-50 hover:text-danger mt-6`} title={isCollapsed ? "Log out" : ""}>
           <LogOut size={20} className="min-w-[20px]" />

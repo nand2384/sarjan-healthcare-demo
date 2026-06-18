@@ -115,7 +115,7 @@ export const PricingManagement = () => {
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Settings className="text-primary" /> Pricing & Lab Catalog
           </h1>
-          <p className="text-text-gray mt-1">Manage consultation fees and the comprehensive lab test catalog.</p>
+          <p className="text-text-gray mt-1 text-base">Manage consultation fees and the comprehensive lab test catalog.</p>
         </div>
       </div>
 
@@ -124,7 +124,7 @@ export const PricingManagement = () => {
         <div>
           <div className="bg-white rounded-2xl shadow-soft interactive-card flex flex-col h-[600px]">
             <div className="p-6 border-b border-border-color bg-gray-50/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0 rounded-t-2xl">
-              <h3 className="text-lg font-extrabold text-text-dark flex items-center gap-2 tracking-tight">
+              <h3 className="text-lg font-bold text-text-dark flex items-center gap-2">
                 <Stethoscope size={20} className="text-primary" /> Doctor Consultation Fees
               </h3>
             </div>
@@ -213,7 +213,7 @@ export const PricingManagement = () => {
         <div>
           <div className="bg-white rounded-2xl shadow-soft interactive-card flex flex-col h-[600px]">
             <div className="p-6 border-b border-border-color bg-gray-50/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0 rounded-t-2xl">
-              <h3 className="text-lg font-extrabold text-text-dark flex items-center gap-2 tracking-tight">
+              <h3 className="text-lg font-bold text-text-dark flex items-center gap-2">
                 <Settings size={20} className="text-primary" /> Lab Tests Catalog
               </h3>
               <div className="flex gap-3 w-full sm:w-auto">

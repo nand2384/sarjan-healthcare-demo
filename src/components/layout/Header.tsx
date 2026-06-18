@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, ChevronDown, Bell, AlertTriangle, AlertCircle, Info, Menu } from 'lucide-react';
+import { Search, ChevronDown, Bell, AlertTriangle, AlertCircle, Info, Menu, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 import { globalAlerts } from '../../data/mockData';
 
 interface HeaderProps {
@@ -9,9 +9,11 @@ interface HeaderProps {
   activeTab?: string;
   setActiveTab?: (tab: string) => void;
   onMenuClick?: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
-export const Header = React.memo(function Header({ userName = "NS", userRole = "Receptionist", navItems, activeTab, setActiveTab, onMenuClick }: HeaderProps) {
+export const Header = React.memo(function Header({ userName = "NS", userRole = "Receptionist", navItems, activeTab, setActiveTab, onMenuClick, isCollapsed = false, onToggleCollapse }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +39,16 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
             onClick={onMenuClick}
           >
             <Menu size={20} />
+          </button>
+        )}
+
+        {onToggleCollapse && (
+          <button 
+            onClick={onToggleCollapse}
+            className="hidden md:flex items-center justify-center p-2.5 bg-white hover:bg-hover-bg border border-border-color rounded-xl text-text-gray hover:text-text-dark transition-all shadow-sm hover:shadow-soft cursor-pointer shrink-0"
+            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            {isCollapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
           </button>
         )}
 

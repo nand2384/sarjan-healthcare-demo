@@ -4,7 +4,6 @@ import { Header } from '../components/layout/Header';
 import { FinancialReports } from '../pages/FinancialReports';
 import { StaffManagement } from '../pages/StaffManagement';
 import { PricingManagement } from '../pages/PricingManagement';
-import { WaitTimeAnalytics } from '../pages/WaitTimeAnalytics';
 import { GlobalAnnouncements } from '../pages/GlobalAnnouncements';
 import { ClinicProfile } from '../pages/ClinicProfile';
 import { PatientReviews } from '../pages/PatientReviews';
@@ -79,7 +78,6 @@ export const AdminApp = () => {
               setIsMobileMenuOpen(false);
             }} 
             isCollapsed={isCollapsed}
-            onToggleCollapse={toggleCollapse}
           />
         </Panel>
 
@@ -90,13 +88,14 @@ export const AdminApp = () => {
             userName="AD" 
             userRole="Admin" 
             onMenuClick={() => setIsMobileMenuOpen(true)}
+            isCollapsed={isCollapsed}
+            onToggleCollapse={toggleCollapse}
           />
           
           <main className="flex-1 overflow-y-auto">
             {activeTab === 'Financial Reports' && <FinancialReports />}
             {activeTab === 'Staff & Doctor Management' && <StaffManagement />}
             {activeTab === 'Pricing & Lab Catalog' && <PricingManagement />}
-            {activeTab === 'Wait Time Analytics' && <WaitTimeAnalytics />}
             {activeTab === 'Global Announcements' && <GlobalAnnouncements />}
             {activeTab === 'Clinic Profile' && <ClinicProfile />}
             {activeTab === 'Patient Reviews' && <PatientReviews />}
@@ -117,7 +116,6 @@ export const AdminApp = () => {
           {activeTab === 'Financial Reports' && <FinancialReports />}
           {activeTab === 'Staff & Doctor Management' && <StaffManagement />}
           {activeTab === 'Pricing & Lab Catalog' && <PricingManagement />}
-          {activeTab === 'Wait Time Analytics' && <WaitTimeAnalytics />}
           {activeTab === 'Global Announcements' && <GlobalAnnouncements />}
           {activeTab === 'Clinic Profile' && <ClinicProfile />}
           {activeTab === 'Patient Reviews' && <PatientReviews />}

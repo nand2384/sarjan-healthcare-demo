@@ -2028,6 +2028,8 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
                           <p>Diet: <span className="text-blue-700">{diet}</span></p>
                           <p>Sleep: <span className="text-blue-700">{sleep}</span></p>
                           <p>Lifestyle: <span className="text-blue-700">{lifestyle}</span></p>
+                          <p>Bowel: <span className="text-blue-700">{bowel}</span></p>
+                          <p>Appetite: <span className="text-blue-700">{appetite}</span></p>
                         </div>
                         {(allergies.length > 0 || customAllergy) && (
                           <div className="mt-3 pt-2 border-t border-blue-200">

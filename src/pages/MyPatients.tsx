@@ -364,7 +364,7 @@ export const MyPatients = () => {
     <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent relative flex flex-col">
       <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-text-dark flex items-center gap-2 tracking-tight">
+          <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Users className="text-primary" /> My Patients Directory
           </h1>
           <p className="text-text-gray mt-1 text-sm">

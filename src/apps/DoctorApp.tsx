@@ -73,7 +73,6 @@ export const DoctorApp = () => {
               setIsMobileMenuOpen(false);
             }} 
             isCollapsed={isCollapsed}
-            onToggleCollapse={toggleCollapse}
           />
         </Panel>
         
@@ -84,6 +83,8 @@ export const DoctorApp = () => {
             userName="SJ" 
             userRole="Dr. Sarah Jenkins" 
             onMenuClick={() => setIsMobileMenuOpen(true)}
+            isCollapsed={isCollapsed}
+            onToggleCollapse={toggleCollapse}
           />
           
           <main className="flex-1 overflow-hidden relative">

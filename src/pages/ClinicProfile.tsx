@@ -55,7 +55,7 @@ export const ClinicProfile = () => {
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Building2 className="text-primary" /> Clinic Profile
           </h1>
-          <p className="text-text-gray mt-1">Manage public-facing clinic information and operating hours.</p>
+          <p className="text-text-gray mt-1 text-base">Manage public-facing clinic information and operating hours.</p>
         </div>
         <button 
           onClick={handleSave}
@@ -67,7 +67,7 @@ export const ClinicProfile = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Left Column: Basic Info */}
-        <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden flex flex-col border-none">
           <div className="p-6 border-b border-border-color bg-gray-50/50">
             <h3 className="text-lg font-bold text-text-dark flex items-center gap-2">
               <Building2 size={20} className="text-primary" /> Basic Information
@@ -140,7 +140,7 @@ export const ClinicProfile = () => {
         </div>
 
         {/* Right Column: Operating Hours */}
-        <div className="bg-white rounded-xl border border-border-color shadow-sm overflow-hidden flex flex-col h-max">
+        <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden flex flex-col h-max border-none">
           <div className="p-6 border-b border-border-color bg-gray-50/50">
             <h3 className="text-lg font-bold text-text-dark flex items-center gap-2">
               <Clock size={20} className="text-primary" /> Operating Hours

@@ -105,7 +105,7 @@ export const PatientRegistration = () => {
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <UserPlus className="text-primary" /> Patient Onboarding
           </h1>
-          <p className="text-text-gray mt-1 text-sm md:text-base">Register new patients or book visits for returning patients.</p>
+          <p className="text-text-gray mt-1 text-sm">Register new patients or book visits for returning patients.</p>
         </div>
 
         {/* Mode Toggle */}
