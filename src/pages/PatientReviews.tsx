@@ -169,7 +169,7 @@ export const PatientReviews = () => {
               : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
           }`}
         >
-          Pending Moderation
+          Pending Approvals
           <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
             activeTab === 'pending' ? 'bg-white text-primary' : 'bg-amber-100 text-amber-800'
           }`}>{pendingCount}</span>
@@ -183,7 +183,7 @@ export const PatientReviews = () => {
               : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
           }`}
         >
-          Published Testimonials
+          Public Reviews
           <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
             activeTab === 'approved' ? 'bg-white text-primary' : 'bg-green-100 text-green-800'
           }`}>{approvedCount}</span>
@@ -197,7 +197,7 @@ export const PatientReviews = () => {
               : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
           }`}
         >
-          Rejected & Archived
+          Hidden Reviews
           <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
             activeTab === 'rejected' ? 'bg-white text-primary' : 'bg-red-100 text-red-800'
           }`}>{rejectedCount}</span>
