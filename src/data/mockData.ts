@@ -387,3 +387,91 @@ export const auditLogsData: AuditLog[] = [
     ipAddress: '192.168.1.108'
   }
 ];
+export interface PrescriptionMedicine {
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  instructions: string;
+}
+
+export interface PastPrescription {
+  id: string;
+  date: string;
+  doctorName: string;
+  medicines: PrescriptionMedicine[];
+}
+
+export interface PrescriptionOrder {
+  id: string;
+  patientName: string;
+  patientId: string;
+  doctorName: string;
+  date: string;
+  time: string;
+  status: 'pending' | 'dispensed';
+  medicines: PrescriptionMedicine[];
+  pastPrescriptions?: PastPrescription[];
+}
+
+export const pharmacyQueue: PrescriptionOrder[] = [
+  {
+    id: 'RX-1001',
+    patientName: 'Alice Smith',
+    patientId: 'P-1290',
+    doctorName: 'Dr. Sarah Jenkins',
+    date: '2026-06-19',
+    time: '10:15 AM',
+    status: 'pending',
+    medicines: [
+      { name: 'Amoxicillin', dosage: '500mg', frequency: '1-1-1', duration: '5 days', instructions: 'After meals' },
+      { name: 'Paracetamol', dosage: '650mg', frequency: '1-0-1', duration: '3 days', instructions: 'Only if fever' }
+    ],
+    pastPrescriptions: [
+      {
+        id: 'RX-0842',
+        date: '2026-05-10',
+        doctorName: 'Dr. Sarah Jenkins',
+        medicines: [
+          { name: 'Amoxicillin', dosage: '250mg', frequency: '1-0-1', duration: '3 days', instructions: 'After meals' },
+          { name: 'Paracetamol', dosage: '500mg', frequency: '1-0-1', duration: '2 days', instructions: 'Only if fever' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'RX-1002',
+    patientName: 'David Wilson',
+    patientId: 'P-0932',
+    doctorName: 'Dr. Sarah Jenkins',
+    date: '2026-06-19',
+    time: '09:55 AM',
+    status: 'pending',
+    medicines: [
+      { name: 'Atorvastatin', dosage: '10mg', frequency: '0-0-1', duration: '30 days', instructions: 'Before bedtime' }
+    ],
+    pastPrescriptions: [
+      {
+        id: 'RX-0911',
+        date: '2026-05-19',
+        doctorName: 'Dr. Sarah Jenkins',
+        medicines: [
+          { name: 'Atorvastatin', dosage: '20mg', frequency: '0-0-1', duration: '30 days', instructions: 'Before bedtime' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'RX-1003',
+    patientName: 'Frank Miller',
+    patientId: 'P-4521',
+    doctorName: 'Dr. Michael Chen',
+    date: '2026-06-19',
+    time: '10:40 AM',
+    status: 'pending',
+    medicines: [
+      { name: 'Metoprolol', dosage: '25mg', frequency: '1-0-0', duration: '15 days', instructions: 'Morning before breakfast' },
+      { name: 'Aspirin', dosage: '75mg', frequency: '0-1-0', duration: '30 days', instructions: 'After lunch' }
+    ]
+  }
+];

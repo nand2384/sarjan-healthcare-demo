@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ReceptionistApp } from './apps/ReceptionistApp';
 import { AdminApp } from './apps/AdminApp';
 import { DoctorApp } from './apps/DoctorApp';
+import { PharmacistApp } from './apps/PharmacistApp';
+import { PatientApp } from './apps/PatientApp';
 import { type UserRole } from './types/roles';
 import { Settings } from 'lucide-react';
 
@@ -15,8 +17,8 @@ function App() {
       {currentRole === 'receptionist' && <ReceptionistApp />}
       {currentRole === 'admin' && <AdminApp />}
       {currentRole === 'doctor' && <DoctorApp />}
-      {currentRole === 'pharmacist' && <div className="flex h-screen items-center justify-center text-xl text-gray-500 font-medium">Pharmacist Dashboard (Coming Soon)</div>}
-      {currentRole === 'patient' && <div className="flex h-screen items-center justify-center text-xl text-gray-500 font-medium">Patient Dashboard (Coming Soon)</div>}
+      {currentRole === 'pharmacist' && <PharmacistApp />}
+      {currentRole === 'patient' && <PatientApp />}
 
       {/* Developer Role Switcher (Floating Widget) */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end pointer-events-none">

@@ -135,11 +135,13 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
         <div className="h-8 w-px bg-border-color hidden md:block"></div>
 
         <div className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-primary-dark text-white flex justify-center items-center font-bold shadow-soft group-hover:shadow-md transition-all">
-            {userName}
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-primary-dark text-white flex justify-center items-center font-bold shadow-soft group-hover:shadow-md transition-all text-sm tracking-wider uppercase">
+            {userName.split(' ').map(n => n[0]).join('').substring(0, 2)}
           </div>
           <div className="hidden md:flex flex-col">
-            <span className="text-[0.9rem] font-bold text-text-dark leading-tight group-hover:text-primary transition-colors">{userRole === "Receptionist" ? "Front Desk" : "System Admin"}</span>
+            <span className="text-[0.9rem] font-bold text-text-dark leading-tight group-hover:text-primary transition-colors">
+              {userRole === "Receptionist" ? "Front Desk" : userName}
+            </span>
             <span className="text-[0.75rem] font-semibold text-text-light">{userRole}</span>
           </div>
           <ChevronDown size={16} className="text-text-light ml-1 group-hover:text-primary transition-colors hidden md:block" />

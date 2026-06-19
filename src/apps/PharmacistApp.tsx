@@ -1,18 +1,14 @@
 import { useState, useRef } from 'react';
-import { AdminSidebar } from '../components/layout/AdminSidebar';
+import { PharmacistSidebar } from '../components/layout/PharmacistSidebar';
 import { Header } from '../components/layout/Header';
-import { FinancialReports } from '../pages/FinancialReports';
-import { StaffManagement } from '../pages/StaffManagement';
-import { PricingManagement } from '../pages/PricingManagement';
-import { GlobalAnnouncements } from '../pages/GlobalAnnouncements';
-import { AdminDashboardOverview } from '../components/dashboard/AdminDashboardOverview';
-import { ClinicProfile } from '../pages/ClinicProfile';
-import { PatientReviews } from '../pages/PatientReviews';
-import { AuditLogs } from '../pages/AuditLogs';
+import { PrescriptionsQueue } from '../pages/PrescriptionsQueue';
+import { PharmacistDashboardOverview } from '../components/dashboard/PharmacistDashboardOverview';
+import { InventoryManagement } from '../pages/pharmacist/InventoryManagement';
+import { DispenseLogs } from '../pages/pharmacist/DispenseLogs';
 import { Panel, Group, type PanelImperativeHandle } from 'react-resizable-panels';
 import { ResizeHandle } from '../components/common/ResizeHandle';
 
-export const AdminApp = () => {
+export const PharmacistApp = () => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -43,7 +39,7 @@ export const AdminApp = () => {
       
       {/* Mobile Sidebar */}
       <div className="md:hidden">
-        <AdminSidebar 
+        <PharmacistSidebar 
           activeTab={activeTab} 
           setActiveTab={(tab) => {
             setActiveTab(tab);
@@ -72,13 +68,14 @@ export const AdminApp = () => {
           }}
           className="transition-all duration-300 ease-in-out"
         >
-          <AdminSidebar 
+          <PharmacistSidebar 
             activeTab={activeTab} 
             setActiveTab={(tab) => {
               setActiveTab(tab);
               setIsMobileMenuOpen(false);
             }} 
             isCollapsed={isCollapsed}
+            onToggleCollapse={toggleCollapse}
           />
         </Panel>
 
@@ -86,22 +83,18 @@ export const AdminApp = () => {
 
         <Panel minSize={50} className="flex flex-col h-full overflow-hidden w-full">
           <Header 
-            userName="AD" 
-            userRole="Admin" 
+            userName="Mike Roberts" 
+            userRole="Pharmacist" 
             onMenuClick={() => setIsMobileMenuOpen(true)}
             isCollapsed={isCollapsed}
             onToggleCollapse={toggleCollapse}
           />
           
-          <main className="flex-1 overflow-y-auto">
-            {activeTab === 'Dashboard' && <AdminDashboardOverview />}
-            {activeTab === 'Financial Reports' && <FinancialReports />}
-            {activeTab === 'Staff & Doctor Management' && <StaffManagement />}
-            {activeTab === 'Pricing & Lab Catalog' && <PricingManagement />}
-            {activeTab === 'Global Announcements' && <GlobalAnnouncements />}
-            {activeTab === 'Clinic Profile' && <ClinicProfile />}
-            {activeTab === 'Patient Reviews' && <PatientReviews />}
-            {activeTab === 'Audit Logs' && <AuditLogs />}
+          <main className="flex-1 overflow-y-auto p-6">
+            {activeTab === 'Dashboard' && <PharmacistDashboardOverview />}
+            {activeTab === 'Prescriptions Queue' && <PrescriptionsQueue />}
+            {activeTab === 'Inventory Management' && <InventoryManagement />}
+            {activeTab === 'Dispense Logs' && <DispenseLogs />}
           </main>
         </Panel>
       </Group>
@@ -109,19 +102,16 @@ export const AdminApp = () => {
       {/* Main content for mobile */}
       <div className="md:hidden flex flex-col h-full overflow-hidden w-full">
         <Header 
-          userName="AD" 
-          userRole="Admin" 
+          userName="Mike Roberts" 
+          userRole="Pharmacist" 
           onMenuClick={() => setIsMobileMenuOpen(true)}
         />
         
-        <main className="flex-1 overflow-y-auto">
-          {activeTab === 'Financial Reports' && <FinancialReports />}
-          {activeTab === 'Staff & Doctor Management' && <StaffManagement />}
-          {activeTab === 'Pricing & Lab Catalog' && <PricingManagement />}
-          {activeTab === 'Global Announcements' && <GlobalAnnouncements />}
-          {activeTab === 'Clinic Profile' && <ClinicProfile />}
-          {activeTab === 'Patient Reviews' && <PatientReviews />}
-          {activeTab === 'Audit Logs' && <AuditLogs />}
+        <main className="flex-1 overflow-y-auto p-4">
+            {activeTab === 'Dashboard' && <PharmacistDashboardOverview />}
+            {activeTab === 'Prescriptions Queue' && <PrescriptionsQueue />}
+            {activeTab === 'Inventory Management' && <InventoryManagement />}
+            {activeTab === 'Dispense Logs' && <DispenseLogs />}
         </main>
       </div>
     </div>

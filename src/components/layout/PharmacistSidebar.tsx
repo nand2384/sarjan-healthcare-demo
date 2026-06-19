@@ -1,27 +1,25 @@
 import React from 'react';
 import { 
   Stethoscope, 
-  Users,
+  Pill,
+  ClipboardList,
+  PackageSearch,
   Settings, 
   LogOut,
   X,
-  Globe,
-  Wallet,
-  Building2,
-  MessageSquareQuote,
-  ShieldAlert,
   LayoutGrid
 } from 'lucide-react';
 
-interface AdminSidebarProps {
+interface PharmacistSidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   isMobileMenuOpen?: boolean;
   setIsMobileMenuOpen?: (isOpen: boolean) => void;
   isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
-export const AdminSidebar: React.FC<AdminSidebarProps> = ({ 
+export const PharmacistSidebar: React.FC<PharmacistSidebarProps> = ({ 
   activeTab, 
   setActiveTab, 
   isMobileMenuOpen, 
@@ -37,25 +35,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       ]
     },
     {
-      group: 'Administration',
+      group: 'Pharmacy',
       items: [
-        { icon: <Users size={20} />, label: 'Staff & Doctor Management' },
-        { icon: <ShieldAlert size={20} />, label: 'Audit Logs' }
-      ]
-    },
-    {
-      group: 'Finance',
-      items: [
-        { icon: <Wallet size={20} />, label: 'Financial Reports' },
-        { icon: <Settings size={20} />, label: 'Pricing & Lab Catalog' }
-      ]
-    },
-    {
-      group: 'Website',
-      items: [
-        { icon: <Globe size={20} />, label: 'Global Announcements' },
-        { icon: <Building2 size={20} />, label: 'Clinic Profile' },
-        { icon: <MessageSquareQuote size={20} />, label: 'Patient Reviews' }
+        { icon: <ClipboardList size={20} />, label: 'Prescriptions Queue' },
+        { icon: <PackageSearch size={20} />, label: 'Inventory Management' },
+        { icon: <Pill size={20} />, label: 'Dispense Logs' }
       ]
     }
   ];

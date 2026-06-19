@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { 
   Users, 
   Search, 
@@ -18,6 +18,8 @@ import {
   X,
   ClipboardList
 } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
+import { ConsultationReportPrintTemplate } from '../components/print/ConsultationReportPrintTemplate';
 import { doctorsData, type Patient } from '../data/mockData';
 
 // Generate mock EMR history for the patients
@@ -52,6 +54,12 @@ export const MyPatients = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedEMR, setSelectedEMR] = useState<any | null>(null);
+
+  const reportRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: reportRef,
+    documentTitle: `Consultation_Report_${selectedEMR?.id || 'Doc'}`,
+  });
 
   // We grab Dr. Jenkins' patients (completed + waiting for this demo)
   const doctorId = 'd1';
@@ -348,10 +356,52 @@ export const MyPatients = () => {
                 >
                   Close
                 </button>
-                <button className="flex items-center gap-2 px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
+                <button 
+                  onClick={() => handlePrint()}
+                  className="flex items-center gap-2 px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-bold shadow-sm transition-colors"
+                >
                   <Download size={16} /> Print EMR
                 </button>
               </div>
+
+              {/* Hidden Print Component (Must be rendered when modal is open) */}
+              <div className="hidden">
+                <ConsultationReportPrintTemplate
+                  ref={reportRef}
+                  data={{
+                    reportId: selectedEMR.id,
+                    date: selectedEMR.date,
+                    time: '10:30 AM',
+                    patientName: (selectedPatient as any).name,
+                    patientId: (selectedPatient as any).id,
+                    patientAgeGender: `34 Yrs • Male`,
+                    doctorName: doctor?.name || 'Dr. Unknown',
+                    doctorSpecialty: doctor?.specialty || 'General Medicine',
+                    vitals: {
+                      height: selectedEMR.vitals?.height,
+                      weight: selectedEMR.vitals?.weight,
+                      bp: selectedEMR.vitals?.bp,
+                      pulse: selectedEMR.vitals?.pulse,
+                      temp: selectedEMR.vitals?.temp,
+                      spo2: selectedEMR.vitals?.spo2,
+                    },
+                    symptoms: selectedEMR.symptoms ? [selectedEMR.symptoms] : [],
+                    diagnosis: selectedEMR.diagnosis || 'Diagnosis Pending',
+                    prescriptions: selectedEMR.prescription?.split('\n').map((rx: string) => {
+                      return {
+                        medicine: rx,
+                        dosage: 'As prescribed',
+                        frequency: 'Daily',
+                        duration: '5 Days'
+                      };
+                    }) || [],
+                    labTests: selectedEMR.investigations ? [selectedEMR.investigations] : [],
+                    notes: selectedEMR.doctorNotes || 'No additional notes provided.',
+                    followUp: selectedEMR.followUp || 'As needed'
+                  }}
+                />
+              </div>
+
             </div>
           </div>
         )}

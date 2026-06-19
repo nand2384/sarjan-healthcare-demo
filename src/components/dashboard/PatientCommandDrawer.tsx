@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { type Patient, type PatientStatus, type Vitals, TESTS_CATALOG, CONSULTATION_FEE } from '../../data/mockData';
 import { X, Play, HeartPulse, UserMinus, Clock, Receipt, Printer, Save, ClipboardList, CheckSquare, AlertTriangle } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
+import { ReceiptPrintTemplate } from '../print/ReceiptPrintTemplate';
 
 interface PatientCommandDrawerProps {
   patient: Patient | null;
@@ -38,6 +40,19 @@ export const PatientCommandDrawer: React.FC<PatientCommandDrawerProps> = ({
   const [includeConsultation, setIncludeConsultation] = useState(true);
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
   const [paymentMode, setPaymentMode] = useState<'Cash' | 'Card' | 'UPI'>('Cash');
+
+  const receiptRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: receiptRef,
+    documentTitle: `Receipt_${patient?.id}`,
+    onAfterPrint: () => {
+      if (patient) {
+        onUpdatePatient(patient.id, { paymentPending: false });
+        onUpdateStatus(patient.id, 'completed');
+        onClose();
+      }
+    }
+  });
 
   // Reset states when drawer opens/closes or patient changes
   useEffect(() => {
@@ -87,10 +102,8 @@ export const PatientCommandDrawer: React.FC<PatientCommandDrawerProps> = ({
   };
 
   const handleCompleteBilling = () => {
-    onUpdatePatient(patient.id, { paymentPending: false });
-    onUpdateStatus(patient.id, 'completed');
-    alert(`Receipt generated for ₹${calculateTotalBill()} via ${paymentMode}`);
-    onClose();
+    if (!patient) return;
+    handlePrint();
   };
 
   // BMI Calculation
@@ -594,6 +607,31 @@ export const PatientCommandDrawer: React.FC<PatientCommandDrawerProps> = ({
           <div className="flex-1 overflow-y-auto p-6 relative">
             {renderActionsView()}
           </div>
+        </div>
+      )}
+
+      {/* Hidden Print Component */}
+      {patient && (
+        <div className="hidden">
+          <ReceiptPrintTemplate
+            ref={receiptRef}
+            data={{
+              receiptNo: `RCPT-${Math.floor(Math.random() * 10000)}`,
+              date: new Date().toLocaleString(),
+              patientName: patient.name,
+              cashierName: 'Receptionist Admin',
+              type: 'Consultation',
+              paymentMethod: paymentMode,
+              totalAmount: calculateTotalBill(),
+              items: [
+                { description: 'Consultation Fee', amount: CONSULTATION_FEE },
+                ...selectedTests.map(testId => {
+                  const test = TESTS_CATALOG.find(t => t.id === testId);
+                  return { description: test!.name, amount: test!.price };
+                })
+              ]
+            }}
+          />
         </div>
       )}
     </>
