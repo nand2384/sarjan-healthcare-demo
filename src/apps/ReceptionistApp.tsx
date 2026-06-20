@@ -169,6 +169,8 @@ export const ReceptionistApp = () => {
                 localDoctorsData={localDoctorsData}
                 handleUpdateStatus={handleUpdateStatus}
                 handleUpdatePatient={handleUpdatePatient}
+                localAppointmentsData={localAppointmentsData}
+                handleMarkAsArrived={handleMarkAsArrived}
               />
             )}
             {activeTab === 'Appointments' && (
@@ -209,6 +211,8 @@ export const ReceptionistApp = () => {
               localDoctorsData={localDoctorsData}
               handleUpdateStatus={handleUpdateStatus}
               handleUpdatePatient={handleUpdatePatient}
+              localAppointmentsData={localAppointmentsData}
+              handleMarkAsArrived={handleMarkAsArrived}
             />
           )}
           {activeTab === 'Appointments' && (

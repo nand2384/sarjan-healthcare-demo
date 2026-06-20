@@ -75,7 +75,6 @@ export const PharmacistApp = () => {
               setIsMobileMenuOpen(false);
             }} 
             isCollapsed={isCollapsed}
-            onToggleCollapse={toggleCollapse}
           />
         </Panel>
 

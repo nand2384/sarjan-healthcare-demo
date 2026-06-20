@@ -72,9 +72,9 @@ export const QueueManager = React.memo(function QueueManager({ localDoctorsData,
       <div className="grid grid-cols-2 divide-x divide-border-color flex-1 overflow-hidden">
         {/* Advance Queue */}
         <div className="flex flex-col bg-gray-50/30 overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b border-border-color/50 shrink-0 bg-white/50">
+          <div className="flex justify-between items-center p-4 border-b border-border-color bg-gray-50/50 shrink-0">
             <h4 className="font-bold text-text-dark">Advance Booking</h4>
-            <span className="bg-gray-200 text-gray-700 text-xs px-2.5 py-1 rounded-full font-bold">
+            <span className="bg-primary/5 text-primary text-xs px-2.5 py-0.5 rounded-full font-bold border border-primary/10">
               {advanceQueue.length}
             </span>
           </div>
@@ -91,9 +91,9 @@ export const QueueManager = React.memo(function QueueManager({ localDoctorsData,
 
         {/* Walk-in Queue */}
         <div className="flex flex-col bg-gray-50/30 overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b border-border-color/50 shrink-0 bg-white/50">
+          <div className="flex justify-between items-center p-4 border-b border-border-color bg-gray-50/50 shrink-0">
             <h4 className="font-bold text-text-dark">Walk-in Queue</h4>
-            <span className="bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-bold">
+            <span className="bg-blue-50 text-blue-700 text-xs px-2.5 py-0.5 rounded-full font-bold border border-blue-100/50">
               {walkInQueue.length}
             </span>
           </div>

@@ -53,7 +53,7 @@ function App() {
         <button 
           onClick={() => setIsOpen(!isOpen)}
           className={`pointer-events-auto w-12 h-12 bg-white border border-border-color rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 ${
-            isOpen ? 'rotate-90 text-primary shadow-xl bg-gray-50' : 'text-text-gray hover:text-primary hover:-translate-y-1 hover:shadow-xl'
+            isOpen ? 'rotate-90 text-primary shadow-xl bg-gray-50' : 'text-text-gray hover:text-primary hover:shadow-xl'
           }`}
         >
           <Settings size={22} />

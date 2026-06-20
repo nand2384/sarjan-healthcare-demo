@@ -38,7 +38,6 @@ body {
     border: 1px solid rgba(0,0,0,0.04);
   }
   .interactive-card:hover {
-    transform: translateY(-2px);
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
     border-color: rgba(0,0,0,0.08);
   }
@@ -76,7 +75,7 @@ body {
   
   /* Tables */
   .table-header-cell {
-    @apply px-6 py-4 text-left text-[11px] font-bold text-text-light uppercase tracking-widest border-b border-border-color bg-gray-50/30;
+    @apply px-6 py-4 text-left text-[11px] font-bold text-text-gray uppercase tracking-widest border-b border-border-color bg-gray-50/30;
   }
   .table-row-cell {
     @apply px-6 py-4 text-sm text-text-dark border-b border-border-color;

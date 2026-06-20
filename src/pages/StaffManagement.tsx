@@ -311,7 +311,7 @@ export const StaffManagement = () => {
                         <div className="font-medium text-text-dark">{doc.email || 'No email set'}</div>
                         <div className="text-text-light">{doc.phone || 'No phone set'}</div>
                       </td>
-                      <td className="p-4">
+                      <td className="table-row-cell">
                         {/* Status is fully automated and not editable inline */}
                         <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
                           currentStatus === 'available' ? 'bg-green-100 text-green-700' :
@@ -485,12 +485,12 @@ export const StaffManagement = () => {
           <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden overflow-x-auto border-none">
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
-                <tr className="bg-gray-50/50 border-b border-border-color text-text-gray text-xs uppercase tracking-wider">
-                  <th className="p-4 font-semibold w-1/4">Staff Name</th>
-                  <th className="p-4 font-semibold w-1/4">Assigned Shift</th>
-                  <th className="p-4 font-semibold w-1/5">Contact</th>
-                  <th className="p-4 font-semibold w-1/6">Account Status</th>
-                  <th className="p-4 font-semibold text-right w-40">Actions</th>
+                <tr>
+                  <th className="table-header-cell w-1/4">Staff Name</th>
+                  <th className="table-header-cell w-1/4">Assigned Shift</th>
+                  <th className="table-header-cell w-1/5">Contact</th>
+                  <th className="table-header-cell w-1/6">Account Status</th>
+                  <th className="table-header-cell text-right w-40">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-color text-sm text-text-dark">
@@ -515,7 +515,7 @@ export const StaffManagement = () => {
                           </div>
                         )}
                       </td>
-                      <td className="p-4 text-text-gray font-medium">
+                      <td className="table-row-cell text-text-gray font-medium">
                         {isEditing ? (
                           <select 
                             value={recpEditForm.shift} 
@@ -530,7 +530,7 @@ export const StaffManagement = () => {
                           recp.shift
                         )}
                       </td>
-                      <td className="p-4 font-medium text-xs">
+                      <td className="table-row-cell font-medium text-xs">
                         {isEditing ? (
                           <input 
                             type="text" 
@@ -545,7 +545,7 @@ export const StaffManagement = () => {
                           </>
                         )}
                       </td>
-                      <td className="p-4">
+                      <td className="table-row-cell">
                         {isEditing ? (
                           <select 
                             value={recpEditForm.status} 

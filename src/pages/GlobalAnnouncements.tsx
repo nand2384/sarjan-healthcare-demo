@@ -104,7 +104,7 @@ export const GlobalAnnouncements = () => {
           
           <div className="flex flex-col gap-3">
             {announcements.map(alert => (
-              <div key={alert.id} className={`p-4 rounded-xl border flex justify-between items-start gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-soft ${
+              <div key={alert.id} className={`p-4 rounded-xl border flex justify-between items-start gap-4 transition-all duration-200 hover:shadow-soft ${
                 alert.type === 'danger' ? 'bg-red-50/50 border-red-200 hover:border-red-300' :
                 alert.type === 'warning' ? 'bg-amber-50/50 border-amber-200 hover:border-amber-300' :
                 'bg-blue-50/50 border-blue-200 hover:border-blue-300'

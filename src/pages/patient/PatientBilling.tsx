@@ -112,12 +112,12 @@ export const PatientBilling = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/80 border-b border-border-color">
-                <th className="py-4 px-6 text-xs font-extrabold text-text-light uppercase tracking-wider">Date</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-light uppercase tracking-wider">Invoice ID</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-light uppercase tracking-wider">Description</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-light uppercase tracking-wider">Amount</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-light uppercase tracking-wider">Status</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-light uppercase tracking-wider text-right">Action</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Date</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Invoice ID</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Description</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Amount</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Status</th>
+                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border-color">

@@ -457,24 +457,35 @@ export const MyPatients = () => {
                 {filteredPatients.map(patient => (
                   <tr 
                     key={patient.id} 
-                    className="hover:bg-gray-50/50 transition-colors group cursor-pointer"
+                    className="hover:bg-hover-bg/40 transition-colors group cursor-pointer"
                     onClick={() => setSelectedPatient(patient)}
                   >
                     <td className="table-row-cell font-mono text-xs text-text-gray">
                       UHID-{patient.id.replace('p', '90')}
                     </td>
                     <td className="table-row-cell">
-                      <div className="font-bold text-text-dark">{patient.name}</div>
-                      <div className="text-xs text-text-gray flex items-center gap-1 mt-0.5">
-                        <Phone size={10} /> {patient.phone || '+91 9XXXX XXXXX'}
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-primary/5 text-primary border border-primary/20 flex items-center justify-center font-bold text-sm shrink-0">
+                          {patient.name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-text-dark text-sm group-hover:text-primary transition-colors">{patient.name}</div>
+                          <div className="text-xs text-text-gray flex items-center gap-1 mt-0.5">
+                            <Phone size={11} className="text-slate-400" /> {patient.phone || '+91 9XXXX XXXXX'}
+                          </div>
+                        </div>
                       </div>
                     </td>
                     <td className="table-row-cell">
-                      <div className="font-medium">10 May 2026</div>
-                      <div className="text-xs text-text-gray">Completed</div>
+                      <div className="font-semibold text-text-dark">10 May 2026</div>
+                      <div className="mt-1.5">
+                        <span className="bg-emerald-50 text-emerald-700 border border-emerald-100/50 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                          Completed
+                        </span>
+                      </div>
                     </td>
                     <td className="table-row-cell text-right pr-6">
-                      <button className="text-primary font-bold text-xs hover:underline flex items-center gap-1 justify-end w-full">
+                      <button className="flex items-center gap-1 px-3 py-1.5 border border-primary/20 hover:bg-primary text-primary hover:text-white rounded-lg transition-all font-semibold text-xs ml-auto shadow-sm cursor-pointer">
                         View EMR <ChevronRight size={12} />
                       </button>
                     </td>

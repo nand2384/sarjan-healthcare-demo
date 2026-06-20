@@ -16,7 +16,6 @@ interface PharmacistSidebarProps {
   isMobileMenuOpen?: boolean;
   setIsMobileMenuOpen?: (isOpen: boolean) => void;
   isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export const PharmacistSidebar: React.FC<PharmacistSidebarProps> = ({ 

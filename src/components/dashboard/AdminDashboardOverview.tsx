@@ -33,7 +33,7 @@ export const AdminDashboardOverview = () => {
           <h2 className="text-2xl font-bold text-text-dark">Admin Dashboard Overview</h2>
           <p className="text-text-gray mt-1">Here is what's happening in your clinic today.</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold shadow-soft hover:shadow-lg hover:-translate-y-0.5 transition-all">
+        <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold shadow-soft hover:bg-primary-dark transition-colors">
           <TrendingUp size={16} /> Generate Report
         </button>
       </div>
@@ -128,7 +128,7 @@ export const AdminDashboardOverview = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-y border-border-color text-[10px] font-bold text-text-light uppercase tracking-wider">
+              <tr className="bg-gray-50/50 border-y border-border-color text-[10px] font-bold text-text-gray uppercase tracking-wider">
                 <th className="py-3 px-4">Time</th>
                 <th className="py-3 px-4">Action</th>
                 <th className="py-3 px-4">User</th>

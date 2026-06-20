@@ -119,7 +119,7 @@ export const DoctorView = React.memo(function DoctorView({
         <div className="flex flex-col bg-white rounded-xl shadow-sm border border-border-color overflow-hidden min-h-[400px] md:min-h-0">
           <div className="flex justify-between items-center p-4 border-b border-border-color bg-gray-50/50 shrink-0">
             <h4 className="font-bold text-text-dark">Advance Booking</h4>
-            <span className="bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-full font-bold">
+            <span className="bg-primary/5 text-primary text-xs px-2.5 py-0.5 rounded-full font-bold border border-primary/10">
               {advanceQueue.length}
             </span>
           </div>
@@ -145,7 +145,7 @@ export const DoctorView = React.memo(function DoctorView({
         <div className="flex flex-col bg-white rounded-xl shadow-sm border border-border-color overflow-hidden min-h-[400px] md:min-h-0">
           <div className="flex justify-between items-center p-4 border-b border-border-color bg-gray-50/50 shrink-0">
             <h4 className="font-bold text-text-dark">Walk-in Queue</h4>
-            <span className="bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-bold">
+            <span className="bg-blue-50 text-blue-700 text-xs px-2.5 py-0.5 rounded-full font-bold border border-blue-100/50">
               {walkInQueue.length}
             </span>
           </div>
@@ -169,31 +169,31 @@ export const DoctorView = React.memo(function DoctorView({
 
         {/* Column 3: Not Yet Arrived (Pending) */}
         <div className="flex flex-col bg-white rounded-xl shadow-sm border border-border-color overflow-hidden min-h-[400px] md:min-h-0">
-          <div className="flex justify-between items-center p-4 border-b border-border-color bg-amber-50/30 shrink-0">
-            <h4 className="font-bold text-amber-900">Not Yet Arrived</h4>
-            <span className="bg-amber-100 text-amber-700 text-xs px-2.5 py-1 rounded-full font-bold">
+          <div className="flex justify-between items-center p-4 border-b border-border-color bg-gray-50/50 shrink-0">
+            <h4 className="font-bold text-text-dark">Not Yet Arrived</h4>
+            <span className="bg-amber-50 text-amber-700 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-100/50">
               {pendingAppointments.length}
             </span>
           </div>
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-gray-50/30">
             {pendingAppointments.length > 0 ? (
               pendingAppointments.map(appt => (
-                <div key={appt.id} className="bg-white border border-border-color rounded-lg shadow-sm overflow-hidden flex flex-col relative transition-all hover:border-amber-400 shrink-0">
+                <div key={appt.id} className="bg-white border border-border-color rounded-lg shadow-sm overflow-hidden flex flex-col relative transition-all hover:border-primary/50 hover:shadow-md shrink-0">
                   <div className="p-3 pb-2">
                     <h5 className="font-semibold text-text-dark text-sm flex items-center gap-1.5 mb-2">
-                      <User size={14} className="text-text-gray" /> {appt.patientName}
+                      <User size={14} className="text-slate-400" /> {appt.patientName}
                     </h5>
-                    <div className="flex flex-col gap-1 text-xs text-text-gray font-medium">
-                      <span className="flex items-center gap-1.5"><Clock size={12} className="text-amber-600" /> {appt.timeSlot}</span>
-                      <span className="flex items-center gap-1.5"><Phone size={12} /> {appt.phone}</span>
-                      <span className="flex items-center gap-1.5"><CalendarIcon size={12} /> {appt.reasonForVisit}</span>
+                    <div className="flex flex-col gap-1.5 text-xs text-text-gray font-medium">
+                      <span className="flex items-center gap-1.5"><Clock size={12} className="text-slate-400" /> {appt.timeSlot}</span>
+                      <span className="flex items-center gap-1.5"><Phone size={12} className="text-slate-400" /> {appt.phone}</span>
+                      <span className="flex items-center gap-1.5"><CalendarIcon size={12} className="text-slate-400" /> {appt.reasonForVisit}</span>
                     </div>
                   </div>
                   <button 
                     onClick={() => handleMarkAsArrived(appt.id)}
-                    className="w-full bg-amber-50 hover:bg-amber-100 border-t border-amber-100 text-amber-700 py-2.5 px-3 flex items-center justify-center gap-2 transition-colors cursor-pointer group mt-1"
+                    className="w-full bg-white hover:bg-primary/5 border-t border-border-color text-primary py-2.5 px-3 flex items-center justify-center gap-2 transition-colors cursor-pointer group mt-1"
                   >
-                    <CheckCircle size={16} className="group-hover:scale-110 transition-transform" />
+                    <CheckCircle size={16} className="group-hover:scale-110 transition-transform text-primary/80 group-hover:text-primary" />
                     <span className="text-xs font-bold uppercase tracking-wider">Mark As Arrived</span>
                   </button>
                 </div>

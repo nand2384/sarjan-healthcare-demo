@@ -24,7 +24,7 @@ export const PrescriptionsQueue = () => {
   };
 
   return (
-    <Group orientation="horizontal" className="h-full w-full bg-white rounded-2xl shadow-sm border border-border-color overflow-hidden flex">
+    <Group orientation="horizontal" className="h-full w-full bg-white rounded-2xl shadow-soft border-none overflow-hidden flex">
       {/* Left Column: Queue Cards */}
       <Panel defaultSize={320} minSize={260} maxSize={500} className="flex flex-col bg-white">
         <div className="p-4 border-b border-border-color shrink-0">
@@ -57,10 +57,10 @@ export const PrescriptionsQueue = () => {
               <div 
                 key={order.id}
                 onClick={() => setSelectedOrder(order)}
-                className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                className={`p-3.5 rounded-xl border cursor-pointer transition-all duration-200 ${
                   selectedOrder?.id === order.id 
-                    ? 'border-primary bg-primary/5 shadow-sm' 
-                    : 'border-transparent bg-gray-50 hover:border-primary/30 hover:shadow-sm'
+                    ? 'border-primary bg-primary/5 shadow-soft ring-1 ring-primary/20' 
+                    : 'border-border-color/50 bg-gray-50/50 hover:border-primary/30 hover:bg-white hover:shadow-soft'
                 }`}
               >
                 <div className="flex justify-between items-start mb-1.5">
@@ -109,39 +109,39 @@ export const PrescriptionsQueue = () => {
                 </button>
                 <button 
                   onClick={() => handleDispense(selectedOrder.id)}
-                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors shadow-soft hover:shadow-lg hover:-translate-y-0.5"
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors shadow-soft hover:shadow-lg"
                 >
                   <CheckCircle2 size={16} /> Mark as Dispensed
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 shrink-0">
-              <div className="bg-white p-4 rounded-xl border border-border-color shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6 shrink-0">
+              <div className="bg-white p-5 rounded-2xl shadow-soft interactive-card border-none">
                 <p className="text-[10px] font-bold text-text-light uppercase tracking-wider mb-1">Patient Info</p>
                 <p className="font-bold text-text-dark text-lg flex items-center gap-2">
                   <User size={16} className="text-primary" /> {selectedOrder.patientName}
                 </p>
-                <p className="text-xs text-text-gray mt-1 font-medium">Patient ID: {selectedOrder.patientId}</p>
+                <p className="text-xs text-text-gray mt-1.5 font-medium">Patient ID: {selectedOrder.patientId}</p>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-border-color shadow-sm">
+              <div className="bg-white p-5 rounded-2xl shadow-soft interactive-card border-none">
                 <p className="text-[10px] font-bold text-text-light uppercase tracking-wider mb-1">Doctor Info</p>
                 <p className="font-bold text-text-dark text-lg flex items-center gap-2">
                   <Stethoscope size={16} className="text-primary" /> {selectedOrder.doctorName}
                 </p>
-                <p className="text-xs text-text-gray mt-1 font-medium">Date: {selectedOrder.date} at {selectedOrder.time}</p>
+                <p className="text-xs text-text-gray mt-1.5 font-medium">Date: {selectedOrder.date} at {selectedOrder.time}</p>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-border-color shadow-sm flex flex-col overflow-hidden mb-6 shrink-0">
-              <div className="bg-gray-50 border-b border-border-color p-4 flex items-center gap-2 shrink-0">
+            <div className="bg-white rounded-2xl shadow-soft interactive-card border-none flex flex-col overflow-hidden mb-6 shrink-0">
+              <div className="bg-gray-50/50 border-b border-border-color p-4 flex items-center gap-2 shrink-0">
                 <Pill size={16} className="text-primary" />
                 <h3 className="font-bold text-text-dark">Current Prescribed Medicines ({selectedOrder.medicines.length})</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse min-w-[600px]">
                   <thead>
-                    <tr className="bg-gray-50/50 border-b border-border-color text-[10px] font-bold text-text-light uppercase tracking-wider">
+                    <tr className="bg-gray-50/50 border-b border-border-color text-[10px] font-bold text-text-gray uppercase tracking-wider">
                       <th className="py-3 px-4">Medicine & Dosage</th>
                       <th className="py-3 px-4">Frequency</th>
                       <th className="py-3 px-4">Duration</th>
@@ -170,8 +170,8 @@ export const PrescriptionsQueue = () => {
 
             {/* Past Prescriptions */}
             {selectedOrder.pastPrescriptions && selectedOrder.pastPrescriptions.length > 0 && (
-              <div className="bg-white rounded-xl border border-border-color shadow-sm flex flex-col overflow-hidden shrink-0">
-                <div className="bg-gray-50 border-b border-border-color p-4 flex items-center justify-between shrink-0">
+              <div className="bg-white rounded-2xl shadow-soft interactive-card border-none flex flex-col overflow-hidden shrink-0">
+                <div className="bg-gray-50/50 border-b border-border-color p-4 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
                     <History size={16} className="text-primary" />
                     <h3 className="font-bold text-text-dark">Past Prescriptions History</h3>

@@ -8,7 +8,7 @@ export const PatientDashboardOverview = () => {
           <h2 className="text-2xl font-bold text-text-dark">Good morning, John!</h2>
           <p className="text-text-gray mt-1">Here is a summary of your health and upcoming appointments.</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold shadow-soft hover:shadow-lg hover:-translate-y-0.5 transition-all">
+        <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold shadow-soft hover:bg-primary-dark transition-colors">
           <Calendar size={16} /> Book Appointment
         </button>
       </div>

@@ -72,7 +72,7 @@ export const DispenseLogs = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-border-color overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-soft interactive-card overflow-hidden border-none">
         {/* Toolbar */}
         <div className="p-4 border-b border-border-color flex flex-col sm:flex-row gap-4 justify-between items-center bg-gray-50/50">
           <div className="relative w-full sm:w-80">
@@ -111,7 +111,7 @@ export const DispenseLogs = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white border-b border-border-color text-xs font-bold text-text-light uppercase tracking-wider">
+              <tr className="bg-white border-b border-border-color text-xs font-bold text-text-gray uppercase tracking-wider">
                 <th className="py-4 px-6">Date & Time</th>
                 <th className="py-4 px-6">Prescription</th>
                 <th className="py-4 px-6">Items Dispensed</th>
