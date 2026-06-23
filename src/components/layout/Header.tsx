@@ -52,14 +52,16 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
           </button>
         )}
 
-        <div className="hidden md:flex items-center bg-white/60 hover:bg-white focus-within:bg-white rounded-full border border-border-color px-5 py-2.5 w-[300px] lg:w-[450px] shrink-0 transition-all shadow-sm focus-within:shadow-soft focus-within:border-primary/30">
-          <Search size={18} className="text-text-light" />
-          <input 
-            type="text" 
-            placeholder="Search for patient, doctor, or staff..." 
-            className="border-none bg-transparent outline-none ml-3 flex-1 text-[0.9rem] text-text-dark placeholder:text-text-light"
-          />
-        </div>
+        {userRole !== 'Patient' && (
+          <div className="hidden md:flex items-center bg-white/60 hover:bg-white focus-within:bg-white rounded-full border border-border-color px-5 py-2.5 w-[300px] lg:w-[450px] shrink-0 transition-all shadow-sm focus-within:shadow-soft focus-within:border-primary/30">
+            <Search size={18} className="text-text-light" />
+            <input 
+              type="text" 
+              placeholder="Search for patient, doctor, or staff..." 
+              className="border-none bg-transparent outline-none ml-3 flex-1 text-[0.9rem] text-text-dark placeholder:text-text-light"
+            />
+          </div>
+        )}
 
         {/* Top Navigation for Receptionist */}
         {navItems && navItems.length > 0 && setActiveTab && (

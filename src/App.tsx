@@ -4,21 +4,36 @@ import { AdminApp } from './apps/AdminApp';
 import { DoctorApp } from './apps/DoctorApp';
 import { PharmacistApp } from './apps/PharmacistApp';
 import { PatientApp } from './apps/PatientApp';
+import { LandingPage } from './pages/LandingPage';
 import { type UserRole } from './types/roles';
-import { Settings } from 'lucide-react';
+import { Settings, LayoutGrid } from 'lucide-react';
 
 function App() {
+  const [view, setView] = useState<'landing' | 'app'>('landing');
   const [currentRole, setCurrentRole] = useState<UserRole>('receptionist');
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       {/* App Router */}
-      {currentRole === 'receptionist' && <ReceptionistApp />}
-      {currentRole === 'admin' && <AdminApp />}
-      {currentRole === 'doctor' && <DoctorApp />}
-      {currentRole === 'pharmacist' && <PharmacistApp />}
-      {currentRole === 'patient' && <PatientApp />}
+      {view === 'landing' && (
+        <LandingPage 
+          onLogin={(role) => {
+            setCurrentRole(role);
+            setView('app');
+          }} 
+        />
+      )}
+      
+      {view === 'app' && (
+        <>
+          {currentRole === 'receptionist' && <ReceptionistApp />}
+          {currentRole === 'admin' && <AdminApp />}
+          {currentRole === 'doctor' && <DoctorApp />}
+          {currentRole === 'pharmacist' && <PharmacistApp />}
+          {currentRole === 'patient' && <PatientApp />}
+        </>
+      )}
 
       {/* Developer Role Switcher (Floating Widget) */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end pointer-events-none">
@@ -36,10 +51,11 @@ function App() {
                 key={role}
                 onClick={() => {
                   setCurrentRole(role);
+                  setView('app');
                   setIsOpen(false);
                 }}
                 className={`text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  currentRole === role 
+                  view === 'app' && currentRole === role 
                     ? 'bg-primary text-white shadow-sm' 
                     : 'text-text-dark hover:bg-gray-100'
                 }`}
@@ -47,6 +63,22 @@ function App() {
                 {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard
               </button>
             ))}
+
+            <div className="border-t border-border-color my-1 pt-2">
+              <button 
+                onClick={() => {
+                  setView('landing');
+                  setIsOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
+                  view === 'landing' 
+                    ? 'bg-primary text-white shadow-sm' 
+                    : 'text-text-gray hover:bg-gray-100 hover:text-text-dark'
+                }`}
+              >
+                <LayoutGrid size={16} /> Patient Main Site
+              </button>
+            </div>
         </div>
 
         {/* Floating Action Button */}
