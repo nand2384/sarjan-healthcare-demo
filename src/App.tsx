@@ -5,11 +5,12 @@ import { DoctorApp } from './apps/DoctorApp';
 import { PharmacistApp } from './apps/PharmacistApp';
 import { PatientApp } from './apps/PatientApp';
 import { LandingPage } from './pages/LandingPage';
+import { LoginPage } from './pages/LoginPage';
 import { type UserRole } from './types/roles';
 import { Settings, LayoutGrid } from 'lucide-react';
 
 function App() {
-  const [view, setView] = useState<'landing' | 'app'>('landing');
+  const [view, setView] = useState<'landing' | 'login' | 'app'>('landing');
   const [currentRole, setCurrentRole] = useState<UserRole>('receptionist');
   const [isOpen, setIsOpen] = useState(false);
 
@@ -18,10 +19,17 @@ function App() {
       {/* App Router */}
       {view === 'landing' && (
         <LandingPage 
+          onNavigateToLogin={() => setView('login')} 
+        />
+      )}
+
+      {view === 'login' && (
+        <LoginPage 
           onLogin={(role) => {
             setCurrentRole(role);
             setView('app');
-          }} 
+          }}
+          onBack={() => setView('landing')}
         />
       )}
       
@@ -38,16 +46,13 @@ function App() {
       {/* Developer Role Switcher (Floating Widget) */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end pointer-events-none">
         
-        {/* Menu Popover */}
-        <div className={`mb-3 bg-white border border-border-color shadow-2xl rounded-2xl p-3 flex flex-col gap-2 min-w-[200px] origin-bottom-right transition-all duration-300 ease-out ${
-          isOpen ? 'scale-100 opacity-100 translate-y-0 pointer-events-auto' : 'scale-95 opacity-0 translate-y-4 pointer-events-none'
-        }`}>
-            <div className="text-[10px] font-bold text-text-gray uppercase tracking-wider px-2 mb-1 flex items-center gap-1.5">
-              <Settings size={12} /> Developer Switcher
+        {isOpen && (
+          <div className="bg-white rounded-xl shadow-2xl border border-border-color p-3 mb-3 w-56 flex flex-col gap-1 pointer-events-auto animate-in slide-in-from-bottom-2 fade-in duration-200">
+            <div className="text-[10px] font-extrabold text-text-gray uppercase tracking-wider px-2 py-1 mb-1">
+              Developer Demo Switcher
             </div>
-            
-            {(['admin', 'receptionist', 'doctor', 'pharmacist', 'patient'] as UserRole[]).map(role => (
-              <button 
+            {(['receptionist', 'doctor', 'pharmacist', 'admin', 'patient'] as UserRole[]).map((role) => (
+              <button
                 key={role}
                 onClick={() => {
                   setCurrentRole(role);
@@ -79,7 +84,8 @@ function App() {
                 <LayoutGrid size={16} /> Patient Main Site
               </button>
             </div>
-        </div>
+          </div>
+        )}
 
         {/* Floating Action Button */}
         <button 

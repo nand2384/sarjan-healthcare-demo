@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
   Stethoscope, 
-  Pill, 
   MapPin, 
   Phone, 
   Mail, 
@@ -10,14 +9,10 @@ import {
   Play, 
   X, 
   Lock, 
-  User, 
-  Shield, 
-  ClipboardList, 
   CheckCircle,
   HeartPulse,
   Plus
 } from 'lucide-react';
-import { type UserRole } from '../types/roles';
 
 // Import local images from src folder
 import doctorSarah from '../doctor_sarah.png';
@@ -69,11 +64,10 @@ const Facebook = ({ size = 20, className = "text-primary" }: { size?: number; cl
 );
 
 interface LandingPageProps {
-  onLogin: (role: UserRole) => void;
+  onNavigateToLogin: () => void;
 }
 
-export const LandingPage = ({ onLogin }: LandingPageProps) => {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+export const LandingPage = ({ onNavigateToLogin }: LandingPageProps) => {
   const [activeVideo, setActiveVideo] = useState<{ title: string; url: string } | null>(null);
   
   const [activeDocIndex, setActiveDocIndex] = useState(0);
@@ -305,7 +299,7 @@ export const LandingPage = ({ onLogin }: LandingPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-base text-text-dark flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-bg-base text-text-dark flex flex-col">
       
       {/* Header */}
       <header className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-border-color z-40 h-[76px] flex items-center justify-between px-6 md:px-12 shrink-0 shadow-sm">
@@ -343,7 +337,7 @@ export const LandingPage = ({ onLogin }: LandingPageProps) => {
 
         {/* Action Button */}
         <button 
-          onClick={() => setIsLoginOpen(true)}
+          onClick={onNavigateToLogin}
           className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 text-sm cursor-pointer"
         >
           <Lock size={16} /> Staff Login
@@ -859,133 +853,6 @@ export const LandingPage = ({ onLogin }: LandingPageProps) => {
           </div>
         </div>
       </footer>
-
-      {/* Login Role Modal */}
-      {isLoginOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200 border border-border-color">
-            
-            {/* Modal Header */}
-            <div className="p-6 border-b border-border-color flex justify-between items-center bg-gray-50/50 shrink-0">
-              <div className="text-left">
-                <h3 className="font-extrabold text-text-dark text-xl flex items-center gap-2">
-                  <Lock className="text-primary" size={22} /> System Portal Login
-                </h3>
-                <p className="text-xs text-text-gray mt-1 font-medium">Select your dashboard console to enter the live clinical environment</p>
-              </div>
-              <button 
-                onClick={() => setIsLoginOpen(false)}
-                className="p-2 hover:bg-gray-200 rounded-lg text-text-gray transition-colors cursor-pointer shrink-0"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto flex-1 bg-slate-50/30">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                
-                {/* Patient Role */}
-                <button 
-                  onClick={() => {
-                    onLogin('patient');
-                    setIsLoginOpen(false);
-                  }}
-                  className="flex items-center gap-4 p-4 bg-white border border-border-color rounded-xl hover:border-primary hover:shadow-md transition-all text-left cursor-pointer group"
-                >
-                  <div className="p-3 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg group-hover:bg-blue-100 transition-colors">
-                    <User size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-text-dark text-sm">Patient Portal</h4>
-                    <p className="text-[11px] text-text-gray font-medium mt-0.5">Mock Patient: John Doe</p>
-                  </div>
-                </button>
-
-                {/* Doctor Role */}
-                <button 
-                  onClick={() => {
-                    onLogin('doctor');
-                    setIsLoginOpen(false);
-                  }}
-                  className="flex items-center gap-4 p-4 bg-white border border-border-color rounded-xl hover:border-primary hover:shadow-md transition-all text-left cursor-pointer group"
-                >
-                  <div className="p-3 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg group-hover:bg-emerald-100 transition-colors">
-                    <Stethoscope size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-text-dark text-sm">Doctor OPD Desk</h4>
-                    <p className="text-[11px] text-text-gray font-medium mt-0.5">Mock Doctor: Dr. Sarah Jenkins</p>
-                  </div>
-                </button>
-
-                {/* Receptionist Role */}
-                <button 
-                  onClick={() => {
-                    onLogin('receptionist');
-                    setIsLoginOpen(false);
-                  }}
-                  className="flex items-center gap-4 p-4 bg-white border border-border-color rounded-xl hover:border-primary hover:shadow-md transition-all text-left cursor-pointer group"
-                >
-                  <div className="p-3 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg group-hover:bg-amber-100 transition-colors">
-                    <ClipboardList size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-text-dark text-sm">Receptionist Desk</h4>
-                    <p className="text-[11px] text-text-gray font-medium mt-0.5">Front desk triage & check-in console</p>
-                  </div>
-                </button>
-
-                {/* Pharmacist Role */}
-                <button 
-                  onClick={() => {
-                    onLogin('pharmacist');
-                    setIsLoginOpen(false);
-                  }}
-                  className="flex items-center gap-4 p-4 bg-white border border-border-color rounded-xl hover:border-primary hover:shadow-md transition-all text-left cursor-pointer group"
-                >
-                  <div className="p-3 bg-purple-50 text-purple-700 border border-purple-100 rounded-lg group-hover:bg-purple-100 transition-colors">
-                    <Pill size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-text-dark text-sm">Pharmacist Console</h4>
-                    <p className="text-[11px] text-text-gray font-medium mt-0.5">Refills & inventory logs tracker</p>
-                  </div>
-                </button>
-
-                {/* Admin Role */}
-                <button 
-                  onClick={() => {
-                    onLogin('admin');
-                    setIsLoginOpen(false);
-                  }}
-                  className="flex items-center gap-4 p-4 bg-white border border-border-color rounded-xl hover:border-primary hover:shadow-md transition-all text-left cursor-pointer group sm:col-span-2"
-                >
-                  <div className="p-3 bg-slate-100 text-slate-700 border border-slate-200 rounded-lg group-hover:bg-slate-200 transition-colors">
-                    <Shield size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-text-dark text-sm">Clinic Administrator</h4>
-                    <p className="text-[11px] text-text-gray font-medium mt-0.5">Global audit logs, billing reports, clinics configuration</p>
-                  </div>
-                </button>
-
-              </div>
-            </div>
-            
-            {/* Modal Footer */}
-            <div className="p-5 border-t border-border-color bg-gray-50 flex justify-end shrink-0">
-              <button 
-                onClick={() => setIsLoginOpen(false)}
-                className="px-5 py-2 border border-border-color hover:bg-gray-200 rounded-lg text-sm font-bold text-text-dark transition-colors cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-            
-          </div>
-        </div>
-      )}
 
       {/* Mock Video Player Modal */}
       {activeVideo && (

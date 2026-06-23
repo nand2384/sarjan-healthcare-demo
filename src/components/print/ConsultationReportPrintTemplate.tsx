@@ -100,7 +100,7 @@ export const ConsultationReportPrintTemplate = forwardRef<HTMLDivElement, Props>
             {data.symptoms.map((sym, i) => <li key={i}>{sym}</li>)}
           </ul>
         </div>
-        
+
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider border-b border-gray-300 pb-2 mb-2">Diagnosis</h3>
           <p className="text-sm font-bold text-blue-900 bg-blue-50 p-3 rounded">{data.diagnosis}</p>
@@ -148,7 +148,7 @@ export const ConsultationReportPrintTemplate = forwardRef<HTMLDivElement, Props>
       <div className="mb-12">
         <h3 className="text-sm font-bold uppercase tracking-wider border-b border-gray-300 pb-2 mb-2">Doctor's Advice & Notes</h3>
         <p className="text-sm text-gray-800 whitespace-pre-wrap italic">{data.notes}</p>
-        
+
         <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded text-sm">
           <span className="font-bold text-gray-800">Follow-up Recommendation: </span>
           {data.followUp}
