@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type UserRole } from '../types/roles';
-import { Stethoscope, CheckCircle2, ArrowLeft, Mail, Lock, ArrowRight, Fingerprint } from 'lucide-react';
+import { Stethoscope, CheckCircle2, ArrowLeft, Mail, Lock, ArrowRight, Fingerprint, Eye, EyeOff } from 'lucide-react';
 
 interface LoginPageProps {
   onLogin: (role: UserRole) => void;
@@ -10,6 +10,7 @@ interface LoginPageProps {
 export const LoginPage = ({ onLogin, onBack }: LoginPageProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,13 +158,20 @@ export const LoginPage = ({ onLogin, onBack }: LoginPageProps) => {
                     <Lock size={18} />
                   </div>
                   <input 
-                    type="password" 
+                    type={showPassword ? "text" : "password"} 
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 hover:bg-white border border-border-color rounded-xl text-sm font-semibold text-text-dark focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                    placeholder={showPassword ? "Now you see me... 👀" : "••••••••"}
+                    className="w-full pl-11 pr-12 py-3.5 bg-slate-50 hover:bg-white border border-border-color rounded-xl text-sm font-semibold text-text-dark focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-gray hover:text-primary transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
 
