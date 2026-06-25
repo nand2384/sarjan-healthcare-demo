@@ -56,12 +56,12 @@ export const PatientMedicalRecords = () => {
   });
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent animate-in fade-in zoom-in-95 duration-200">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent animate-in fade-in zoom-in-95 duration-200">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-extrabold text-text-dark flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <FileText className="text-primary" /> Medical Records
           </h1>
           <p className="text-text-gray mt-1 text-sm font-medium">
@@ -71,14 +71,19 @@ export const PatientMedicalRecords = () => {
       </div>
 
       {/* Timeline Layout */}
-      <div className="bg-white rounded-2xl shadow-soft border border-border-color overflow-hidden p-6 md:p-10 relative before:absolute before:inset-0 before:ml-[3.25rem] md:before:ml-[4.25rem] before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border-color before:to-transparent">
+      <div className="bg-white rounded-2xl shadow-soft border border-border-color overflow-hidden p-6 md:p-10 relative">
         <div className="space-y-12">
           {mockRecords.map((record, index) => (
             <div key={record.id} className="relative flex items-start gap-6 group">
               
+              {/* Timeline Line connecting to the next item */}
+              {index < mockRecords.length - 1 && (
+                <div className="absolute left-6 md:left-8 top-[52px] md:top-[68px] bottom-[-52px] w-0.5 bg-border-color z-0 -translate-x-[1px]"></div>
+              )}
+
               {/* Timeline Dot */}
-              <div className="flex flex-col items-center z-10 mt-1">
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary/10 text-primary border-4 border-white shadow-sm flex items-center justify-center font-bold text-xl group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all">
+              <div className="flex flex-col items-center shrink-0 mt-1 z-10">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#E7F3F1] text-primary border-4 border-white shadow-sm flex items-center justify-center font-bold text-xl group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all">
                   {mockRecords.length - index}
                 </div>
               </div>
@@ -87,7 +92,7 @@ export const PatientMedicalRecords = () => {
               <div className="flex-1 bg-white rounded-2xl border border-border-color p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                   <div>
-                    <h3 className="text-xl font-extrabold text-text-dark">{record.diagnosis}</h3>
+                    <h3 className="text-xl font-bold text-text-dark">{record.diagnosis}</h3>
                     <div className="flex items-center gap-3 text-sm text-text-gray mt-1 font-medium">
                       <span className="flex items-center gap-1"><Calendar size={14} className="text-primary" /> {record.date}</span>
                       <span>•</span>
@@ -135,7 +140,7 @@ export const PatientMedicalRecords = () => {
                   <FileText size={20} />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-text-dark text-lg">Consultation Details</h3>
+                  <h3 className="font-bold text-text-dark text-lg">Consultation Details</h3>
                   <p className="text-sm font-semibold text-primary">{selectedRecord.date}</p>
                 </div>
               </div>
@@ -176,7 +181,7 @@ export const PatientMedicalRecords = () => {
               {/* Sections */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-xs font-extrabold text-text-light uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <h4 className="text-xs font-bold text-text-light uppercase tracking-wider mb-3 flex items-center gap-2">
                     <Activity size={14} /> Clinical Information
                   </h4>
                   <div className="space-y-4">
@@ -186,13 +191,13 @@ export const PatientMedicalRecords = () => {
                     </div>
                     <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 shadow-sm">
                       <p className="text-xs font-bold text-primary mb-1">Primary Diagnosis</p>
-                      <p className="text-sm text-text-dark font-extrabold">{selectedRecord.diagnosis}</p>
+                      <p className="text-sm text-text-dark font-bold">{selectedRecord.diagnosis}</p>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-extrabold text-text-light uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <h4 className="text-xs font-bold text-text-light uppercase tracking-wider mb-3 flex items-center gap-2">
                     <Pill size={14} /> Prescriptions
                   </h4>
                   <div className="bg-white p-4 rounded-xl border border-border-color shadow-sm h-[calc(100%-28px)]">
@@ -210,7 +215,7 @@ export const PatientMedicalRecords = () => {
 
               {/* Lab Tests */}
               <div>
-                <h4 className="text-xs font-extrabold text-text-light uppercase tracking-wider mb-3">Lab Investigations Advised</h4>
+                <h4 className="text-xs font-bold text-text-light uppercase tracking-wider mb-3">Lab Investigations Advised</h4>
                 <div className="bg-gray-50 px-4 py-3 rounded-lg border border-border-color text-sm text-text-dark font-mono">
                   {selectedRecord.investigations}
                 </div>

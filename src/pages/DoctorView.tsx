@@ -55,7 +55,7 @@ export const DoctorView = React.memo(function DoctorView({
   );
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto md:overflow-hidden bg-transparent p-4 md:p-6">
+    <div className="flex-1 flex flex-col overflow-y-auto md:overflow-hidden bg-transparent p-6 md:p-8">
       
       {/* Top Header Section */}
       <div className="bg-white rounded-xl shadow-sm border border-border-color p-4 md:p-6 mb-4 md:mb-6 shrink-0 flex flex-col md:flex-row justify-between items-start gap-4 md:gap-0">

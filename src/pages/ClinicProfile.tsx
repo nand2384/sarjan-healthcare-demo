@@ -38,7 +38,7 @@ export const ClinicProfile = () => {
   };
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent relative">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent relative">
       {/* Toast Notification */}
       {showToast && (
         <div className="absolute top-4 right-8 z-[100] bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-in slide-in-from-top-4 duration-300">
@@ -50,7 +50,7 @@ export const ClinicProfile = () => {
         </div>
       )}
 
-      <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+      <div className="mb-2 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Building2 className="text-primary" /> Clinic Profile

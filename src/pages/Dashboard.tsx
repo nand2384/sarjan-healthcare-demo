@@ -22,7 +22,7 @@ export const Dashboard = React.memo(function Dashboard({
   const [drawerPatient, setDrawerPatient] = useState<Patient | null>(null);
   const [drawerDoctorBusy, setDrawerDoctorBusy] = useState<boolean>(false);
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent">
       <StatCards />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

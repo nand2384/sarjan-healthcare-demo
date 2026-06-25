@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type UserRole } from '../types/roles';
-import { Stethoscope, CheckCircle2, ArrowLeft, Mail, Lock, ArrowRight, Fingerprint, Eye, EyeOff } from 'lucide-react';
+import { Stethoscope, ArrowLeft, Mail, Lock, ArrowRight, Fingerprint, Eye, EyeOff, Users, FileText, Activity } from 'lucide-react';
 
 interface LoginPageProps {
   onLogin: (role: UserRole) => void;
@@ -68,54 +68,77 @@ export const LoginPage = ({ onLogin, onBack }: LoginPageProps) => {
       {/* Main Content (Split Screen) */}
       <div className="flex-1 flex flex-col md:flex-row">
         
-        {/* Left Panel - Branding & Benefits */}
         <div 
-          className="hidden md:flex md:w-1/2 bg-[#17A38E] text-white p-12 flex-col justify-center relative overflow-hidden" 
+          className="hidden md:flex md:w-[40%] bg-[#006657] text-white pt-6 pb-12 px-12 lg:pt-8 lg:pb-16 lg:px-16 flex-col justify-between relative overflow-hidden" 
         >
-          {/* Subtle Abstract Light Element (No dark gradients) */}
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="max-w-lg mb-auto mt-0">
+            {/* Staff Portal Pill Badge */}
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/90 font-bold tracking-widest text-[9px] uppercase mb-6 shadow-sm select-none">
+              <Fingerprint size={12} className="text-white/80 animate-pulse" />
+              Staff Portal
+            </span>
 
-          <div className="relative z-10 max-w-lg mx-auto w-full">
-            <h4 className="text-white/80 font-bold tracking-widest text-xs uppercase mb-4">Staff Portal</h4>
-            <h1 className="text-4xl lg:text-5xl font-extrabold leading-tight mb-6 text-white">
+            <h1 className="text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-4 text-white">
               Welcome Back<br />to your workspace
             </h1>
-            <p className="text-white/90 text-lg leading-relaxed mb-12">
+            
+            <p className="text-white/80 text-base lg:text-lg leading-relaxed mb-10 font-normal">
               Access your unified dashboard to manage patient queues, clinical EMRs, pharmacy inventory, and administrative logs in real-time.
             </p>
 
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="text-white/90 mt-0.5 shrink-0" size={20} />
-                <div>
-                  <h3 className="font-bold text-white text-base">Zero-Wait Queue Management</h3>
-                  <p className="text-white/80 text-sm mt-1">Seamlessly register and triage walk-in patients.</p>
+            {/* Features list (Glassmorphic Cards) */}
+            <div className="space-y-4">
+              
+              {/* Feature 1 */}
+              <div className="group bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="flex gap-4 items-start">
+                  <div className="bg-white/10 p-2.5 rounded-xl text-white border border-white/10 shrink-0">
+                    <Users size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-base leading-snug">Zero-Wait Queue Management</h3>
+                    <p className="text-white/70 text-sm mt-1 leading-relaxed">Seamlessly register and triage walk-in patients.</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="text-white/90 mt-0.5 shrink-0" size={20} />
-                <div>
-                  <h3 className="font-bold text-white text-base">Integrated EMR Access</h3>
-                  <p className="text-white/80 text-sm mt-1">Instant retrieval of patient clinical history and vitals.</p>
+
+              {/* Feature 2 */}
+              <div className="group bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="flex gap-4 items-start">
+                  <div className="bg-white/10 p-2.5 rounded-xl text-white border border-white/10 shrink-0">
+                    <FileText size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-base leading-snug">Integrated EMR Access</h3>
+                    <p className="text-white/70 text-sm mt-1 leading-relaxed">Instant retrieval of patient clinical history and vitals.</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="text-white/90 mt-0.5 shrink-0" size={20} />
-                <div>
-                  <h3 className="font-bold text-white text-base">Automated Billing & Pharmacy</h3>
-                  <p className="text-white/80 text-sm mt-1">Connected invoicing from doctor's desk to checkout.</p>
+
+              {/* Feature 3 */}
+              <div className="group bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="flex gap-4 items-start">
+                  <div className="bg-white/10 p-2.5 rounded-xl text-white border border-white/10 shrink-0">
+                    <Activity size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-base leading-snug">Automated Billing & Pharmacy</h3>
+                    <p className="text-white/70 text-sm mt-1 leading-relaxed">Connected invoicing from doctor's desk to checkout.</p>
+                  </div>
                 </div>
               </div>
+
             </div>
-            
-            <div className="mt-16 text-xs text-white/60 font-medium">
-              &copy; {new Date().getFullYear()} Sarjan Healthcare. All rights reserved.
-            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-xs text-white/50 font-medium select-none border-t border-white/10 pt-6">
+            &copy; {new Date().getFullYear()} Sarjan Healthcare. All rights reserved.
           </div>
         </div>
 
         {/* Right Panel - Login Form */}
-        <div className="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-white relative">
+        <div className="w-full md:w-[60%] flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-white relative">
           <div className="w-full max-w-md">
             <div className="text-center md:text-left mb-10">
               <h2 className="text-3xl font-extrabold text-text-dark tracking-tight">

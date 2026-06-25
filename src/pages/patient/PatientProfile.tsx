@@ -29,12 +29,12 @@ export const PatientProfile = () => {
   };
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent animate-in fade-in zoom-in-95 duration-200">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent animate-in fade-in zoom-in-95 duration-200">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-extrabold text-text-dark flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <User className="text-primary" /> My Profile
           </h1>
           <p className="text-text-gray mt-1 text-sm font-medium">
@@ -65,10 +65,10 @@ export const PatientProfile = () => {
         <div className="xl:col-span-1 space-y-6">
           
           <div className="bg-white rounded-2xl shadow-soft border border-border-color p-6 text-center">
-            <div className="w-24 h-24 mx-auto bg-primary/10 text-primary rounded-full flex items-center justify-center text-3xl font-extrabold mb-4 border-4 border-white shadow-sm">
+            <div className="w-24 h-24 mx-auto bg-primary/10 text-primary rounded-full flex items-center justify-center text-3xl font-bold mb-4 border-4 border-white shadow-sm">
               {formData.firstName.charAt(0)}{formData.lastName.charAt(0)}
             </div>
-            <h2 className="text-xl font-extrabold text-text-dark">{formData.firstName} {formData.lastName}</h2>
+            <h2 className="text-xl font-bold text-text-dark">{formData.firstName} {formData.lastName}</h2>
             <p className="text-text-gray text-sm font-medium mt-1">UHID-9002341</p>
             
             <div className="mt-6 flex justify-center gap-2">
@@ -79,7 +79,7 @@ export const PatientProfile = () => {
           </div>
 
           <div className="bg-white rounded-2xl shadow-soft border border-border-color p-6">
-            <h3 className="font-extrabold text-text-dark flex items-center gap-2 mb-4">
+            <h3 className="font-bold text-text-dark flex items-center gap-2 mb-4">
               <Shield size={18} className="text-primary" /> Profile Completeness
             </h3>
             <div className="mb-2 flex justify-between items-center text-sm">
@@ -103,7 +103,7 @@ export const PatientProfile = () => {
           {/* Basic Information */}
           <div className="bg-white rounded-2xl shadow-soft border border-border-color overflow-hidden">
             <div className="px-6 py-4 border-b border-border-color bg-gray-50/50">
-              <h3 className="font-extrabold text-text-dark">Basic Information</h3>
+              <h3 className="font-bold text-text-dark">Basic Information</h3>
             </div>
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               
@@ -184,7 +184,7 @@ export const PatientProfile = () => {
           {/* Contact Information */}
           <div className="bg-white rounded-2xl shadow-soft border border-border-color overflow-hidden">
             <div className="px-6 py-4 border-b border-border-color bg-gray-50/50">
-              <h3 className="font-extrabold text-text-dark">Contact Details</h3>
+              <h3 className="font-bold text-text-dark">Contact Details</h3>
             </div>
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               

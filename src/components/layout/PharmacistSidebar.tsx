@@ -61,7 +61,7 @@ export const PharmacistSidebar: React.FC<PharmacistSidebarProps> = ({
         {!isCollapsed && (
           <div className="flex flex-col">
             <span className="font-extrabold text-[1.1rem] text-text-dark leading-none tracking-tight">SARJAN</span>
-            <span className="font-bold text-[0.7rem] text-primary tracking-[0.2em] uppercase mt-0.5">Healthcare</span>
+            <span className="font-bold text-[0.7rem] text-primary tracking-[0.2em] uppercase mt-0.5">HEALTHCARE</span>
           </div>
         )}
         

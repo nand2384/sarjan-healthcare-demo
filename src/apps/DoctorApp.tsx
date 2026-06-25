@@ -87,7 +87,7 @@ export const DoctorApp = () => {
             onToggleCollapse={toggleCollapse}
           />
           
-          <main className="flex-1 overflow-hidden relative">
+          <main className="flex-1 overflow-y-auto">
             {activeTab === 'My Patients' ? (
               <MyPatients />
             ) : (
@@ -98,14 +98,14 @@ export const DoctorApp = () => {
       </Group>
 
       {/* Main content for mobile */}
-      <main className="md:hidden flex-1 flex flex-col overflow-hidden w-full h-full bg-gray-50/30">
+      <main className="md:hidden flex-1 flex flex-col overflow-y-auto w-full h-full bg-gray-50/30">
         <Header 
           userName="SJ" 
           userRole="Dr. Sarah Jenkins" 
           onMenuClick={() => setIsMobileMenuOpen(true)}
         />
         
-        <div className="flex-1 overflow-hidden relative">
+        <div className="flex-1">
           {activeTab === 'My Patients' ? (
             <MyPatients />
           ) : (

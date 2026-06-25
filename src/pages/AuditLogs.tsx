@@ -51,8 +51,8 @@ export const AuditLogs = () => {
   };
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent relative">
-      <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent relative">
+      <div className="mb-2 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <ShieldAlert className="text-primary" /> System Audit Logs

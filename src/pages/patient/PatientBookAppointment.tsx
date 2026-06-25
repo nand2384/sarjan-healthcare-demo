@@ -38,12 +38,12 @@ export const PatientBookAppointment = () => {
   if (isSuccess) {
     const doctor = mockDoctors.find(d => d.id === formData.doctorId);
     return (
-      <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent animate-in fade-in zoom-in-95 duration-200">
+      <div className="p-6 md:p-8 space-y-6 bg-transparent animate-in fade-in zoom-in-95 duration-200">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-soft border border-border-color overflow-hidden p-8 md:p-12 text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 size={40} className="text-green-600" />
           </div>
-          <h2 className="text-2xl font-extrabold text-text-dark mb-2">Appointment Confirmed!</h2>
+          <h2 className="text-2xl font-bold text-text-dark mb-2">Appointment Confirmed!</h2>
           <p className="text-text-gray text-sm mb-8 max-w-md mx-auto leading-relaxed">
             Your appointment with <span className="font-bold text-text-dark">{doctor?.name}</span> is confirmed for <span className="font-bold text-text-dark">{formData.date}</span> at <span className="font-bold text-text-dark">{formData.time}</span>.
           </p>
@@ -70,11 +70,11 @@ export const PatientBookAppointment = () => {
   }
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent animate-in fade-in duration-200">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent animate-in fade-in duration-200">
       
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-extrabold text-text-dark flex items-center gap-2">
+      <div className="mb-2">
+        <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
           <CalendarIcon className="text-primary" /> Book Appointment
         </h1>
         <p className="text-text-gray mt-1 text-sm font-medium">
@@ -139,7 +139,7 @@ export const PatientBookAppointment = () => {
                       }`}
                     >
                       <span className={`text-xs font-bold ${formData.date === d.value ? 'text-white/80' : 'text-text-gray'}`}>{d.day}</span>
-                      <span className="text-xl font-extrabold my-0.5">{d.date}</span>
+                      <span className="text-xl font-bold my-0.5">{d.date}</span>
                       <span className={`text-[10px] font-bold ${formData.date === d.value ? 'text-white' : 'text-green-600'}`}>{d.slots} slots</span>
                     </button>
                   ))}
@@ -189,7 +189,7 @@ export const PatientBookAppointment = () => {
               <h3 className="text-xs font-bold text-text-light uppercase tracking-wider mb-4 border-b border-border-color/60 pb-2">Selected Doctor Profile</h3>
               
               <div className="flex items-center gap-4 mb-4">
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center font-extrabold text-xl shadow-sm border ${selectedDoctorObj.avatarBg}`}>
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl shadow-sm border ${selectedDoctorObj.avatarBg}`}>
                   {selectedDoctorObj.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
                 <div>

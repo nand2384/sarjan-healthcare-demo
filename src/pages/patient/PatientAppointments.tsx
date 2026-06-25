@@ -72,12 +72,12 @@ export const PatientAppointments = ({ onBookClick }: { onBookClick?: () => void 
   });
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent animate-in fade-in zoom-in-95 duration-200">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent animate-in fade-in zoom-in-95 duration-200">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-extrabold text-text-dark flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Calendar className="text-primary" /> My Appointments
           </h1>
           <p className="text-text-gray mt-1 text-sm font-medium">
@@ -144,11 +144,11 @@ export const PatientAppointments = ({ onBookClick }: { onBookClick?: () => void 
                   
                   {/* Info Section */}
                   <div className="flex items-start gap-4 flex-1">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-extrabold shrink-0 border border-primary/20">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-bold shrink-0 border border-primary/20">
                       {apt.doctorName.replace('Dr. ', '').charAt(0)}
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-text-dark text-lg">{apt.doctorName}</h3>
+                      <h3 className="font-bold text-text-dark text-lg">{apt.doctorName}</h3>
                       <p className="text-sm font-bold text-primary mb-3">{apt.specialty}</p>
                       
                       <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-sm text-text-gray font-medium">

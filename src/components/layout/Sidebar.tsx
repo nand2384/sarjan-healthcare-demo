@@ -41,8 +41,15 @@ export const Sidebar = React.memo(function Sidebar({
     `}>
       <div className={`flex items-center justify-between ${isCollapsed ? 'px-0 justify-center' : 'px-6'} mb-10 overflow-hidden`}>
         <div className="flex items-center gap-3">
-          <Stethoscope className="text-primary min-w-[28px]" size={28} />
-          {!isCollapsed && <span className="font-bold text-[1.1rem] text-primary leading-tight whitespace-nowrap">SARJAN<br />HEALTHCARE</span>}
+          <div className="bg-primary/10 p-2 rounded-xl text-primary shrink-0">
+            <Stethoscope size={24} />
+          </div>
+          {!isCollapsed && (
+            <div className="flex flex-col">
+              <span className="font-extrabold text-[1.1rem] text-text-dark leading-none tracking-tight">SARJAN</span>
+              <span className="font-bold text-[0.7rem] text-primary tracking-[0.2em] uppercase mt-0.5">HEALTHCARE</span>
+            </div>
+          )}
         </div>
         
         {/* Mobile Close Button */}

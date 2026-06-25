@@ -1644,7 +1644,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
   // Render Homepage Dashboard Tab
   const renderDashboard = () => {
     return (
-      <div className="space-y-6 overflow-y-auto pr-1 h-[calc(100vh-140px)]">
+      <div className="space-y-6">
         
         {/* Welcome Doctor Banner Card */}
         <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
@@ -1918,7 +1918,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
               {/* Workspace Split: Sidebar Stepper vs Panel Content */}
               <Group orientation="horizontal" className="flex-1 flex overflow-hidden">
                 {/* Stepper Navigation Column */}
-                <Panel defaultSize="20%" minSize="15%" maxSize="30%" className="border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 overflow-y-auto">
+                <Panel defaultSize="20%" minSize="15%" maxSize="30%" className="border-r border-border-color bg-gray-50/50 flex flex-col shrink-0 !overflow-hidden" style={{ overflow: 'hidden' }}>
                   <div className="p-3">
                     <p className="text-xs font-bold text-text-gray uppercase tracking-wider px-3 mb-3">OPD Flow steps</p>
                     <div className="flex flex-col gap-1 mb-8">
@@ -2151,7 +2151,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
   // Render Insights Tab
   const renderInsights = () => {
     return (
-      <div className="space-y-6 overflow-y-auto pr-1 h-[calc(100vh-140px)]">
+      <div className="space-y-6">
         
         {/* KPI Row */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -2235,7 +2235,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ activeTab, set
   };
 
   return (
-    <div className="flex-1 p-4 md:p-6 overflow-hidden bg-bg-base">
+    <div className="p-6 md:p-8 space-y-6 bg-bg-base">
       
       {/* Dynamic Tab Render */}
       {activeTab === 'Dashboard' && renderDashboard()}

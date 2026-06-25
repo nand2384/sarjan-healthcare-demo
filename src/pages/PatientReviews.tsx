@@ -90,7 +90,7 @@ export const PatientReviews = () => {
     : "0.0";
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent relative">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent relative">
       {/* Toast Notification */}
       {showToast && (
         <div className="absolute top-4 right-8 z-[100] bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-in slide-in-from-top-4 duration-300">
@@ -103,7 +103,7 @@ export const PatientReviews = () => {
       )}
 
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-2">
         <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
           <MessageSquareQuote className="text-primary" /> Patient Reviews & Feedback
         </h1>

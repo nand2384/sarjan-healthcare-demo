@@ -71,12 +71,12 @@ export const PatientBilling = () => {
   );
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent animate-in fade-in zoom-in-95 duration-200">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent animate-in fade-in zoom-in-95 duration-200">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-extrabold text-text-dark flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <CreditCard className="text-primary" /> Billing & Invoices
           </h1>
           <p className="text-text-gray mt-1 text-sm font-medium">
@@ -112,12 +112,12 @@ export const PatientBilling = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/80 border-b border-border-color">
-                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Date</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Invoice ID</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Description</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Amount</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider">Status</th>
-                <th className="py-4 px-6 text-xs font-extrabold text-text-gray uppercase tracking-wider text-right">Action</th>
+                <th className="py-4 px-6 text-xs font-bold text-text-gray uppercase tracking-wider">Date</th>
+                <th className="py-4 px-6 text-xs font-bold text-text-gray uppercase tracking-wider">Invoice ID</th>
+                <th className="py-4 px-6 text-xs font-bold text-text-gray uppercase tracking-wider">Description</th>
+                <th className="py-4 px-6 text-xs font-bold text-text-gray uppercase tracking-wider">Amount</th>
+                <th className="py-4 px-6 text-xs font-bold text-text-gray uppercase tracking-wider">Status</th>
+                <th className="py-4 px-6 text-xs font-bold text-text-gray uppercase tracking-wider text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border-color">
@@ -140,7 +140,7 @@ export const PatientBilling = () => {
                     </div>
                   </td>
                   <td className="py-4 px-6 whitespace-nowrap">
-                    <span className="text-sm font-extrabold text-text-dark">₹{inv.amount.toFixed(2)}</span>
+                    <span className="text-sm font-bold text-text-dark">₹{inv.amount.toFixed(2)}</span>
                   </td>
                   <td className="py-4 px-6 whitespace-nowrap">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold ${

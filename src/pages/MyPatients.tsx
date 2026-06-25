@@ -82,7 +82,7 @@ export const MyPatients = () => {
 
   if (selectedPatient) {
     return (
-      <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent animate-in fade-in zoom-in-95 duration-200 relative">
+      <div className="p-6 md:p-8 space-y-6 bg-transparent animate-in fade-in zoom-in-95 duration-200 relative">
         
         {/* Navigation */}
         <button 
@@ -411,8 +411,8 @@ export const MyPatients = () => {
   }
 
   return (
-    <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-transparent relative flex flex-col">
-      <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+    <div className="p-6 md:p-8 space-y-6 bg-transparent relative flex flex-col">
+      <div className="mb-2 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Users className="text-primary" /> My Patients Directory

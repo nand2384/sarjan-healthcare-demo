@@ -24,7 +24,8 @@ export const PrescriptionsQueue = () => {
   };
 
   return (
-    <Group orientation="horizontal" className="h-full w-full bg-white rounded-2xl shadow-soft border-none overflow-hidden flex">
+    <div className="p-6 md:p-8 h-[calc(100vh-76px)]">
+      <Group orientation="horizontal" className="h-full w-full bg-white rounded-2xl shadow-soft border border-border-color overflow-hidden flex">
       {/* Left Column: Queue Cards */}
       <Panel defaultSize={320} minSize={260} maxSize={500} className="flex flex-col bg-white">
         <div className="p-4 border-b border-border-color shrink-0">
@@ -226,6 +227,7 @@ export const PrescriptionsQueue = () => {
           </div>
         )}
       </Panel>
-    </Group>
+      </Group>
+    </div>
   );
 };

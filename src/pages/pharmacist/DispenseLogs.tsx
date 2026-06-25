@@ -59,7 +59,7 @@ export const DispenseLogs = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 md:p-8 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-text-dark flex items-center gap-2">

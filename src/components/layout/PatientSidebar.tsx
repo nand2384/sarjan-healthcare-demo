@@ -7,7 +7,8 @@ import {
   CreditCard,
   User,
   LogOut,
-  X
+  X,
+  Stethoscope
 } from 'lucide-react';
 
 interface PatientSidebarProps {
@@ -72,13 +73,13 @@ export const PatientSidebar: React.FC<PatientSidebarProps> = ({
 
       {/* Logo Area */}
       <div className={`px-6 mb-8 flex items-center ${isCollapsed ? 'justify-center px-0' : 'gap-3'}`}>
-        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-          <User className="text-primary" size={24} />
+        <div className="bg-primary/10 p-2 rounded-xl text-primary shrink-0">
+          <Stethoscope size={24} />
         </div>
         {!isCollapsed && (
-          <div>
-            <h1 className="text-xl font-bold text-text-dark leading-tight">Patient</h1>
-            <p className="text-xs font-bold text-text-gray tracking-wider uppercase">Portal</p>
+          <div className="flex flex-col">
+            <span className="font-extrabold text-[1.1rem] text-text-dark leading-none tracking-tight">SARJAN</span>
+            <span className="font-bold text-[0.7rem] text-primary tracking-[0.2em] uppercase mt-0.5">HEALTHCARE</span>
           </div>
         )}
       </div>

@@ -89,7 +89,7 @@ export const PharmacistApp = () => {
             onToggleCollapse={toggleCollapse}
           />
           
-          <main className="flex-1 overflow-y-auto p-6">
+          <main className="flex-1 overflow-y-auto">
             {activeTab === 'Dashboard' && <PharmacistDashboardOverview />}
             {activeTab === 'Prescriptions Queue' && <PrescriptionsQueue />}
             {activeTab === 'Inventory Management' && <InventoryManagement />}
@@ -106,7 +106,7 @@ export const PharmacistApp = () => {
           onMenuClick={() => setIsMobileMenuOpen(true)}
         />
         
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto">
             {activeTab === 'Dashboard' && <PharmacistDashboardOverview />}
             {activeTab === 'Prescriptions Queue' && <PrescriptionsQueue />}
             {activeTab === 'Inventory Management' && <InventoryManagement />}
