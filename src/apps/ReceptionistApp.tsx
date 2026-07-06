@@ -9,7 +9,13 @@ import { doctorsData, scheduledAppointments, type Patient, type PatientStatus } 
 import { Panel, Group, type PanelImperativeHandle } from 'react-resizable-panels';
 import { ResizeHandle } from '../components/common/ResizeHandle';
 
-export const ReceptionistApp = () => {
+export const ReceptionistApp = ({ 
+  currentUser, 
+  onLogout 
+}: { 
+  currentUser: any; 
+  onLogout?: () => void; 
+}) => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -161,6 +167,9 @@ export const ReceptionistApp = () => {
             onMenuClick={() => setIsMobileMenuOpen(true)}
             isCollapsed={isCollapsed}
             onToggleCollapse={toggleCollapse}
+            userName={currentUser?.name || "NS"}
+            userRole="Receptionist"
+            onLogout={onLogout}
           />
           
           <main className="flex-1 flex flex-col overflow-y-auto w-full relative">
@@ -203,6 +212,9 @@ export const ReceptionistApp = () => {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onMenuClick={() => setIsMobileMenuOpen(true)}
+          userName={currentUser?.name || "NS"}
+          userRole="Receptionist"
+          onLogout={onLogout}
         />
         
         <main className="flex-1 overflow-y-auto w-full relative">

@@ -10,11 +10,20 @@ import { PatientProfile } from '../pages/patient/PatientProfile';
 import { Panel, Group, type PanelImperativeHandle } from 'react-resizable-panels';
 import { ResizeHandle } from '../components/common/ResizeHandle';
 
-export const PatientApp = () => {
+const PATIENT_PROFILES = [
+  { id: 'p1', name: 'John Doe', relation: 'Self', uhid: 'UHID-9002341', dob: '1992-04-10', gender: 'Male', email: 'john.doe@gmail.com', phone: '9876543210', address: '123 Oak Street, Cityville' },
+  { id: 'p2', name: 'Jane Doe', relation: 'Mother', uhid: 'UHID-9002342', dob: '1965-08-12', gender: 'Female', email: 'jane.doe@gmail.com', phone: '9876543210', address: '123 Oak Street, Cityville' },
+  { id: 'p3', name: 'Jimmy Doe', relation: 'Son', uhid: 'UHID-9002343', dob: '2018-11-20', gender: 'Male', email: 'jimmy.doe@gmail.com', phone: '9876543210', address: '123 Oak Street, Cityville' }
+];
+
+export const PatientApp = ({ onLogout }: { onLogout?: () => void }) => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeProfileId, setActiveProfileId] = useState('p1');
   const sidebarPanelRef = useRef<PanelImperativeHandle>(null);
+
+  const activeProfile = PATIENT_PROFILES.find(p => p.id === activeProfileId) || PATIENT_PROFILES[0];
 
   const toggleSidebar = () => {
     const panel = sidebarPanelRef.current;
@@ -32,17 +41,17 @@ export const PatientApp = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'Dashboard':
-        return <PatientDashboardOverview />;
+        return <PatientDashboardOverview profile={activeProfile} />;
       case 'Appointments':
-        return <PatientAppointments onBookClick={() => setActiveTab('Book Appointment')} />;
+        return <PatientAppointments onBookClick={() => setActiveTab('Book Appointment')} profile={activeProfile} />;
       case 'Book Appointment':
-        return <PatientBookAppointment />;
+        return <PatientBookAppointment profile={activeProfile} />;
       case 'Medical Records':
-        return <PatientMedicalRecords />;
+        return <PatientMedicalRecords profile={activeProfile} />;
       case 'Billing & Invoices':
-        return <PatientBilling />;
+        return <PatientBilling profile={activeProfile} />;
       case 'My Profile':
-        return <PatientProfile />;
+        return <PatientProfile profile={activeProfile} />;
       default:
         return (
           <div className="flex items-center justify-center h-full p-6">
@@ -87,10 +96,14 @@ export const PatientApp = () => {
 
         <Panel className="flex flex-col min-w-[50%] bg-bg-light">
           <Header 
-            userName="John Doe" 
+            userName={activeProfile.name} 
             userRole="Patient"
             onToggleCollapse={toggleSidebar}
             isCollapsed={isCollapsed}
+            patientProfiles={PATIENT_PROFILES}
+            activeProfileId={activeProfileId}
+            onProfileChange={setActiveProfileId}
+            onLogout={onLogout}
           />
           
           <main className="flex-1 overflow-y-auto flex flex-col">
@@ -109,9 +122,13 @@ export const PatientApp = () => {
         />
         
         <Header 
-          userName="John Doe" 
+          userName={activeProfile.name} 
           userRole="Patient" 
           onMenuClick={() => setIsMobileMenuOpen(true)}
+          patientProfiles={PATIENT_PROFILES}
+          activeProfileId={activeProfileId}
+          onProfileChange={setActiveProfileId}
+          onLogout={onLogout}
         />
         
         <main className="flex-1 overflow-y-auto flex flex-col">

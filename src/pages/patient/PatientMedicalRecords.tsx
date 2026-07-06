@@ -17,37 +17,97 @@ interface MedicalRecord {
   followUp: string;
 }
 
-const mockRecords: MedicalRecord[] = [
-  {
-    id: 'emr-101',
-    date: '10 May 2026',
-    diagnosis: 'Acute Viral Fever',
-    doctorName: 'Dr. Sarah Jenkins',
-    specialty: 'General Medicine',
-    doctorNotes: 'Patient complained of high grade fever and body ache. Throat clear. No history of travel.',
-    symptoms: 'Fever (102F) for 2 days, Body ache, Mild cough',
-    vitals: { bp: '120/80', hr: '88', temp: '102.4 F', weight: '68 kg', height: '175 cm', pulse: '88', spo2: '98%' },
-    investigations: 'CBC, Dengue NS1 Antigen (advised)',
-    prescription: 'Paracetamol 500mg (1-1-1) for 3 days\nCetirizine 10mg (0-0-1) for 3 days',
-    followUp: '15 May 2026'
-  },
-  {
-    id: 'emr-102',
-    date: '15 Feb 2026',
-    diagnosis: 'Upper Respiratory Tract Infection',
-    doctorName: 'Dr. Emily Chen',
-    specialty: 'Pulmonology',
-    doctorNotes: 'Dry cough and sore throat. No fever. Throat appears red and inflamed.',
-    symptoms: 'Dry cough for 4 days, Sore throat, Difficulty swallowing',
-    vitals: { bp: '118/76', hr: '74', temp: '98.6 F', weight: '68 kg', height: '175 cm', pulse: '74', spo2: '99%' },
-    investigations: 'None required',
-    prescription: 'Amoxicillin 500mg (1-0-1) for 5 days\nCough Syrup (10ml 1-1-1) for 5 days',
-    followUp: 'Return if symptoms persist after 5 days'
-  }
-];
+const mockRecordsByProfile: Record<string, MedicalRecord[]> = {
+  p1: [
+    {
+      id: 'emr-101',
+      date: '10 May 2026',
+      diagnosis: 'Acute Viral Fever',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'General Medicine',
+      doctorNotes: 'Patient complained of high grade fever and body ache. Throat clear. No history of travel.',
+      symptoms: 'Fever (102F) for 2 days, Body ache, Mild cough',
+      vitals: { bp: '120/80', hr: '88', temp: '102.4 F', weight: '68 kg', height: '175 cm', pulse: '88', spo2: '98%' },
+      investigations: 'CBC, Dengue NS1 Antigen (advised)',
+      prescription: 'Paracetamol 500mg (1-1-1) for 3 days\nCetirizine 10mg (0-0-1) for 3 days',
+      followUp: '15 May 2026'
+    },
+    {
+      id: 'emr-102',
+      date: '15 Feb 2026',
+      diagnosis: 'Upper Respiratory Tract Infection',
+      doctorName: 'Dr. Emily Chen',
+      specialty: 'Pulmonology',
+      doctorNotes: 'Dry cough and sore throat. No fever. Throat appears red and inflamed.',
+      symptoms: 'Dry cough for 4 days, Sore throat, Difficulty swallowing',
+      vitals: { bp: '118/76', hr: '74', temp: '98.6 F', weight: '68 kg', height: '175 cm', pulse: '74', spo2: '99%' },
+      investigations: 'None required',
+      prescription: 'Amoxicillin 500mg (1-0-1) for 5 days\nCough Syrup (10ml 1-1-1) for 5 days',
+      followUp: 'Return if symptoms persist after 5 days'
+    }
+  ],
+  p2: [
+    {
+      id: 'emr-201',
+      date: '22 May 2026',
+      diagnosis: 'Hypertension Follow-up',
+      doctorName: 'Dr. Michael Chen',
+      specialty: 'Cardiology',
+      doctorNotes: 'BP slightly elevated. Continue low sodium diet and regular walking exercise.',
+      symptoms: 'High BP readings, occasional mild headache',
+      vitals: { bp: '140/90', hr: '80', temp: '98.4 F', weight: '62 kg', height: '162 cm', pulse: '80', spo2: '98%' },
+      investigations: 'Lipid Profile, Renal Function Test',
+      prescription: 'Amlodipine 5mg (0-0-1) for 30 days',
+      followUp: '22 Jun 2026'
+    },
+    {
+      id: 'emr-202',
+      date: '12 Jan 2026',
+      diagnosis: 'Osteoarthritis Consult',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'Orthopedics',
+      doctorNotes: 'Knee pain on walking and morning stiffness. Advised physiotherapy sessions.',
+      symptoms: 'Bilateral knee pain, morning stiffness',
+      vitals: { bp: '130/80', hr: '72', temp: '98.6 F', weight: '63 kg', height: '162 cm', pulse: '72', spo2: '97%' },
+      investigations: 'Knee X-Ray (Bilateral)',
+      prescription: 'Calcium D3 (1-0-0) for 30 days\nGlucosamine (1-0-1) for 30 days',
+      followUp: 'Return in 1 month'
+    }
+  ],
+  p3: [
+    {
+      id: 'emr-301',
+      date: '02 Jun 2026',
+      diagnosis: 'Pediatric Immunization',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'Pediatrics',
+      doctorNotes: 'Scheduled vaccination visit. Normal developmental milestones. Immunization chart up to date.',
+      symptoms: 'Routine immunization check',
+      vitals: { bp: '95/60', hr: '95', temp: '98.6 F', weight: '25 kg', height: '115 cm', pulse: '95', spo2: '99%' },
+      investigations: 'Developmental review',
+      prescription: 'Vitamin C drops (0-1-0) for 15 days',
+      followUp: 'Next vaccine due in 6 months'
+    },
+    {
+      id: 'emr-302',
+      date: '05 Mar 2026',
+      diagnosis: 'Tonsillitis Consult',
+      doctorName: 'Dr. Emily Chen',
+      specialty: 'ENT Specialist',
+      doctorNotes: 'Red tonsils with mild throat inflammation. Fever of 100.2F. Recommend soft food diet.',
+      symptoms: 'Sore throat, difficulty swallowing, fever',
+      vitals: { bp: '98/62', hr: '90', temp: '100.2 F', weight: '24 kg', height: '114 cm', pulse: '90', spo2: '98%' },
+      investigations: 'Throat Swab Test',
+      prescription: 'Erythromycin Syrup (5ml 1-0-1) for 5 days',
+      followUp: 'Return if fever persists for 3 days'
+    }
+  ]
+};
 
-export const PatientMedicalRecords = () => {
+export const PatientMedicalRecords = ({ profile }: { profile: any }) => {
   const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
+
+  const recordsList = mockRecordsByProfile[profile.id] || mockRecordsByProfile.p1;
 
   const reportRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
@@ -73,18 +133,18 @@ export const PatientMedicalRecords = () => {
       {/* Timeline Layout */}
       <div className="bg-white rounded-2xl shadow-soft border border-border-color overflow-hidden p-6 md:p-10 relative">
         <div className="space-y-12">
-          {mockRecords.map((record, index) => (
+          {recordsList.map((record, index) => (
             <div key={record.id} className="relative flex items-start gap-6 group">
               
               {/* Timeline Line connecting to the next item */}
-              {index < mockRecords.length - 1 && (
+              {index < recordsList.length - 1 && (
                 <div className="absolute left-6 md:left-8 top-[52px] md:top-[68px] bottom-[-52px] w-0.5 bg-border-color z-0 -translate-x-[1px]"></div>
               )}
 
               {/* Timeline Dot */}
               <div className="flex flex-col items-center shrink-0 mt-1 z-10">
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#E7F3F1] text-primary border-4 border-white shadow-sm flex items-center justify-center font-bold text-xl group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all">
-                  {mockRecords.length - index}
+                  {recordsList.length - index}
                 </div>
               </div>
 
@@ -247,9 +307,9 @@ export const PatientMedicalRecords = () => {
                   reportId: selectedRecord.id,
                   date: selectedRecord.date,
                   time: 'N/A', // Mock time
-                  patientName: 'John Doe', // Authenticated user name mock
-                  patientId: 'PT-10023',
-                  patientAgeGender: `34 Yrs • Male`,
+                  patientName: profile?.name || 'John Doe',
+                  patientId: profile?.uhid || 'PT-10023',
+                  patientAgeGender: profile ? `${profile.gender} • DOB: ${profile.dob}` : `34 Yrs • Male`,
                   doctorName: selectedRecord.doctorName,
                   doctorSpecialty: selectedRecord.specialty,
                   vitals: selectedRecord.vitals,

@@ -9,10 +9,33 @@ import { LoginPage } from './pages/LoginPage';
 import { type UserRole } from './types/roles';
 import { Settings, LayoutGrid } from 'lucide-react';
 
+interface CurrentUser {
+  name: string;
+  email: string;
+  roles: UserRole[];
+  activeRole: UserRole;
+}
+
 function App() {
   const [view, setView] = useState<'landing' | 'login' | 'app'>('landing');
   const [currentRole, setCurrentRole] = useState<UserRole>('receptionist');
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleRoleChange = (newRole: UserRole) => {
+    setCurrentRole(newRole);
+    if (currentUser) {
+      setCurrentUser(prev => prev ? {
+        ...prev,
+        activeRole: newRole
+      } : null);
+    }
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setView('landing');
+  };
 
   return (
     <>
@@ -25,7 +48,35 @@ function App() {
 
       {view === 'login' && (
         <LoginPage 
-          onLogin={(role) => {
+          onLogin={(email, role) => {
+            let roles: UserRole[] = [role];
+            let name = 'Staff Member';
+            if (email.toLowerCase().includes('sarah') || (email.toLowerCase().includes('doctor') && email.toLowerCase().includes('admin'))) {
+              roles = ['doctor', 'admin'];
+              name = 'Dr. Sarah Jenkins';
+            } else if (email.toLowerCase().includes('doctor')) {
+              roles = ['doctor', 'admin']; // Sarah Jenkins has dual roles
+              name = 'Dr. Sarah Jenkins';
+            } else if (email.toLowerCase().includes('admin')) {
+              roles = ['admin'];
+              name = 'Clinic Administrator';
+            } else if (email.toLowerCase().includes('pharm')) {
+              roles = ['pharmacist'];
+              name = 'Pharmacist Staff';
+            } else if (email.toLowerCase().includes('patient')) {
+              roles = ['patient'];
+              name = 'John Doe';
+            } else if (email.toLowerCase().includes('receptionist')) {
+              roles = ['receptionist'];
+              name = 'Front Desk';
+            }
+
+            setCurrentUser({
+              name,
+              email,
+              roles,
+              activeRole: role
+            });
             setCurrentRole(role);
             setView('app');
           }}
@@ -35,11 +86,11 @@ function App() {
       
       {view === 'app' && (
         <>
-          {currentRole === 'receptionist' && <ReceptionistApp />}
-          {currentRole === 'admin' && <AdminApp />}
-          {currentRole === 'doctor' && <DoctorApp />}
-          {currentRole === 'pharmacist' && <PharmacistApp />}
-          {currentRole === 'patient' && <PatientApp />}
+          {currentRole === 'receptionist' && <ReceptionistApp currentUser={currentUser} onLogout={handleLogout} />}
+          {currentRole === 'admin' && <AdminApp currentUser={currentUser} onRoleChange={handleRoleChange} onLogout={handleLogout} />}
+          {currentRole === 'doctor' && <DoctorApp currentUser={currentUser} onRoleChange={handleRoleChange} onLogout={handleLogout} />}
+          {currentRole === 'pharmacist' && <PharmacistApp currentUser={currentUser} onLogout={handleLogout} />}
+          {currentRole === 'patient' && <PatientApp onLogout={handleLogout} />}
         </>
       )}
 
@@ -55,6 +106,23 @@ function App() {
               <button
                 key={role}
                 onClick={() => {
+                  let email = `${role}@sarjan.com`;
+                  let roles: UserRole[] = [role];
+                  let name = role.charAt(0).toUpperCase() + role.slice(1);
+                  if (role === 'doctor') {
+                    roles = ['doctor', 'admin'];
+                    name = 'Dr. Sarah Jenkins';
+                  } else if (role === 'admin') {
+                    name = 'Clinic Administrator';
+                  } else if (role === 'patient') {
+                    name = 'John Doe';
+                  }
+                  setCurrentUser({
+                    name,
+                    email,
+                    roles,
+                    activeRole: role
+                  });
                   setCurrentRole(role);
                   setView('app');
                   setIsOpen(false);

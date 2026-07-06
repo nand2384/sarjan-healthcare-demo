@@ -8,7 +8,13 @@ import { DispenseLogs } from '../pages/pharmacist/DispenseLogs';
 import { Panel, Group, type PanelImperativeHandle } from 'react-resizable-panels';
 import { ResizeHandle } from '../components/common/ResizeHandle';
 
-export const PharmacistApp = () => {
+export const PharmacistApp = ({ 
+  currentUser, 
+  onLogout 
+}: { 
+  currentUser: any; 
+  onLogout?: () => void; 
+}) => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -82,11 +88,12 @@ export const PharmacistApp = () => {
 
         <Panel minSize={50} className="flex flex-col h-full overflow-hidden w-full">
           <Header 
-            userName="Mike Roberts" 
+            userName={currentUser?.name || "Mike Roberts"} 
             userRole="Pharmacist" 
             onMenuClick={() => setIsMobileMenuOpen(true)}
             isCollapsed={isCollapsed}
             onToggleCollapse={toggleCollapse}
+            onLogout={onLogout}
           />
           
           <main className="flex-1 overflow-y-auto">
@@ -101,9 +108,10 @@ export const PharmacistApp = () => {
       {/* Main content for mobile */}
       <div className="md:hidden flex flex-col h-full overflow-hidden w-full">
         <Header 
-          userName="Mike Roberts" 
+          userName={currentUser?.name || "Mike Roberts"} 
           userRole="Pharmacist" 
           onMenuClick={() => setIsMobileMenuOpen(true)}
+          onLogout={onLogout}
         />
         
         <main className="flex-1 overflow-y-auto">

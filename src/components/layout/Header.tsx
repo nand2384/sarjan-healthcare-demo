@@ -11,11 +11,36 @@ interface HeaderProps {
   onMenuClick?: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
+  roles?: string[];
+  activeRole?: string;
+  onRoleChange?: (role: any) => void;
+  patientProfiles?: Array<{ id: string; name: string; relation: string }>;
+  activeProfileId?: string;
+  onProfileChange?: (profileId: string) => void;
+  onLogout?: () => void;
 }
 
-export const Header = React.memo(function Header({ userName = "NS", userRole = "Receptionist", navItems, activeTab, setActiveTab, onMenuClick, isCollapsed = false, onToggleCollapse }: HeaderProps) {
+export const Header = React.memo(function Header({ 
+  userName = "NS", 
+  userRole = "Receptionist", 
+  navItems, 
+  activeTab, 
+  setActiveTab, 
+  onMenuClick, 
+  isCollapsed = false, 
+  onToggleCollapse,
+  roles,
+  activeRole,
+  onRoleChange,
+  patientProfiles,
+  activeProfileId,
+  onProfileChange,
+  onLogout
+}: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -23,13 +48,16 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
       }
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target as Node)) {
+        setShowProfileDropdown(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <header className="h-[76px] bg-white border-b border-black/5 flex justify-between items-center px-4 md:px-8 shrink-0 relative z-10 sticky top-0">
+    <header className="h-[76px] bg-white border-b border-black/5 flex justify-between items-center px-4 md:px-8 shrink-0 relative z-20 sticky top-0">
       <div className="flex items-center gap-3 md:gap-6 flex-1 overflow-hidden">
         
         {/* Mobile Menu Toggle */}
@@ -136,17 +164,107 @@ export const Header = React.memo(function Header({ userName = "NS", userRole = "
         {/* User Profile / Name dropdown */}
         <div className="h-8 w-px bg-border-color hidden md:block"></div>
 
-        <div className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-primary-dark text-white flex justify-center items-center font-bold shadow-soft group-hover:shadow-md transition-all text-sm tracking-wider uppercase">
-            {userName.split(' ').map(n => n[0]).join('').substring(0, 2)}
-          </div>
-          <div className="hidden md:flex flex-col">
-            <span className="text-[0.9rem] font-bold text-text-dark leading-tight group-hover:text-primary transition-colors">
-              {userRole === "Receptionist" ? "Front Desk" : userName}
-            </span>
-            <span className="text-[0.75rem] font-semibold text-text-light">{userRole}</span>
-          </div>
-          <ChevronDown size={16} className="text-text-light ml-1 group-hover:text-primary transition-colors hidden md:block" />
+        <div className="relative w-auto md:w-64" ref={profileDropdownRef}>
+          <button 
+            onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+            className="flex items-center gap-3 cursor-pointer group focus:outline-none bg-transparent border-0 text-left w-auto md:w-64 justify-start md:justify-between px-2 py-1.5 rounded-xl hover:bg-hover-bg/80 transition-all"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-primary-dark text-white flex justify-center items-center font-bold shadow-soft group-hover:shadow-md transition-all text-sm tracking-wider uppercase shrink-0">
+              {userName.split(' ').map(n => n[0]).join('').substring(0, 2)}
+            </div>
+            <div className="hidden md:flex flex-col text-left flex-1 min-w-0">
+              <span className="text-[0.9rem] font-bold text-text-dark leading-tight group-hover:text-primary transition-colors truncate">
+                {userRole === "Receptionist" ? "Front Desk" : userName}
+              </span>
+              <span className="text-[0.75rem] font-semibold text-text-light truncate">{userRole}</span>
+            </div>
+            <ChevronDown size={16} className={`text-text-light ml-auto group-hover:text-primary transition-transform duration-200 hidden md:block shrink-0 ${showProfileDropdown ? 'rotate-180' : ''}`} />
+          </button>
+
+          {showProfileDropdown && (
+            <div className="absolute right-0 mt-2 w-64 md:w-full bg-white border border-border-color rounded-xl shadow-lg py-2 z-50 flex flex-col animate-in fade-in slide-in-from-top-2 duration-150">
+              {/* Header Details */}
+              <div className="px-4 py-2.5 border-b border-border-color">
+                <p className="text-sm font-bold text-text-dark truncate">{userRole === "Receptionist" ? "Front Desk" : userName}</p>
+                <p className="text-xs font-medium text-text-light truncate">{userRole}</p>
+              </div>
+
+              {/* Staff Switch Portal */}
+              {roles && roles.length > 1 && onRoleChange && (
+                <div className="px-2 py-1.5 border-b border-border-color bg-gray-50/50">
+                  <span className="block px-2 py-1 text-[10px] font-bold text-text-gray uppercase tracking-wider">
+                    Switch Portal
+                  </span>
+                  {roles.map((r) => {
+                    const isActive = activeRole === r;
+                    const displayLabel = r === 'admin' ? 'Admin Portal' : r === 'doctor' ? 'Doctor Portal' : r;
+                    return (
+                      <button
+                        key={r}
+                        onClick={() => {
+                          onRoleChange(r);
+                          setShowProfileDropdown(false);
+                        }}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center justify-between border-0 bg-transparent cursor-pointer ${
+                          isActive 
+                            ? 'bg-primary/10 text-primary' 
+                            : 'text-text-dark hover:bg-hover-bg'
+                        }`}
+                      >
+                        <span>{displayLabel}</span>
+                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Patient Switch Profile */}
+              {patientProfiles && patientProfiles.length > 1 && onProfileChange && (
+                <div className="px-2 py-1.5 border-b border-border-color bg-gray-50/50">
+                  <span className="block px-2 py-1 text-[10px] font-bold text-text-gray uppercase tracking-wider">
+                    Switch Profile
+                  </span>
+                  {patientProfiles.map((profile) => {
+                    const isActive = activeProfileId === profile.id;
+                    return (
+                      <button
+                        key={profile.id}
+                        onClick={() => {
+                          onProfileChange(profile.id);
+                          setShowProfileDropdown(false);
+                        }}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center justify-between border-0 bg-transparent cursor-pointer ${
+                          isActive 
+                            ? 'bg-primary/10 text-primary' 
+                            : 'text-text-dark hover:bg-hover-bg'
+                        }`}
+                      >
+                        <div className="flex flex-col text-left">
+                          <span className="font-bold">{profile.name}</span>
+                          <span className="text-[10px] text-text-light font-medium">{profile.relation}</span>
+                        </div>
+                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Logout Option */}
+              <div className="px-2 pt-1.5">
+                <button
+                  onClick={() => {
+                    setShowProfileDropdown(false);
+                    if (onLogout) onLogout();
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

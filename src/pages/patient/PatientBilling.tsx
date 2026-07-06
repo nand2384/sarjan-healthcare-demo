@@ -14,50 +14,108 @@ interface Invoice {
   cashierName: string;
 }
 
-const mockInvoices: Invoice[] = [
-  {
-    id: 'RCPT-8551',
-    date: '19 Jun 2026',
-    description: 'Consultation & Lab Tests',
-    amount: 2000,
-    status: 'Paid',
-    type: 'Consultation',
-    cashierName: 'Receptionist Admin',
-    items: [
-      { description: 'Consultation Fee', price: 500, amount: 500 },
-      { description: 'Treadmill Test (TPT)', price: 1500, amount: 1500 }
-    ]
-  },
-  {
-    id: 'PHM-2294',
-    date: '10 May 2026',
-    description: 'Pharmacy Bill - Rx 1024',
-    amount: 450,
-    status: 'Paid',
-    type: 'Pharmacy',
-    cashierName: 'Pharmacist Admin',
-    items: [
-      { description: 'Paracetamol 500mg', quantity: 2, price: 50, amount: 100 },
-      { description: 'Cetirizine 10mg', quantity: 1, price: 350, amount: 350 }
-    ]
-  },
-  {
-    id: 'RCPT-8220',
-    date: '15 Feb 2026',
-    description: 'Consultation',
-    amount: 500,
-    status: 'Paid',
-    type: 'Consultation',
-    cashierName: 'Receptionist Admin',
-    items: [
-      { description: 'Consultation Fee', price: 500, amount: 500 }
-    ]
-  }
-];
+const mockInvoicesByProfile: Record<string, Invoice[]> = {
+  p1: [
+    {
+      id: 'RCPT-8551',
+      date: '19 Jun 2026',
+      description: 'Consultation & Lab Tests',
+      amount: 2000,
+      status: 'Paid',
+      type: 'Consultation',
+      cashierName: 'Receptionist Admin',
+      items: [
+        { description: 'Consultation Fee', price: 500, amount: 500 },
+        { description: 'Treadmill Test (TPT)', price: 1500, amount: 1500 }
+      ]
+    },
+    {
+      id: 'PHM-2294',
+      date: '10 May 2026',
+      description: 'Pharmacy Bill - Rx 1024',
+      amount: 450,
+      status: 'Paid',
+      type: 'Pharmacy',
+      cashierName: 'Pharmacist Admin',
+      items: [
+        { description: 'Paracetamol 500mg', quantity: 2, price: 50, amount: 100 },
+        { description: 'Cetirizine 10mg', quantity: 1, price: 350, amount: 350 }
+      ]
+    },
+    {
+      id: 'RCPT-8220',
+      date: '15 Feb 2026',
+      description: 'Consultation',
+      amount: 500,
+      status: 'Paid',
+      type: 'Consultation',
+      cashierName: 'Receptionist Admin',
+      items: [
+        { description: 'Consultation Fee', price: 500, amount: 500 }
+      ]
+    }
+  ],
+  p2: [
+    {
+      id: 'RCPT-9102',
+      date: '22 May 2026',
+      description: 'Cardiology Consultation',
+      amount: 500,
+      status: 'Paid',
+      type: 'Consultation',
+      cashierName: 'Receptionist Admin',
+      items: [
+        { description: 'Consultation Fee', price: 500, amount: 500 }
+      ]
+    },
+    {
+      id: 'RCPT-9005',
+      date: '12 Jan 2026',
+      description: 'Orthopedic Consult & X-Ray',
+      amount: 800,
+      status: 'Paid',
+      type: 'Consultation',
+      cashierName: 'Receptionist Admin',
+      items: [
+        { description: 'Consultation Fee', price: 500, amount: 500 },
+        { description: 'Bilateral Knee X-Ray', price: 300, amount: 300 }
+      ]
+    }
+  ],
+  p3: [
+    {
+      id: 'RCPT-9250',
+      date: '02 Jun 2026',
+      description: 'Pediatric Consult & Immunization',
+      amount: 600,
+      status: 'Paid',
+      type: 'Consultation',
+      cashierName: 'Receptionist Admin',
+      items: [
+        { description: 'Consultation Fee', price: 500, amount: 500 },
+        { description: 'Vaccine Administration Charge', price: 100, amount: 100 }
+      ]
+    },
+    {
+      id: 'RCPT-9201',
+      date: '05 Mar 2026',
+      description: 'Pediatric Consult & Tonsillitis',
+      amount: 500,
+      status: 'Paid',
+      type: 'Consultation',
+      cashierName: 'Receptionist Admin',
+      items: [
+        { description: 'Consultation Fee', price: 500, amount: 500 }
+      ]
+    }
+  ]
+};
 
-export const PatientBilling = () => {
+export const PatientBilling = ({ profile }: { profile: any }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+
+  const invoicesList = mockInvoicesByProfile[profile.id] || mockInvoicesByProfile.p1;
 
   const receiptRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
@@ -65,7 +123,7 @@ export const PatientBilling = () => {
     documentTitle: `Receipt_${selectedInvoice?.id}`,
   });
 
-  const filteredInvoices = mockInvoices.filter(inv => 
+  const filteredInvoices = invoicesList.filter(inv => 
     inv.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
     inv.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -186,7 +244,7 @@ export const PatientBilling = () => {
           data={selectedInvoice ? {
             receiptNo: selectedInvoice.id,
             date: selectedInvoice.date,
-            patientName: 'John Doe',
+            patientName: profile?.name || 'John Doe',
             items: selectedInvoice.items,
             totalAmount: selectedInvoice.amount,
             paymentMethod: 'Cash',

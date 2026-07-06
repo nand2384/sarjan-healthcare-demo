@@ -12,54 +12,122 @@ interface Appointment {
   location: string;
 }
 
-const mockAppointments: Appointment[] = [
-  {
-    id: 'apt-001',
-    doctorName: 'Dr. Sarah Jenkins',
-    specialty: 'Cardiologist',
-    date: '10 July 2026',
-    time: '10:30 AM',
-    type: 'In-Person',
-    status: 'Confirmed',
-    location: 'Room 204, Floor 2, Sarjan Healthcare'
-  },
-  {
-    id: 'apt-002',
-    doctorName: 'Dr. Emily Chen',
-    specialty: 'Dermatologist',
-    date: '15 July 2026',
-    time: '04:15 PM',
-    type: 'Video Consult',
-    status: 'Confirmed',
-    location: 'Online'
-  },
-  {
-    id: 'apt-003',
-    doctorName: 'Dr. Michael Chang',
-    specialty: 'Orthopedic',
-    date: '02 June 2026',
-    time: '11:00 AM',
-    type: 'In-Person',
-    status: 'Completed',
-    location: 'Room 101, Floor 1, Sarjan Healthcare'
-  },
-  {
-    id: 'apt-004',
-    doctorName: 'Dr. Sarah Jenkins',
-    specialty: 'Cardiologist',
-    date: '15 May 2026',
-    time: '09:00 AM',
-    type: 'In-Person',
-    status: 'Completed',
-    location: 'Room 204, Floor 2, Sarjan Healthcare'
-  }
-];
+const mockAppointmentsByProfile: Record<string, Appointment[]> = {
+  p1: [
+    {
+      id: 'apt-001',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'Cardiologist',
+      date: '10 July 2026',
+      time: '10:30 AM',
+      type: 'In-Person',
+      status: 'Confirmed',
+      location: 'Room 204, Floor 2, Sarjan Healthcare'
+    },
+    {
+      id: 'apt-002',
+      doctorName: 'Dr. Emily Chen',
+      specialty: 'Dermatologist',
+      date: '15 July 2026',
+      time: '04:15 PM',
+      type: 'Video Consult',
+      status: 'Confirmed',
+      location: 'Online'
+    },
+    {
+      id: 'apt-003',
+      doctorName: 'Dr. Michael Chen',
+      specialty: 'Orthopedic',
+      date: '02 June 2026',
+      time: '11:00 AM',
+      type: 'In-Person',
+      status: 'Completed',
+      location: 'Room 101, Floor 1, Sarjan Healthcare'
+    },
+    {
+      id: 'apt-004',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'Cardiologist',
+      date: '15 May 2026',
+      time: '09:00 AM',
+      type: 'In-Person',
+      status: 'Completed',
+      location: 'Room 204, Floor 2, Sarjan Healthcare'
+    }
+  ],
+  p2: [
+    {
+      id: 'apt-201',
+      doctorName: 'Dr. Michael Chen',
+      specialty: 'Cardiologist',
+      date: '15 July 2026',
+      time: '11:30 AM',
+      type: 'In-Person',
+      status: 'Confirmed',
+      location: 'Room 204, Floor 2, Sarjan Healthcare'
+    },
+    {
+      id: 'apt-202',
+      doctorName: 'Dr. Michael Chen',
+      specialty: 'Cardiologist',
+      date: '22 May 2026',
+      time: '02:00 PM',
+      type: 'In-Person',
+      status: 'Completed',
+      location: 'Room 204, Floor 2, Sarjan Healthcare'
+    },
+    {
+      id: 'apt-203',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'General Medicine',
+      date: '12 January 2026',
+      time: '10:00 AM',
+      type: 'In-Person',
+      status: 'Completed',
+      location: 'Room 102, Floor 1, Sarjan Healthcare'
+    }
+  ],
+  p3: [
+    {
+      id: 'apt-301',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'Pediatrician',
+      date: '10 August 2026',
+      time: '09:30 AM',
+      type: 'In-Person',
+      status: 'Confirmed',
+      location: 'Room 102, Floor 1, Sarjan Healthcare'
+    },
+    {
+      id: 'apt-302',
+      doctorName: 'Dr. Sarah Jenkins',
+      specialty: 'Pediatrician',
+      date: '02 June 2026',
+      time: '10:00 AM',
+      type: 'In-Person',
+      status: 'Completed',
+      location: 'Room 102, Floor 1, Sarjan Healthcare'
+    },
+    {
+      id: 'apt-303',
+      doctorName: 'Dr. Emily Chen',
+      specialty: 'ENT Specialist',
+      date: '05 March 2026',
+      time: '11:30 AM',
+      type: 'In-Person',
+      status: 'Completed',
+      location: 'Room 105, Floor 1, Sarjan Healthcare'
+    }
+  ]
+};
 
-export const PatientAppointments = ({ onBookClick }: { onBookClick?: () => void }) => {
+export const PatientAppointments = ({ onBookClick, profile }: { onBookClick?: () => void; profile: any }) => {
   const [activeTab, setActiveTab] = useState<'Upcoming' | 'Past'>('Upcoming');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredAppointments = mockAppointments.filter(apt => {
+  const appointmentsList = mockAppointmentsByProfile[profile.id] || mockAppointmentsByProfile.p1;
+
+  const filteredAppointments = appointmentsList.filter(apt => {
     const isUpcoming = apt.status === 'Confirmed';
     if (activeTab === 'Upcoming' && !isUpcoming) return false;
     if (activeTab === 'Past' && isUpcoming) return false;

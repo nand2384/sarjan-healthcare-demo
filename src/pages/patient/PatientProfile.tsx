@@ -1,22 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { User, Shield, Phone, Mail, MapPin, AlertCircle, CheckCircle2, Save } from 'lucide-react';
 
-export const PatientProfile = () => {
+export const PatientProfile = ({ profile }: { profile: any }) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  const [first, ...restName] = (profile?.name || 'John Doe').split(' ');
+  const last = restName.join(' ') || '';
 
   // Mock Form State
   const [formData, setFormData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    dob: '1992-05-15',
-    gender: 'Male',
-    bloodGroup: 'O+',
-    phone: '+91 98765 43210',
-    email: 'john.doe@example.com',
-    address: '123 Health Avenue, Medical District, City - 400001',
-    emergencyContactName: 'Jane Doe',
+    firstName: first,
+    lastName: last,
+    dob: profile?.dob || '1992-05-15',
+    gender: profile?.gender || 'Male',
+    bloodGroup: profile?.bloodGroup || (profile?.id === 'p2' ? 'B+' : profile?.id === 'p3' ? 'O+' : 'O+'),
+    phone: profile?.phone || '+91 98765 43210',
+    email: profile?.email || 'john.doe@example.com',
+    address: profile?.address || '123 Health Avenue, Medical District, City - 400001',
+    emergencyContactName: profile?.id === 'p2' ? 'John Doe' : profile?.id === 'p3' ? 'John Doe' : 'Jane Doe',
     emergencyContactPhone: '+91 98765 43211'
   });
+
+  useEffect(() => {
+    const [f, ...r] = (profile?.name || 'John Doe').split(' ');
+    const l = r.join(' ') || '';
+    setFormData({
+      firstName: f,
+      lastName: l,
+      dob: profile?.dob || '1992-05-15',
+      gender: profile?.gender || 'Male',
+      bloodGroup: profile?.bloodGroup || (profile?.id === 'p2' ? 'B+' : profile?.id === 'p3' ? 'O+' : 'O+'),
+      phone: profile?.phone || '+91 98765 43210',
+      email: profile?.email || 'john.doe@example.com',
+      address: profile?.address || '123 Health Avenue, Medical District, City - 400001',
+      emergencyContactName: profile?.id === 'p2' ? 'John Doe' : profile?.id === 'p3' ? 'John Doe' : 'Jane Doe',
+      emergencyContactPhone: '+91 98765 43211'
+    });
+    setIsEditing(false);
+  }, [profile]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -45,14 +66,14 @@ export const PatientProfile = () => {
         {isEditing ? (
           <button 
             onClick={handleSave}
-            className="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-lg font-bold shadow-sm transition-all hover:shadow-md flex items-center justify-center gap-2"
+            className="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-lg font-bold shadow-sm transition-all hover:shadow-md flex items-center justify-center gap-2 cursor-pointer border-0"
           >
             <Save size={18} /> Save Changes
           </button>
         ) : (
           <button 
             onClick={() => setIsEditing(true)}
-            className="bg-white hover:bg-gray-50 text-text-dark border border-border-color px-6 py-2.5 rounded-lg font-bold shadow-sm transition-all flex items-center justify-center gap-2"
+            className="bg-white hover:bg-gray-50 text-text-dark border border-border-color px-6 py-2.5 rounded-lg font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             Edit Profile
           </button>
@@ -69,7 +90,7 @@ export const PatientProfile = () => {
               {formData.firstName.charAt(0)}{formData.lastName.charAt(0)}
             </div>
             <h2 className="text-xl font-bold text-text-dark">{formData.firstName} {formData.lastName}</h2>
-            <p className="text-text-gray text-sm font-medium mt-1">UHID-9002341</p>
+            <p className="text-text-gray text-sm font-medium mt-1">{profile?.uhid || 'UHID-9002341'}</p>
             
             <div className="mt-6 flex justify-center gap-2">
               <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full">

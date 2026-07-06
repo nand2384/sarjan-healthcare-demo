@@ -3,7 +3,7 @@ import { type UserRole } from '../types/roles';
 import { Stethoscope, ArrowLeft, Mail, Lock, ArrowRight, Fingerprint, Eye, EyeOff, Users, FileText, Activity } from 'lucide-react';
 
 interface LoginPageProps {
-  onLogin: (role: UserRole) => void;
+  onLogin: (email: string, role: UserRole) => void;
   onBack: () => void;
 }
 
@@ -15,11 +15,11 @@ export const LoginPage = ({ onLogin, onBack }: LoginPageProps) => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     let finalRole: UserRole = 'receptionist';
-    if (email.toLowerCase().includes('doctor')) finalRole = 'doctor';
+    if (email.toLowerCase().includes('doctor') || email.toLowerCase().includes('sarah')) finalRole = 'doctor';
     else if (email.toLowerCase().includes('admin')) finalRole = 'admin';
     else if (email.toLowerCase().includes('pharm')) finalRole = 'pharmacist';
     else if (email.toLowerCase().includes('patient')) finalRole = 'patient';
-    onLogin(finalRole);
+    onLogin(email, finalRole);
   };
 
   return (

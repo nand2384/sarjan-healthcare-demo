@@ -18,7 +18,7 @@ const availableDates = [
   { id: 'd5', day: 'Fri', date: '28', value: '2026-06-28', slots: 1 },
 ];
 
-export const PatientBookAppointment = () => {
+export const PatientBookAppointment = (_props: { profile?: any }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     reason: '',

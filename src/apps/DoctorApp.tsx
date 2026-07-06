@@ -6,7 +6,15 @@ import { MyPatients } from '../pages/MyPatients';
 import { Panel, Group, type PanelImperativeHandle } from 'react-resizable-panels';
 import { ResizeHandle } from '../components/common/ResizeHandle';
 
-export const DoctorApp = () => {
+export const DoctorApp = ({ 
+  currentUser, 
+  onRoleChange, 
+  onLogout 
+}: { 
+  currentUser: any; 
+  onRoleChange?: (role: any) => void; 
+  onLogout?: () => void; 
+}) => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -80,11 +88,15 @@ export const DoctorApp = () => {
 
         <Panel minSize={50} className="flex flex-col h-full overflow-hidden w-full bg-gray-50/30">
           <Header 
-            userName="SJ" 
+            userName={currentUser?.name || "Dr. Sarah Jenkins"} 
             userRole="Dr. Sarah Jenkins" 
             onMenuClick={() => setIsMobileMenuOpen(true)}
             isCollapsed={isCollapsed}
             onToggleCollapse={toggleCollapse}
+            roles={currentUser?.roles}
+            activeRole={currentUser?.activeRole}
+            onRoleChange={onRoleChange}
+            onLogout={onLogout}
           />
           
           <main className="flex-1 overflow-y-auto">
@@ -100,9 +112,13 @@ export const DoctorApp = () => {
       {/* Main content for mobile */}
       <main className="md:hidden flex-1 flex flex-col overflow-y-auto w-full h-full bg-gray-50/30">
         <Header 
-          userName="SJ" 
+          userName={currentUser?.name || "Dr. Sarah Jenkins"} 
           userRole="Dr. Sarah Jenkins" 
           onMenuClick={() => setIsMobileMenuOpen(true)}
+          roles={currentUser?.roles}
+          activeRole={currentUser?.activeRole}
+          onRoleChange={onRoleChange}
+          onLogout={onLogout}
         />
         
         <div className="flex-1">
