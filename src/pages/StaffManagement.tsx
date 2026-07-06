@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { Users, Plus, Edit2, Trash2, X, AlertTriangle, Check, XCircle, Settings, CheckCircle, LayoutGrid, List } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Users, Plus, Edit2, Trash2, X, AlertTriangle, Check, XCircle, Settings, CheckCircle, LayoutGrid, List, Search, Filter } from 'lucide-react';
 import { doctorsData } from '../data/mockData';
 import type { Doctor, Patient } from '../data/mockData';
 
-// Receptionist Interface
+// Receptionist Interface (Used as Generic Staff)
 interface Receptionist {
   id: string;
   name: string;
+  role: string;
+  department: string;
   shift: string;
   status: string;
   phone: string;
@@ -17,15 +19,21 @@ interface Receptionist {
   password?: string;
 }
 
-// Generate mock receptionists
+// Generate mock staff
 const mockReceptionists: Receptionist[] = [
-  { id: 'r1', name: 'Riya Patel', shift: 'Morning (8 AM - 4 PM)', status: 'active', phone: '+91 98765 43210', email: 'riya.p@sarjan.com', employeeId: 'REC-001', roleLevel: 'Senior Receptionist', joiningDate: '2022-01-15' },
-  { id: 'r2', name: 'Amit Kumar', shift: 'Evening (4 PM - 12 AM)', status: 'active', phone: '+91 98765 43211', email: 'amit.k@sarjan.com', employeeId: 'REC-002', roleLevel: 'Junior Receptionist', joiningDate: '2023-05-10' },
+  { id: 'r1', name: 'Riya Patel', role: 'Receptionist', department: 'Front Desk', shift: 'Morning (8 AM - 4 PM)', status: 'active', phone: '+91 98765 43210', email: 'riya.p@sarjan.com', employeeId: 'REC-001', roleLevel: 'Senior Receptionist', joiningDate: '2022-01-15' },
+  { id: 'r2', name: 'Amit Kumar', role: 'Pharmacist', department: 'Pharmacy', shift: 'Evening (4 PM - 12 AM)', status: 'active', phone: '+91 98765 43211', email: 'amit.k@sarjan.com', employeeId: 'REC-002', roleLevel: 'Head Pharmacist', joiningDate: '2023-05-10' },
 ];
 
 export const StaffManagement = () => {
   const [activeTab, setActiveTab] = useState<'doctors' | 'receptionists'>('doctors');
-  const [layoutMode, setLayoutMode] = useState<'table' | 'cards'>('table');
+  const [layoutMode, setLayoutMode] = useState<'table' | 'cards'>('cards');
+
+  // Search & Filters
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [sortFilter, setSortFilter] = useState('Recently Added');
+  const [roleFilter, setRoleFilter] = useState('All');
 
   // Doctors State
   const [doctors, setDoctors] = useState<Doctor[]>(doctorsData);
@@ -52,14 +60,14 @@ export const StaffManagement = () => {
   const [receptionists, setReceptionists] = useState<Receptionist[]>(mockReceptionists);
   const [isReceptionistModalOpen, setIsReceptionistModalOpen] = useState(false);
   const [newReceptionistForm, setNewReceptionistForm] = useState({ 
-    name: '', shift: 'Morning (8 AM - 4 PM)', phone: '', status: 'active',
+    name: '', role: 'Receptionist', department: '', shift: 'Morning (8 AM - 4 PM)', phone: '', status: 'active',
     email: '', password: '', employeeId: '', roleLevel: 'Receptionist', joiningDate: ''
   });
   const [deletingRecpId, setDeletingRecpId] = useState<string | null>(null);
 
   // Inline Editing - Receptionist (Core Fields Only)
   const [editingRecpId, setEditingRecpId] = useState<string | null>(null);
-  const [recpEditForm, setRecpEditForm] = useState({ name: '', shift: 'Morning (8 AM - 4 PM)', phone: '', status: 'active' });
+  const [recpEditForm, setRecpEditForm] = useState({ name: '', shift: 'Morning (8 AM - 4 PM)', phone: '', status: 'active', roleLevel: '', department: '' });
 
   // Toast State
   const [showToast, setShowToast] = useState(false);
@@ -147,7 +155,7 @@ export const StaffManagement = () => {
   // === RECEPTIONIST ACTIONS ===
   const openAddReceptionist = () => {
     setNewReceptionistForm({ 
-      name: '', shift: 'Morning (8 AM - 4 PM)', phone: '', status: 'active',
+      name: '', role: 'Receptionist', department: '', shift: 'Morning (8 AM - 4 PM)', phone: '', status: 'active',
       email: '', password: '', employeeId: '', roleLevel: 'Receptionist', joiningDate: ''
     });
     setIsReceptionistModalOpen(true);
@@ -162,7 +170,7 @@ export const StaffManagement = () => {
 
   const startEditReceptionist = (recp: Receptionist) => {
     setEditingRecpId(recp.id);
-    setRecpEditForm({ name: recp.name, shift: recp.shift, phone: recp.phone, status: recp.status });
+    setRecpEditForm({ name: recp.name, shift: recp.shift, phone: recp.phone, status: recp.status, roleLevel: recp.roleLevel || '', department: recp.department || '' });
   };
 
   const saveEditReceptionist = () => {
@@ -190,6 +198,47 @@ export const StaffManagement = () => {
     }
   };
 
+  // Filtered Doctors
+  const filteredDoctors = useMemo(() => {
+    return doctors.filter(doc => {
+      const matchesSearch = doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            (doc.phone && doc.phone.includes(searchQuery));
+      const matchesStatus = statusFilter === 'All' ? true :
+                            statusFilter === 'Active' ? getDoctorStatus(doc) !== 'away' :
+                            getDoctorStatus(doc) === 'away';
+      return matchesSearch && matchesStatus;
+    }).sort((a, b) => {
+      if (sortFilter === 'Name') return a.name.localeCompare(b.name);
+      if (sortFilter === 'Experience') return (b.experience || 0) - (a.experience || 0);
+      return 0; // Recently Added default
+    });
+  }, [doctors, searchQuery, statusFilter, sortFilter]);
+
+  // Filtered Staff
+  const filteredStaff = useMemo(() => {
+    return receptionists.filter(staff => {
+      const matchesSearch = staff.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            (staff.phone && staff.phone.includes(searchQuery)) ||
+                            (staff.employeeId && staff.employeeId.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesStatus = statusFilter === 'All' ? true :
+                            statusFilter === 'Active' ? staff.status === 'active' :
+                            staff.status === 'inactive';
+      
+      const roleMatch = roleFilter === 'All' ? true :
+                        (roleFilter === 'Receptionists' && staff.role === 'Receptionist') || 
+                        (roleFilter === 'Pharmacists' && staff.role === 'Pharmacist') ||
+                        (roleFilter === 'Lab Technicians' && staff.role === 'Lab Technician') ||
+                        (roleFilter === 'Accountants' && staff.role === 'Accountant') ||
+                        (roleFilter === 'Nurses' && staff.role === 'Nurse') ||
+                        (roleFilter === 'Admins' && staff.role === 'Admin');
+
+      return matchesSearch && matchesStatus && roleMatch;
+    }).sort((a, b) => {
+      if (sortFilter === 'Name') return a.name.localeCompare(b.name);
+      return 0; // Recently Added default
+    });
+  }, [receptionists, searchQuery, statusFilter, sortFilter, roleFilter]);
+
   return (
     <div className="p-6 md:p-8 space-y-6 bg-transparent relative">
       {/* Toast Notification */}
@@ -208,58 +257,116 @@ export const StaffManagement = () => {
           <h1 className="text-2xl font-bold text-text-dark flex items-center gap-2">
             <Users className="text-primary" /> Staff & Doctor Management
           </h1>
-          <p className="text-text-gray mt-1 text-base">Manage doctor profiles, schedules, and clinic staff accounts.</p>
+          <p className="text-text-gray mt-1 text-base">Manage doctors and clinic staff from one place.</p>
         </div>
         <button 
           onClick={() => activeTab === 'doctors' ? openAddDoctor() : openAddReceptionist()}
-          className="flex items-center gap-2 px-5 py-2.5 btn-primary"
+          className="flex items-center gap-2 px-5 py-2.5 btn-primary cursor-pointer"
         >
-          <Plus size={18} /> Add New {activeTab === 'doctors' ? 'Doctor' : 'Staff'}
+          <Plus size={18} /> {activeTab === 'doctors' ? 'Add Doctor' : 'Add Staff'}
         </button>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        {/* Left Side: Tabs */}
-        <div className="flex bg-white rounded-lg p-1 border border-border-color shadow-sm w-max">
-          <button
-            onClick={() => setActiveTab('doctors')}
-            className={`px-6 py-2 rounded-md text-sm font-bold transition-colors cursor-pointer ${
-              activeTab === 'doctors' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
-            }`}
-          >
-            Doctors
-          </button>
-          <button
-            onClick={() => setActiveTab('receptionists')}
-            className={`px-6 py-2 rounded-md text-sm font-bold transition-colors cursor-pointer ${
-              activeTab === 'receptionists' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
-            }`}
-          >
-            Receptionists
-          </button>
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          {/* Left Side: Tabs */}
+          <div className="flex bg-white rounded-lg p-1 border border-border-color shadow-sm w-max">
+            <button
+              onClick={() => setActiveTab('doctors')}
+              className={`px-6 py-2 rounded-md text-sm font-bold transition-colors cursor-pointer ${
+                activeTab === 'doctors' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+              }`}
+            >
+              Doctors
+            </button>
+            <button
+              onClick={() => setActiveTab('receptionists')}
+              className={`px-6 py-2 rounded-md text-sm font-bold transition-colors cursor-pointer ${
+                activeTab === 'receptionists' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+              }`}
+            >
+              Staff
+            </button>
+          </div>
+
+          {/* Right Side: Layout toggle */}
+          <div className="flex bg-white rounded-lg p-1 border border-border-color shadow-sm w-max items-center">
+            <button
+              onClick={() => setLayoutMode('cards')}
+              className={`p-2 rounded-md transition-colors cursor-pointer flex items-center justify-center ${
+                layoutMode === 'cards' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+              }`}
+              title="Cards View"
+            >
+              <LayoutGrid size={16} />
+            </button>
+            <button
+              onClick={() => setLayoutMode('table')}
+              className={`p-2 rounded-md transition-colors cursor-pointer flex items-center justify-center ${
+                layoutMode === 'table' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
+              }`}
+              title="Table View"
+            >
+              <List size={16} />
+            </button>
+          </div>
         </div>
 
-        {/* Right Side: Layout toggle */}
-        <div className="flex bg-white rounded-lg p-1 border border-border-color shadow-sm w-max items-center">
-          <button
-            onClick={() => setLayoutMode('table')}
-            className={`p-2 rounded-md transition-colors cursor-pointer flex items-center justify-center ${
-              layoutMode === 'table' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
-            }`}
-            title="Table View"
-          >
-            <List size={16} />
-          </button>
-          <button
-            onClick={() => setLayoutMode('cards')}
-            className={`p-2 rounded-md transition-colors cursor-pointer flex items-center justify-center ${
-              layoutMode === 'cards' ? 'bg-primary text-white shadow-sm' : 'text-text-gray hover:text-text-dark hover:bg-gray-100'
-            }`}
-            title="Cards View"
-          >
-            <LayoutGrid size={16} />
-          </button>
+        {/* Search and Filters Bar */}
+        <div className="flex flex-col md:flex-row gap-4 justify-between bg-white p-4 rounded-xl shadow-sm border border-border-color">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-gray" size={18} />
+            <input 
+              type="text"
+              placeholder="Search by name, phone or employee ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-border-color rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-text-gray" />
+              <select 
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="bg-gray-50 border border-border-color rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer text-text-dark"
+              >
+                <option value="All">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <select 
+              value={sortFilter}
+              onChange={(e) => setSortFilter(e.target.value)}
+              className="bg-gray-50 border border-border-color rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer text-text-dark"
+            >
+              <option value="Recently Added">Recently Added</option>
+              <option value="Name">Sort by Name</option>
+              <option value="Experience">Sort by Experience</option>
+            </select>
+          </div>
         </div>
+
+        {/* Role Chips for Staff */}
+        {activeTab === 'receptionists' && (
+          <div className="flex flex-wrap gap-2">
+            {['All', 'Receptionists', 'Pharmacists', 'Lab Technicians', 'Accountants', 'Nurses', 'Admins'].map(role => (
+              <button
+                key={role}
+                onClick={() => setRoleFilter(role)}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer border ${
+                  roleFilter === role 
+                    ? 'bg-primary text-white border-primary' 
+                    : 'bg-white text-text-gray border-border-color hover:bg-gray-50 hover:text-text-dark'
+                }`}
+              >
+                {role}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {activeTab === 'doctors' ? (
@@ -268,15 +375,15 @@ export const StaffManagement = () => {
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
                 <tr>
-                  <th className="table-header-cell w-1/4">Doctor Name</th>
-                  <th className="table-header-cell w-1/4">Specialty</th>
-                  <th className="table-header-cell">Contact</th>
+                  <th className="table-header-cell w-1/4">Doctor Profile</th>
+                  <th className="table-header-cell w-1/5">Specialty & Exp</th>
+                  <th className="table-header-cell w-1/5">Contact</th>
                   <th className="table-header-cell w-32">Live Status</th>
                   <th className="table-header-cell text-right w-40">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-color text-sm text-text-dark">
-                {doctors.map(doc => {
+                {filteredDoctors.map(doc => {
                   const isEditing = editingDocId === doc.id;
                   const currentStatus = getDoctorStatus(doc);
                   
@@ -292,7 +399,17 @@ export const StaffManagement = () => {
                             autoFocus
                           />
                         ) : (
-                          <span className="text-text-dark">{doc.name}</span>
+                          <span className="text-text-dark">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shadow-sm border border-primary/5">
+                                {doc.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                              </div>
+                              <div>
+                                {doc.name}
+                                {doc.licenseNumber && <div className="text-[10px] text-text-gray font-normal">{doc.licenseNumber}</div>}
+                              </div>
+                            </div>
+                          </span>
                         )}
                       </td>
                       <td className="table-row-cell">
@@ -304,7 +421,10 @@ export const StaffManagement = () => {
                             className="w-full border border-border-color rounded px-2 py-1 text-sm"
                           />
                         ) : (
-                          <span className="text-[11px] font-bold text-text-light uppercase tracking-wider">{doc.specialty}</span>
+                          <div>
+                            <span className="text-[11px] font-bold text-text-light uppercase tracking-wider">{doc.specialty}</span>
+                            {doc.experience > 0 && <div className="text-xs text-text-gray font-medium mt-0.5">{doc.experience} Years Exp.</div>}
+                          </div>
                         )}
                       </td>
                       <td className="table-row-cell text-xs">
@@ -348,7 +468,7 @@ export const StaffManagement = () => {
                     </tr>
                   );
                 })}
-                {doctors.length === 0 && (
+                {filteredDoctors.length === 0 && (
                   <tr>
                     <td colSpan={6} className="p-8 text-center text-text-gray italic">No doctors found.</td>
                   </tr>
@@ -358,7 +478,7 @@ export const StaffManagement = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {doctors.map(doc => {
+            {filteredDoctors.map(doc => {
               const isEditing = editingDocId === doc.id;
               const currentStatus = getDoctorStatus(doc);
               const initials = doc.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
@@ -486,15 +606,16 @@ export const StaffManagement = () => {
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
                 <tr>
-                  <th className="table-header-cell w-1/4">Staff Name</th>
-                  <th className="table-header-cell w-1/4">Assigned Shift</th>
+                  <th className="table-header-cell w-1/4">Staff Profile</th>
+                  <th className="table-header-cell w-1/5">Role & Dept</th>
+                  <th className="table-header-cell w-1/5">Assigned Shift</th>
                   <th className="table-header-cell w-1/5">Contact</th>
                   <th className="table-header-cell w-1/6">Account Status</th>
                   <th className="table-header-cell text-right w-40">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-color text-sm text-text-dark">
-                {receptionists.map(recp => {
+                {filteredStaff.map(recp => {
                   const isEditing = editingRecpId === recp.id;
                   
                   return (
@@ -509,9 +630,41 @@ export const StaffManagement = () => {
                             autoFocus
                           />
                         ) : (
+                          <span className="text-text-dark">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-xs shadow-sm border border-purple-100/50">
+                                {recp.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                              </div>
+                              <div>
+                                {recp.name}
+                                {recp.employeeId && <div className="text-[10px] text-text-gray font-normal">{recp.employeeId}</div>}
+                              </div>
+                            </div>
+                          </span>
+                        )}
+                      </td>
+                      <td className="table-row-cell">
+                        {isEditing ? (
+                          <div className="space-y-1">
+                            <input 
+                              type="text" 
+                              value={recpEditForm.roleLevel || ''} 
+                              onChange={(e) => setRecpEditForm({...recpEditForm, roleLevel: e.target.value})}
+                              placeholder="Role Level"
+                              className="w-full border border-border-color rounded px-2 py-1 text-xs"
+                            />
+                            <input 
+                              type="text" 
+                              value={recpEditForm.department || ''} 
+                              onChange={(e) => setRecpEditForm({...recpEditForm, department: e.target.value})}
+                              placeholder="Department"
+                              className="w-full border border-border-color rounded px-2 py-1 text-xs"
+                            />
+                          </div>
+                        ) : (
                           <div>
-                            {recp.name}
-                            <div className="text-xs text-text-gray font-normal">{recp.employeeId} - {recp.roleLevel}</div>
+                            <div className="text-sm font-bold text-text-dark">{recp.role}</div>
+                            {recp.department && <div className="text-xs text-text-gray font-medium">{recp.department}</div>}
                           </div>
                         )}
                       </td>
@@ -590,9 +743,9 @@ export const StaffManagement = () => {
                     </tr>
                   );
                 })}
-                {receptionists.length === 0 && (
+                {filteredStaff.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-text-gray italic">No staff found.</td>
+                    <td colSpan={6} className="p-8 text-center text-text-gray italic">No staff found.</td>
                   </tr>
                 )}
               </tbody>
@@ -600,7 +753,7 @@ export const StaffManagement = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {receptionists.map(recp => {
+            {filteredStaff.map(recp => {
               const isEditing = editingRecpId === recp.id;
               const initials = recp.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
@@ -641,7 +794,7 @@ export const StaffManagement = () => {
                           ) : (
                             <>
                               <h4 className="font-bold text-text-dark text-base">{recp.name}</h4>
-                              <p className="text-xs text-text-gray mt-0.5 font-medium">{recp.roleLevel || 'Receptionist'}</p>
+                              <p className="text-xs text-text-gray mt-0.5 font-medium">{recp.role} {recp.department ? `• ${recp.department}` : ''}</p>
                             </>
                           )}
                         </div>
@@ -722,7 +875,7 @@ export const StaffManagement = () => {
                 </div>
               );
             })}
-            {receptionists.length === 0 && (
+            {filteredStaff.length === 0 && (
               <div className="col-span-full bg-white rounded-2xl p-8 border border-border-color shadow-soft text-center text-text-gray italic">
                 No staff found.
               </div>
@@ -831,6 +984,23 @@ export const StaffManagement = () => {
                   <div>
                     <label className="block text-sm font-semibold text-text-dark mb-1">Staff Name *</label>
                     <input type="text" value={newReceptionistForm.name} onChange={e => setNewReceptionistForm({...newReceptionistForm, name: e.target.value})} className="w-full border border-border-color rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 text-text-dark" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-text-dark mb-1">Role</label>
+                      <select value={newReceptionistForm.role} onChange={e => setNewReceptionistForm({...newReceptionistForm, role: e.target.value})} className="w-full border border-border-color rounded-lg px-4 py-2 text-sm bg-white focus:ring-2 focus:ring-primary/20 text-text-dark">
+                        <option value="Receptionist">Receptionist</option>
+                        <option value="Pharmacist">Pharmacist</option>
+                        <option value="Lab Technician">Lab Technician</option>
+                        <option value="Accountant">Accountant</option>
+                        <option value="Nurse">Nurse</option>
+                        <option value="Admin">Admin</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-dark mb-1">Department</label>
+                      <input type="text" placeholder="e.g. Front Desk" value={newReceptionistForm.department} onChange={e => setNewReceptionistForm({...newReceptionistForm, department: e.target.value})} className="w-full border border-border-color rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 text-text-dark" />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-text-dark mb-1">Role Level</label>
@@ -975,6 +1145,23 @@ export const StaffManagement = () => {
                   <div>
                     <label className="block text-sm font-semibold text-text-dark mb-1">Staff Name</label>
                     <input type="text" placeholder="e.g. Amit Kumar" value={manageRecpForm.name} onChange={e => setManageRecpForm({...manageRecpForm, name: e.target.value})} className="w-full border border-border-color rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 text-text-dark" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-text-dark mb-1">Role</label>
+                      <select value={manageRecpForm.role || 'Receptionist'} onChange={e => setManageRecpForm({...manageRecpForm, role: e.target.value})} className="w-full border border-border-color rounded-lg px-4 py-2 text-sm bg-white focus:ring-2 focus:ring-primary/20 text-text-dark">
+                        <option value="Receptionist">Receptionist</option>
+                        <option value="Pharmacist">Pharmacist</option>
+                        <option value="Lab Technician">Lab Technician</option>
+                        <option value="Accountant">Accountant</option>
+                        <option value="Nurse">Nurse</option>
+                        <option value="Admin">Admin</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-dark mb-1">Department</label>
+                      <input type="text" placeholder="e.g. Front Desk" value={manageRecpForm.department || ''} onChange={e => setManageRecpForm({...manageRecpForm, department: e.target.value})} className="w-full border border-border-color rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 text-text-dark" />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-text-dark mb-1">Role Level</label>

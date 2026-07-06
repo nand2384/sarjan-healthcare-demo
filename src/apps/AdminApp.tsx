@@ -62,7 +62,7 @@ export const AdminApp = ({
           isCollapsed={false}
         />
       </div>
-
+  
       <Group orientation="horizontal" className="hidden md:flex w-full h-full">
         <Panel 
           panelRef={sidebarPanelRef}

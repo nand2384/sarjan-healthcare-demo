@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type UserRole } from '../types/roles';
-import { Stethoscope, ArrowLeft, Mail, Lock, ArrowRight, Fingerprint, Eye, EyeOff, Users, FileText, Activity } from 'lucide-react';
+import { Stethoscope, Mail, Lock, ArrowRight, Fingerprint, Eye, EyeOff, Users, FileText, Activity } from 'lucide-react';
 
 interface LoginPageProps {
   onLogin: (email: string, role: UserRole) => void;
@@ -58,10 +58,9 @@ export const LoginPage = ({ onLogin, onBack }: LoginPageProps) => {
 
         {/* Action Button */}
         <button 
-          onClick={onBack}
           className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 text-sm cursor-pointer"
         >
-          <ArrowLeft size={16} /> Back to Home
+          <Lock size={16} /> Staff Login
         </button>
       </header>
 
