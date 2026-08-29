@@ -73,6 +73,10 @@ export interface Doctor {
   email: string;
   password?: string; // Optional since it's just for mock setup, actual password wouldn't be sent to client
   phone: string;
+  username: string; // New field
+  is_account_activated: boolean; // New field
+  is_disabled: boolean; // New field
+  roles: string[]; // New field
   joiningDate: string;
   licenseNumber: string;
   education: string;
@@ -92,6 +96,10 @@ export const doctorsData: Doctor[] = [
     status: "busy",
     email: "sarah.jenkins@sarjan.com",
     phone: "+91 98765 00001",
+    username: "dr.sarah",
+    is_account_activated: true,
+    is_disabled: false,
+    roles: ["Doctor"],
     joiningDate: "2021-04-15",
     licenseNumber: "MCI-45892",
     education: "MBBS, MD",
@@ -116,6 +124,10 @@ export const doctorsData: Doctor[] = [
     status: "available",
     email: "michael.chen@sarjan.com",
     phone: "+91 98765 00002",
+    username: "dr.michael",
+    is_account_activated: true,
+    is_disabled: false,
+    roles: ["Doctor", "Admin"],
     joiningDate: "2020-11-01",
     licenseNumber: "MCI-73210",
     education: "MBBS, DM (Cardiology)",
@@ -138,6 +150,10 @@ export const doctorsData: Doctor[] = [
     status: "away",
     email: "emily.taylor@sarjan.com",
     phone: "+91 98765 00003",
+    username: "dr.emily",
+    is_account_activated: false,
+    is_disabled: false,
+    roles: ["Doctor"],
     joiningDate: "2023-01-10",
     licenseNumber: "MCI-99341",
     education: "MBBS, MD (Pediatrics)",

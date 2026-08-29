@@ -4,6 +4,7 @@ import { Header } from '../components/layout/Header';
 import { Dashboard } from '../pages/Dashboard';
 import { Appointments } from '../pages/Appointments';
 import { PatientRegistration } from '../pages/PatientRegistration';
+import { BookAppointment } from '../pages/BookAppointment';
 import { DoctorView } from '../pages/DoctorView';
 import { doctorsData, scheduledAppointments, type Patient, type PatientStatus } from '../data/mockData';
 import { Panel, Group, type PanelImperativeHandle } from 'react-resizable-panels';
@@ -41,6 +42,7 @@ export const ReceptionistApp = ({
   const topNavItems = [
     { label: 'Dashboard' },
     { label: 'Appointments' },
+    { label: 'Book Appointment' },
     { label: 'Register Patient' }
   ];
 
@@ -104,7 +106,7 @@ export const ReceptionistApp = ({
     alert('Patient successfully added to the Dashboard Queue!');
   };
 
-  const isMainTab = ['Dashboard', 'Appointments', 'Register Patient'].includes(activeTab);
+  const isMainTab = ['Dashboard', 'Appointments', 'Book Appointment', 'Register Patient'].includes(activeTab);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-gray-50/50 relative">
@@ -189,6 +191,7 @@ export const ReceptionistApp = ({
               />
             )}
             {activeTab === 'Register Patient' && <PatientRegistration />}
+            {activeTab === 'Book Appointment' && <BookAppointment />}
             
             {/* Doctor View */}
             {!isMainTab && (
@@ -234,6 +237,7 @@ export const ReceptionistApp = ({
             />
           )}
           {activeTab === 'Register Patient' && <PatientRegistration />}
+          {activeTab === 'Book Appointment' && <BookAppointment />}
           
           {/* Doctor View */}
           {!isMainTab && (
